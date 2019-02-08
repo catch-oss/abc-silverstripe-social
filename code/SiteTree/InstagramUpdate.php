@@ -1,10 +1,20 @@
 <?php
 
+namespace Azt3k\SS\Social\SiteTree;
+
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Assets\Image;
+use SilverStripe\Forms\DatetimeField;
+use SilverStripe\Core\Config\Config;
+
 /**
  * @author AzT3k
  */
-class InstagramUpdate extends Page {
+class InstagramUpdate extends SiteTree {
 
+    private static $table_name = 'InstagramUpdate';
     /**
      * @var array
      */
@@ -183,6 +193,6 @@ class InstagramUpdate extends Page {
 
 }
 
-class InstagramUpdate_Controller extends Page_Controller {
+class InstagramUpdate_Controller extends Controller {
 
 }

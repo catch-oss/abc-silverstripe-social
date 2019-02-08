@@ -1,5 +1,10 @@
 <?php
 
+namespace Azt3k\SS\Social\Extensions;
+
+use SilverStripe\ORM\DataExtension;
+use Silverstripe\SiteConfig\SiteConfig;
+
 class SocialUpdatePageExtension extends DataExtension {
 
     public function UpdateType() {

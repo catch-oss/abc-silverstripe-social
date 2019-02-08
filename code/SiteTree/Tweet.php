@@ -1,11 +1,26 @@
 <?php
 
+namespace Azt3k\SS\Social\SiteTree;
+
+
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Assets\Image;
+use SilverStripe\Forms\DatetimeField;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Control\Director;
+use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\ORM\FieldType\DBField;
+
 /**
  * Description of Tweet
  *
  * @author AzT3k
  */
-class Tweet extends Page {
+class Tweet extends SiteTree {
+
+    private static $table_name = 'Tweet';
 
     private static $db = array(
         'TweetID'           => 'Varchar(255)',
@@ -214,6 +229,6 @@ class Tweet extends Page {
 
 }
 
-class Tweet_Controller extends Page_Controller {
+class Tweet_Controller extends Controller {
 
 }

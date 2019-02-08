@@ -1,6 +1,12 @@
 <?php
 
+namespace Azt3k\SS\Social\DataObjects;
+
+use SilverStripe\ORM\DataObject;
+
 class OEmbedCacheItem extends DataObject {
+
+	private static $table_name = 'OEmbedCacheItem';
 
 	private static $db = array(
 		'URL' => 'Varchar(255)',

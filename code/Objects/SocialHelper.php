@@ -1,11 +1,19 @@
 <?php
 
+namespace Azt3k\SS\Social\Objects;
+
+use SilverStripe\Core\Extensible;
+use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Core\Config\Configurable;
+use Silverstripe\SiteConfig\SiteConfig;
 use Facebook\Facebook;
 
 /**
  * @author AzT3k
  */
-class SocialHelper extends Object {
+class SocialHelper {
+
+    use Extensible, Injectable, Configurable;
 
     /**
      * generates a url to the current page

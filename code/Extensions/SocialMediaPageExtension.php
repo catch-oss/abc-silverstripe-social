@@ -1,5 +1,17 @@
 <?php
 
+namespace Azt3k\SS\Social\Extensions;
+
+use Azt3k\SS\Social\Objects\SocialHelper;
+use SilverStripe\ORM\DataExtension;
+use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
+use Azt3k\SS\Social\DataObjects\PublicationTweet;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\ReadonlyField;
+use Silverstripe\SiteConfig\SiteConfig;
+use Azt3k\SS\Social\Controllers\PostToSocialMedia;
+
 /**
  * @todo need reconcile removals in both directions
  * @todo remove PublicationFBUpdateID && PublicationTweetID as they aren't really needed any more - if testing for post just call $this->owner->PublicationTweets()->count()
@@ -36,7 +48,7 @@ class SocialMediaPageExtension extends DataExtension {
      * parses out short codes:
      * [social_embed,service="twitter",url="https://twitter.com/nytimes/status/701590150434967553"]
      * [social_embed,service="facebook",url="https://www.facebook.com/telesurenglish/photos/a.492297374247003.1073741828.479681268841947/791129364363801/"]
-     * [social_embed,service="instagram",url="https://www.instagram.com/p/BCEoPpwDw-t/"]
+     * [social_embed,service="instagram",url="https://www.instagram.com/p/BCEoPpwDw-t/"]use Silverstripe\SiteConfig\SiteConfig;
      * @param [type] $arguments [description]
      * @param [type] $content   [description]
      * @param [type] $parser    [description]

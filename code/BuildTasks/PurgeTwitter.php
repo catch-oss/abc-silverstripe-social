@@ -1,5 +1,13 @@
 <?php
 
+namespace Azt3k\SS\Social\BuildTasks;
+
+use SilverStripe\Control\Director;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
+use Azt3k\SS\Social\SiteTree\Tweet;
+
 /**
  * @author AzT3k
  */

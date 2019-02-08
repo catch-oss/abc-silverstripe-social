@@ -1,6 +1,20 @@
 <?php
 
+namespace Azt3k\SS\Social\BuildTasks;
+
 use Facebook\Facebook;
+
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\CronTask\Interfaces\CronTask;
+
+use SilverStripe\Control\Director;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
+use Silverstripe\SiteConfig\SiteConfig;
+
+use Azt3k\SS\Social\SiteTree\FBUpdate;
+use Azt3k\SS\Classes\DataObjectHelper;
 
 /**
  * Facebook images are not always instantly available so this is a rety job that should look for any

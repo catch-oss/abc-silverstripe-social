@@ -1,9 +1,17 @@
 <?php
 
+namespace Azt3k\SS\Social\Objects;
+use SilverStripe\Core\Extensible;
+use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Core\Config\Configurable;
 /**
  * @author AzT3k
  */
-class SocialGlobalConf extends Object {
+class SocialGlobalConf {
+
+    use SilverStripe\Core\Extensible;
+    use SilverStripe\Core\Injector\Injectable;
+    use SilverStripe\Core\Config\Configurable;
 
     /**
      * @config

@@ -22,5 +22,10 @@
         "facebook/php-sdk-v4"               : "5.0.*@stable",
         "cosenary/instagram"                : "2.3.*@stable",
         "guzzlehttp/guzzle"                 : "*@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Azt3k\\SS\\Social\\": "code/"
+        }
     }
 }

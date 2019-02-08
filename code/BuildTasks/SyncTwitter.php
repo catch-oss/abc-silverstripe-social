@@ -1,5 +1,20 @@
 <?php
 
+namespace Azt3k\SS\Social\BuildTasks;
+
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\CronTask\Interfaces\CronTask;
+
+use SilverStripe\Control\Director;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
+use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\ORM\DataObject;
+
+use Azt3k\SS\Social\SiteTree\Tweet;
+use Azt3k\SS\Classes\DataObjectHelper;
+
 /**
  * @todo need reconcile removals in both directions
  */

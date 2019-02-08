@@ -1,9 +1,14 @@
 <?php
 
+namespace Azt3k\SS\Social\SiteTree;
+
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+
 /**
  * @author AzT3k
  */
-class FBUpdateHolder extends Page {
+class FBUpdateHolder extends SiteTree {
 
 	private static $can_be_root = true;
     private static $allowed_children = array(
@@ -12,6 +17,6 @@ class FBUpdateHolder extends Page {
 
 }
 
-class FBUpdateHolder_Controller extends Page_Controller {
+class FBUpdateHolder_Controller extends Controller {
 
 }

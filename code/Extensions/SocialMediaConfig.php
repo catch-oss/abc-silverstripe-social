@@ -1,5 +1,17 @@
 <?php
 
+namespace Azt3k\SS\Social\Extensions;
+
+use Azt3k\SS\Social\Objects\SocialHelper;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\AssetAdmin\Forms\UploadField;
+use Azt3k\SS\Social\Controllers\FBAuthenticator;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
+
+
 class SocialMediaConfig extends DataExtension {
 
     private static $db = array(

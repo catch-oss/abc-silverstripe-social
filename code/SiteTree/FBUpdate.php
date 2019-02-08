@@ -1,12 +1,22 @@
 <?php
 
+namespace Azt3k\SS\Social\SiteTree;
+
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Plugin\History\HistoryPlugin;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\ORM\DataObject;
+use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\Assets\Image;
+use SilverStripe\Forms\DatetimeField;
+use SilverStripe\Control\Controller;
 
 /**
  * @author AzT3k
  */
-class FBUpdate extends Page {
+class FBUpdate extends SiteTree {
+
+    private static $table_name = 'FBUpdate';
 
     private static $db = array(
         'UpdateID'          => 'Varchar(255)',
@@ -226,6 +236,6 @@ class FBUpdate extends Page {
 
 }
 
-class FBUpdate_Controller extends Page_Controller {
+class FBUpdate_Controller extends Controller {
 
 }

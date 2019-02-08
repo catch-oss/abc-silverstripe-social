@@ -1,7 +1,22 @@
 <?php
 
-use Facebook\Facebook;
+namespace Azt3k\SS\Social\BuildTasks;
 
+use Facebook\Facebook;
+use Azt3k\SS\Social\Objects\SocialHelper;
+
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\CronTask\Interfaces\CronTask;
+
+use SilverStripe\Control\Director;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
+use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\ORM\DataObject;
+
+use Azt3k\SS\Social\SiteTree\FBUpdate;
+use Azt3k\SS\Classes\DataObjectHelper;
 /**
  * @todo need reconcile removals in both directions
  */

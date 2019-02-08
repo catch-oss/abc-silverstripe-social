@@ -1,5 +1,16 @@
 <?php
 
+use Azt3k\SS\Social\SiteTree\Tweet;
+use Azt3k\SS\Social\SiteTree\FBUpdate;
+use Azt3k\SS\Social\SiteTree\InstagramUpdate;
+use Azt3k\SS\Social\Extensions\SocialMediaConfig;
+use Azt3k\SS\Social\Extensions\SocialUpdatePageExtension;
+
+use SilverStripe\Core\Config\Config;
+use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\View\Parsers\ShortcodeParser;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
+
 // Define path constant
 $path = str_replace('\\', '/', __DIR__);
 $path_fragments = explode('/', $path);
@@ -7,17 +18,17 @@ $dir_name = $path_fragments[count($path_fragments) - 1];
 define('ABC_SOCIAL_DIR', $dir_name);
 
 // attach the social extensions to the config and page classes
-SiteConfig::add_extension('SocialMediaConfig');
-Page::add_extension('SocialMediaPageExtension');
+SiteConfig::add_extension(SocialMediaConfig::class);
+Page::add_extension(SocialUpdatePageExtension::class);
 
 // attach common behaviours to the social updates
-FBUpdate::add_extension('SocialUpdatePageExtension');
-Tweet::add_extension('SocialUpdatePageExtension');
-InstagramUpdate::add_extension('SocialUpdatePageExtension');
+FBUpdate::add_extension(SocialUpdatePageExtension::class);
+Tweet::add_extension(SocialUpdatePageExtension::class);
+InstagramUpdate::add_extension(SocialUpdatePageExtension::class);
 
 // add the embed functionality
 if (!Config::inst()->get('SocialGlobalConf', 'disable_wysiwyg_embed')) {
-    ShortcodeParser::get('default')->register('social_embed', array('SocialMediaPageExtension', 'SocialEmbedParser'));
+    ShortcodeParser::get('default')->register('social_embed', array(SocialUpdatePageExtension::class, 'SocialEmbedParser'));
     HtmlEditorConfig::get('cms')->enablePlugins(array(
         'social_embed' => '../../../' . ABC_SOCIAL_DIR . '/js/editor-plugin.js'
     ));
