@@ -3,15 +3,16 @@
 namespace Azt3k\SS\Social\SiteTree;
 
 
-use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Control\Controller;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Assets\Image;
-use SilverStripe\Forms\DatetimeField;
+use Azt3k\SS\Social\SiteTree\Tweet;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\Controller;
+use SilverStripe\Forms\DatetimeField;
+use SilverStripe\Assets\Image;
 use Silverstripe\SiteConfig\SiteConfig;
-use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\CMS\Model\SiteTree;
 
 /**
  * Description of Tweet

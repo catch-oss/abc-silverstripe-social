@@ -3,6 +3,9 @@
 namespace Azt3k\SS\Social\SiteTree;
 
 use SilverStripe\CMS\Model\SiteTree;
+use Azt3k\SS\Social\SiteTree\Tweet;
+use SilverStripe\Control\Controller;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 
 /**

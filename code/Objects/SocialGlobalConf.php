@@ -9,9 +9,10 @@ use SilverStripe\Core\Config\Configurable;
  */
 class SocialGlobalConf {
 
-    use SilverStripe\Core\Extensible;
-    use SilverStripe\Core\Injector\Injectable;
-    use SilverStripe\Core\Config\Configurable;
+    // use SilverStripe\Core\Extensible;
+    // use SilverStripe\Core\Injector\Injectable;
+    // use SilverStripe\Core\Config\Configurable;
+    use Extensible, Injectable, Configurable;
 
     /**
      * @config

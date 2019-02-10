@@ -3,17 +3,16 @@
 namespace Azt3k\SS\Social\Controllers;
 
 use SilverStripe\Control\Controller;
-use Silverstripe\SiteConfig\SiteConfig;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Security;
-
 use Azt3k\SS\Social\Objects\SocialHelper;
+use Facebook\Facebook;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
+use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\Security\Member;
+
 use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
 use themattharris\tmhOAuth;
-
-use Facebook\Facebook;
 
 
 /**

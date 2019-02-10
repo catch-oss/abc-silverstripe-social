@@ -3,20 +3,19 @@
 namespace Azt3k\SS\Social\BuildTasks;
 
 use MetzWeb\Instagram\Instagram;
+use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\Objects\SocialHelper;
-
-use SilverStripe\Dev\BuildTask;
+use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\CronTask\Interfaces\CronTask;
-
-use SilverStripe\Control\Director;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
+use SilverStripe\Control\Director;
+use SilverStripe\Dev\BuildTask;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\CMS\Model\SiteTree;
 
-use Azt3k\SS\Social\SiteTree\InstagramUpdate;
-use Azt3k\SS\Classes\DataObjectHelper;
 
 class SyncInstagram extends BuildTask implements CronTask{
 

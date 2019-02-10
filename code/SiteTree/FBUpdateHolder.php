@@ -3,6 +3,7 @@
 namespace Azt3k\SS\Social\SiteTree;
 
 use SilverStripe\CMS\Model\SiteTree;
+use Azt3k\SS\Social\SiteTree\FBUpdate;
 use SilverStripe\Control\Controller;
 
 /**

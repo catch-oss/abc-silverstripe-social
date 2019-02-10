@@ -3,13 +3,13 @@
 namespace Azt3k\SS\Social\Controllers;
 
 use MetzWeb\Instagram\Instagram;
-use SilverStripe\Control\Controller;
 use Azt3k\SS\Social\Objects\SocialHelper;
-
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
+use SilverStripe\Control\Controller;
 use Silverstripe\SiteConfig\SiteConfig;
+
+use SilverStripe\Security\Member;
 
 class InstagramAuthenticator extends Controller {
 

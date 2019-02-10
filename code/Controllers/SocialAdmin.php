@@ -3,10 +3,10 @@
 namespace Azt3k\SS\Social\Controllers;
 
 use SilverStripe\Control\Controller;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
 use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\Security\Member;
 use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
 
 class SocialAdmin extends Controller {
