@@ -12,7 +12,6 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Control\Director;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\CMS\Model\SiteTree;
 
 /**
  * @todo need reconcile removals in both directions

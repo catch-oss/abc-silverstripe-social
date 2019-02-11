@@ -8,7 +8,6 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\CMS\Model\SiteTree;
 
 
 /**

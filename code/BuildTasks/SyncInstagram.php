@@ -14,7 +14,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\CMS\Model\SiteTree;
 
 
 class SyncInstagram extends BuildTask implements CronTask{
