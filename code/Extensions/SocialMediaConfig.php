@@ -15,6 +15,7 @@ use Azt3k\SS\Social\Controllers\FBAuthenticator;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\CheckboxField;
+use \Exception;
 
 
 class SocialMediaConfig extends DataExtension {

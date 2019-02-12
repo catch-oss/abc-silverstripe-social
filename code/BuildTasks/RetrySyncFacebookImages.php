@@ -12,7 +12,6 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use Silverstripe\SiteConfig\SiteConfig;
-use SilverStripe\CMS\Model\SiteTree;
 
 
 /**

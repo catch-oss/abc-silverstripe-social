@@ -14,6 +14,8 @@ use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\CMS\Model\SiteTree;
 use Guzzle\Plugin\History\HistoryPlugin;
+use \Exception;
+use SilverStripe\Forms\LiteralField;
 
 /**
  * @author AzT3k
@@ -104,7 +106,7 @@ class FBUpdate extends SiteTree {
         $response = $client->head($url)->send();
 
         if (!$response->isSuccessful()) {
-            throw new \Exception(sprintf("Url %s is not a valid URL or website is down.", $url));
+            throw new Exception(sprintf("Url %s is not a valid URL or website is down.", $url));
         }
 
         return $response->getEffectiveUrl();
@@ -196,7 +198,7 @@ class FBUpdate extends SiteTree {
 
         $fields = parent::getCMSFields();
 
-        $lastEditedDateField = new DateTimeField('OriginalCreated');
+        $lastEditedDateField = new DatetimeField('OriginalCreated');
         $lastEditedDateField->setConfig('showcalendar', true);
         $fields->addFieldToTab('Root.Main', $lastEditedDateField, 'Content');
 

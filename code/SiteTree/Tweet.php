@@ -158,7 +158,7 @@ class Tweet extends SiteTree {
 
         $fields = parent::getCMSFields();
 
-        $lastEditedDateField = new DateTimeField('OriginalCreated');
+        $lastEditedDateField = new DatetimeField('OriginalCreated');
         $lastEditedDateField->setConfig('showcalendar', true);
         $fields->addFieldToTab('Root.Main', $lastEditedDateField, 'Content');
 

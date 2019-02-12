@@ -8,6 +8,7 @@ use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
 use Silverstripe\SiteConfig\SiteConfig;
+use \Exception;
 
 use SilverStripe\Security\Member;
 

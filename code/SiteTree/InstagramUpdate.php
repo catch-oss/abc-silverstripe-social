@@ -11,6 +11,7 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\LiteralField;
 
 /**
  * @author AzT3k
@@ -141,7 +142,7 @@ class InstagramUpdate extends SiteTree {
 
         $fields = parent::getCMSFields();
 
-        $lastEditedDateField = new DateTimeField('OriginalCreated');
+        $lastEditedDateField = new DatetimeField('OriginalCreated');
         $lastEditedDateField->setConfig('showcalendar', true);
         $fields->addFieldToTab('Root.Main', $lastEditedDateField, 'Content');
 
