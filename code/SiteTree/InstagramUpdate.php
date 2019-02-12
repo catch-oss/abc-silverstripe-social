@@ -24,7 +24,7 @@ class InstagramUpdate extends SiteTree {
      */
     private static $db = array(
         'UpdateID'          => 'Varchar(255)',
-        'OriginalCreated'   => 'SS_DateTime',
+        'OriginalCreated'   => 'Datetime',
         'OriginalUpdate'    => 'Text'
     );
 

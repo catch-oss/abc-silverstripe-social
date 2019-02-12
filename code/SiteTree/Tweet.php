@@ -25,7 +25,7 @@ class Tweet extends SiteTree {
 
     private static $db = array(
         'TweetID'           => 'Varchar(255)',
-        'OriginalCreated'   => 'SS_DateTime',
+        'OriginalCreated'   => 'Datetime',
         'OriginalTweet'     => 'Text'
     );
 

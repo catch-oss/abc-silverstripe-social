@@ -27,7 +27,7 @@ class SocialMediaPageExtension extends DataExtension {
     protected $justPosted = false;
 
     private static $db = array(
-        'LastPostedToSocialMedia'       => 'SS_Datetime',
+        'LastPostedToSocialMedia'       => 'Datetime',
         'PublicationFBUpdateID'         => 'Varchar(255)',
         'PublicationTweetID'            => 'Varchar(255)',
         'ForceUpdateMode'               => 'Enum(\'Default,Block,Force\')'
