@@ -55,10 +55,10 @@ class SocialMediaConfig extends DataExtension {
     );
 
     private static $has_one = array(
-        'DefaultImage'                      => 'Image',
-        'DefaultFBUpdateImage'              => 'Image',
-        'DefaultTweetImage'                 => 'Image',
-        'DefaultInstagramUpdateImage'       => 'Image',
+        'DefaultImage'                      => Image::class,
+        'DefaultFBUpdateImage'              => Image::class,
+        'DefaultTweetImage'                 => Image::class,
+        'DefaultInstagramUpdateImage'       => Image::class,
     );
 
     public function updateCMSFields(FieldList $fields) {

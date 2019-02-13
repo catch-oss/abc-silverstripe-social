@@ -13,7 +13,7 @@ class FBUpdateHolder extends SiteTree {
 
 	private static $can_be_root = true;
     private static $allowed_children = array(
-        'FBUpdate'
+        FBUpdate::class
     );
 
 }

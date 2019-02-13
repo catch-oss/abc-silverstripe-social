@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Social\SiteTree;
 
+use Azt3k\SS\Social\SiteTree\InstagramUpdateHolder;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
@@ -32,14 +33,14 @@ class InstagramUpdate extends SiteTree {
      * @var array
      */
     private static $has_one = array(
-        'PrimaryImage'      => 'Image',
+        'PrimaryImage' => Image::class,
     );
 
     /**
      * @var array
      */
     private static $defaults = array(
-        'holder_class'      => 'InstagramUpdateHolder',
+        'holder_class' => InstagramUpdateHolder::class
     );
 
     /**

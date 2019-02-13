@@ -16,7 +16,7 @@ class TweetHolder extends SiteTree {
     private static $table_name = 'TweetHolder';
 	private static $can_be_root = true;
     private static $allowed_children = array(
-        'Tweet'
+        Tweet::class
     );
 
 }

@@ -13,6 +13,7 @@ use SilverStripe\Assets\Image;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\CMS\Model\SiteTree;
+use Azt3k\SS\Social\SiteTree\TweetHolder;
 
 /**
  * Description of Tweet
@@ -30,11 +31,11 @@ class Tweet extends SiteTree {
     );
 
     private static $has_one = array(
-        'PrimaryImage'      => 'Image',
+        'PrimaryImage'      => Image::class
     );
 
     private static $defaults = array(
-        'holder_class'      => 'TweetHolder',
+        'holder_class'      => TweetHolder::class
     );
 
     /**

@@ -31,7 +31,7 @@ class FBUpdate extends SiteTree {
     );
 
     private static $has_one = array(
-        'PrimaryImage'      => 'Image',
+        'PrimaryImage'      => Image::class,
     );
 
     private static $defaults = array(

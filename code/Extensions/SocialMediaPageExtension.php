@@ -14,6 +14,8 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\DataExtension;
 use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
 use Azt3k\SS\Social\DataObjects\PublicationTweet;
+use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
+use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\ReadonlyField;
 use Azt3k\SS\Social\Controllers\PostToSocialMedia;
@@ -34,9 +36,9 @@ class SocialMediaPageExtension extends DataExtension {
     );
 
     private static $has_many = array(
-        'PublicationTweets'             => 'PublicationTweet',
-        'PublicationFBUpdates'          => 'PublicationFBUpdate',
-        'PublicationInstagramUpdates'   => 'PublicationInstagramUpdate'
+        'PublicationTweets'             => PublicationTweet::class,
+        'PublicationFBUpdates'          => PublicationFBUpdate::class,
+        'PublicationInstagramUpdates'   => PublicationInstagramUpdate::class
     );
 
     private static $defaults = array(
@@ -44,7 +46,7 @@ class SocialMediaPageExtension extends DataExtension {
     );
 
     private static $casting = array(
-        'SocialEmbedParser'              => 'HTMLText'
+        //'SocialEmbedParser'              => 'HTMLText'
     );
 
     // Short Code parser

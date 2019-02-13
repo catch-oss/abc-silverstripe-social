@@ -3,6 +3,7 @@
 namespace Azt3k\SS\Social\DataObjects;
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\CMS\Model\SiteTree;
 
 /**
  * @author AzT3k
@@ -16,7 +17,7 @@ class PublicationTweet extends DataObject {
     );
 
     private static $has_one = array(
-        'Page' => 'Page'
+        'Page' => SiteTree::class
     );
 
 }
