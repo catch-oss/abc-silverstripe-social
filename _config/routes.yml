@@ -1,10 +1,9 @@
 ---
 Name: abc-silverstripe-social-routes
-After: framework/routes#coreroutes
 ---
 Director:
   rules:
-    TwitterAuthenticator: TwitterAuthenticator
-    FBAuthenticator: FBAuthenticator
-    InstagramAuthenticator: InstagramAuthenticator
-    abc-social-admin: SocialAdmin
+    TwitterAuthenticator: Azt3k\SS\Social\Controllers\TwitterAuthenticator
+    FBAuthenticator: Azt3k\SS\Social\Controllers\FBAuthenticator
+    InstagramAuthenticator: Azt3k\SS\Social\Controllers\InstagramAuthenticator
+    abc-social-admin: Azt3k\SS\Social\Controllers\SocialAdmin
