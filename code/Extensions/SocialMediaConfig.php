@@ -12,6 +12,8 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
+use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
+use Azt3k\SS\Social\Controllers\InstagramAuthenticator;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\CheckboxField;
