@@ -321,7 +321,8 @@ class SocialMediaPageExtension extends DataExtension {
      */
     public function MetaMap() {
         $conf = SiteConfig::current_site_config();
-        return [    'Title' =>  ($this->owner->MetaTitle ? $this->owner->MetaTitle : $this->owner->Title) . ' | ' . $conf->Title,
+        return [
+            'Title' =>  ($this->owner->MetaTitle ? $this->owner->MetaTitle : $this->owner->Title) . ' | ' . $conf->Title,
             'Keywords' =>  $this->owner->MetaKeywords ? $this->owner->MetaKeywords : $conf->MetaKeywords,
             'Description' =>  $this->owner->MetaDescription ? $this->owner->MetaDescription : $conf->MetaDescription,
             'SiteName' =>  $conf->Title,
