@@ -1,7 +1,7 @@
 ---
 Name: abc-silverstripe-social-routes
 ---
-Director:
+SilverStripe\Control\Director:
   rules:
     TwitterAuthenticator: Azt3k\SS\Social\Controllers\TwitterAuthenticator
     FBAuthenticator: Azt3k\SS\Social\Controllers\FBAuthenticator

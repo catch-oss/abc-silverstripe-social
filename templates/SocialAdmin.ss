@@ -2,10 +2,10 @@
 <html>
 	<head>
 	    <title>Insert a Social Post</title>
-	    <script type="text/javascript" src="/framework/thirdparty/jquery/jquery.js"></script>
-		<script type="text/javascript" src="/framework/thirdparty/tinymce/tiny_mce_popup.js"></script>
-		<script type="text/javascript" src="/$ModuleDir/js/popup.js"></script>
-		<link type="text/css" rel="stylesheet" href="/$ModuleDir/css/popup.css">
+	    <% require javascript("silverstripe/admin: thirdparty/jquery/jquery.min.js") %>
+        <% require javascript("silverstripe/admin: thirdparty/tinymce/plugins/compat3x/tiny_mce_popup.js") %>
+        <% require javascript("azt3k/abc-silverstripe-social: js/popup.js") %>
+        <% require css("azt3k/abc-silverstripe-social: css/popup.css") %>
 	</head>
 	<body>
 		<form>

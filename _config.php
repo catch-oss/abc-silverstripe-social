@@ -34,7 +34,7 @@ if (!Config::inst()->get('SocialGlobalConf', 'disable_wysiwyg_embed')) {
         return SocialUpdatePageExtension::SocialEmbedParser($arguments, $content, $parser, $tagName);
     });
     HtmlEditorConfig::get('cms')->enablePlugins(array(
-        'social_embed' => '../../../' . ABC_SOCIAL_DIR . '/js/editor-plugin.js'
+        'social_embed' => '/vendor/azt3k/abc-silverstripe-social/js/editor-plugin.js'
     ));
     HtmlEditorConfig::get('cms')->addButtonsToLine(2, 'social_embed');
 }

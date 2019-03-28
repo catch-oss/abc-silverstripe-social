@@ -26,7 +26,7 @@ class SocialAdmin extends Controller {
 	}
 
 	public function index() {
-		return [];
+		return $this->renderWith('SocialAdmin');
 	}
 
 	public function htmlfragment() {
