@@ -313,4 +313,24 @@ class SocialMediaPageExtension extends DataExtension {
         }
 
     }
+
+        /**
+     * Returns some meta data for the template
+     * @param string $key the meta data you want
+     * @return string the value for the key passed in
+     */
+    public function MetaMap() {
+        $conf = SiteConfig::current_site_config();
+        return [    'Title' =>  ($this->owner->MetaTitle ? $this->owner->MetaTitle : $this->owner->Title) . ' | ' . $conf->Title,
+            'Keywords' =>  $this->owner->MetaKeywords ? $this->owner->MetaKeywords : $conf->MetaKeywords,
+            'Description' =>  $this->owner->MetaDescription ? $this->owner->MetaDescription : $conf->MetaDescription,
+            'SiteName' =>  $conf->Title,
+            'Link' =>  $this->owner->AbsoluteLink(),
+            'Image' =>  $this->owner->ImageWithFallback() ? $this->owner->ImageWithFallback()->AbsoluteURL : null,
+            'TwitterCreator' =>  '@' . $conf->TwitterUsername,
+            'TwitterPublisher' =>  '@' . $conf->TwitterUsername,
+            'TimeModified' =>  $this->owner->LastEdited,
+            'TimeCreated' =>  $this->owner->Created
+        ];
+    }
 }
