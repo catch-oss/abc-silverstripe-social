@@ -18,6 +18,8 @@ use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
 use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\TextField;
 use Azt3k\SS\Social\Controllers\PostToSocialMedia;
 
 /**
@@ -132,11 +134,47 @@ class SocialMediaPageExtension extends DataExtension {
     }
 
     public function updateCMSFields(FieldList $fields) {
+        
+        // clean up
+        $fields->removeByName('MetaDescription');
+        $fields->removeByName('ExtraMeta');
+        $fields->removeByName('Metadata');
+
+        // Push updates stuff
         $conf = SiteConfig::current_site_config();
         if ($conf->TwitterPushUpdates || $conf->FacebookPushUpdates) {
             $fields->addFieldToTab('Root.SocialMedia', new ReadonlyField('LastPostedToSocialMedia', 'Last Posted To Social Media'));
             $fields->addFieldToTab('Root.SocialMedia', new DropdownField('ForceUpdateMode', 'Update Mode', singleton(get_class($this->owner))->dbObject('ForceUpdateMode')->enumValues()));
         }
+
+        // Add Meta Fields
+        $fields->addFieldsToTab(
+            'Root.Meta',
+            [
+                $metaFieldTitle = TextField::create('MetaTitle'),
+                $metaFieldKeywords = TextareaField::create('MetaKeywords'),
+                $metaFieldDesc = new TextareaField("MetaDescription", $this->owner->fieldLabel('MetaDescription')),
+                $metaFieldExtra = new TextareaField("ExtraMeta", $this->owner->fieldLabel('ExtraMeta'))
+            ]
+        );
+
+        // Help text for MetaData on page content editor
+        $metaFieldDesc
+            ->setRightTitle(
+                _t(
+                    'SilverStripe\\CMS\\Model\\SiteTree.METADESCHELP',
+                    "Search engines use this content for displaying search results (although it will not influence their ranking)."
+                )
+            )
+            ->addExtraClass('help');
+        $metaFieldExtra
+            ->setRightTitle(
+                _t(
+                    'SilverStripe\\CMS\\Model\\SiteTree.METAEXTRAHELP',
+                    "HTML tags for additional meta information. For example <meta name=\"customName\" content=\"your custom content here\" />"
+                )
+            )
+            ->addExtraClass('help');
     }
 
     public function onAfterPublish() {
