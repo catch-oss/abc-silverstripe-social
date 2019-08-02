@@ -32,6 +32,8 @@ class SocialMediaPageExtension extends DataExtension {
         'LastPostedToSocialMedia'       => 'Datetime',
         'PublicationFBUpdateID'         => 'Varchar(255)',
         'PublicationTweetID'            => 'Varchar(255)',
+        'MetaTitle'                     => 'Varchar(255)',
+        'MetaKeywords'                  => 'Varchar(255)',
         'ForceUpdateMode'               => 'Enum(\'Default,Block,Force\')'
     );
 
@@ -275,51 +277,18 @@ class SocialMediaPageExtension extends DataExtension {
      * @param string $key the meta data you want
      * @return string the value for the key passed in
      */
-    public function Meta($key) {
-
-        $conf = SiteConfig::current_site_config();
-
-        switch ($key) {
-            case 'Title':
-                return ($this->owner->MetaTitle ? $this->owner->MetaTitle : $this->owner->Title) . ' | ' . $conf->Title;
-
-            case 'Keywords':
-                return $this->owner->MetaKeywords ? $this->owner->MetaKeywords : $conf->MetaKeywords;
-
-            case 'Description':
-                return $this->owner->MetaDescription ? $this->owner->MetaDescription : $conf->MetaDescription;
-
-            case 'SiteName':
-                return $conf->Title;
-
-            case 'Link':
-                return $this->owner->AbsoluteLink();
-
-            case 'Image':
-                return $this->owner->ImageWithFallback() ? $this->owner->ImageWithFallback()->AbsoluteURL : null;
-
-            case 'TwitterCreator':
-                return '@' . $conf->TwitterUsername;
-
-            case 'TwitterPublisher':
-                return '@' . $conf->TwitterUsername;
-
-            case 'TimeModified':
-                return $this->owner->LastEdited;
-
-            case 'TimeCreated':
-                return $this->owner->Created;
-
-        }
-
+    public function Meta($key)
+    {
+        $map = $this->MetaMap();
+        return $map[$key];
     }
 
-        /**
+    /**
      * Returns some meta data for the template
-     * @param string $key the meta data you want
-     * @return string the value for the key passed in
+     * @return array a map of meta values
      */
-    public function MetaMap() {
+    public function MetaMap()
+    {
         $conf = SiteConfig::current_site_config();
         return [
             'Title' =>  ($this->owner->MetaTitle ? $this->owner->MetaTitle : $this->owner->Title) . ' | ' . $conf->Title,
