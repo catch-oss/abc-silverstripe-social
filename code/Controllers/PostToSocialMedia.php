@@ -12,7 +12,7 @@ use SilverStripe\Security\Member;
 
 use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
-use themattharris\tmhOAuth;
+use tmhOAuth;
 use \Exception;
 
 

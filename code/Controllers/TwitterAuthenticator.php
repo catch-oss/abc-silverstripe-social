@@ -9,7 +9,7 @@ use SilverStripe\Security\Permission;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
 use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
-use themattharris\tmhOAuth;
+use tmhOAuth;
 use \Exception;
 
 class TwitterAuthenticator extends Controller {
