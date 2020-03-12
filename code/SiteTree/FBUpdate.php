@@ -5,7 +5,6 @@ namespace Azt3k\SS\Social\SiteTree;
 use Guzzle\Http\Client as GuzzleClient;
 use SilverStripe\Core\Config\Config;
 use Facebook\Facebook;
-use Azt3k\SS\Social\SiteTree\FBUpdate;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DatetimeField;
