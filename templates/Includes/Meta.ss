@@ -14,7 +14,6 @@ $MetaTags(false)
 
 <%-- Twitter Card data --%>
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="$Meta('TwitterSite')">
 <meta name="twitter:title" content="$Meta('Title')">
 <meta name="twitter:description" content="$Meta('Description')">
 <meta name="twitter:creator" content="$Meta('TwitterCreator')">
