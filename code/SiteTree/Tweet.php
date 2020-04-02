@@ -2,7 +2,7 @@
 
 namespace Azt3k\SS\Social\SiteTree;
 
-
+use Page;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Core\Config\Config;
@@ -20,7 +20,7 @@ use Azt3k\SS\Social\SiteTree\TweetHolder;
  *
  * @author AzT3k
  */
-class Tweet extends SiteTree {
+class Tweet extends Page {
 
     private static $table_name = 'Tweet';
 

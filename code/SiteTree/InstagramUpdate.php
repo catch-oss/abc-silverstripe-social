@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Social\SiteTree;
 
+use Page;
 use Azt3k\SS\Social\SiteTree\InstagramUpdateHolder;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
@@ -17,7 +18,7 @@ use SilverStripe\Forms\LiteralField;
 /**
  * @author AzT3k
  */
-class InstagramUpdate extends SiteTree {
+class InstagramUpdate extends Page {
 
     private static $table_name = 'InstagramUpdate';
     /**

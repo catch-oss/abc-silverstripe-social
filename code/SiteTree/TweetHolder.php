@@ -1,7 +1,7 @@
 <?php
 
 namespace Azt3k\SS\Social\SiteTree;
-
+use Page;
 use SilverStripe\CMS\Model\SiteTree;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use SilverStripe\Control\Controller;
@@ -11,7 +11,7 @@ use SilverStripe\Control\Controller;
  *
  * @author AzT3k
  */
-class TweetHolder extends SiteTree {
+class TweetHolder extends Page {
 
     private static $table_name = 'TweetHolder';
 	private static $can_be_root = true;
