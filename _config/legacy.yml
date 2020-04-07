@@ -1,3 +1,8 @@
 SilverStripe\ORM\DatabaseAdmin:
   classname_value_remapping:
     FBUpdate: Azt3k\SS\Social\SiteTree\FBUpdate
+    FBUpdateHolder: Azt3k\SS\Social\SiteTree\FBUpdateHolder
+    InstagramUpdate: Azt3k\SS\Social\SiteTree\InstagramUpdate
+    InstagramHolder: Azt3k\SS\Social\SiteTree\InstagramHolder
+    Tweet: Azt3k\SS\Social\SiteTree\Tweet
+    TweetHolder: Azt3k\SS\Social\SiteTree\TweetHolder

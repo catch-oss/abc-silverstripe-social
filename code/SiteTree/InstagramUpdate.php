@@ -6,7 +6,6 @@ use Page;
 use Azt3k\SS\Social\SiteTree\InstagramUpdateHolder;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
-use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use MetzWeb\Instagram\Instagram;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
