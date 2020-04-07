@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Social\SiteTree;
 
+use Page;
 use Guzzle\Http\Client as GuzzleClient;
 use SilverStripe\Core\Config\Config;
 use Facebook\Facebook;
@@ -19,7 +20,7 @@ use SilverStripe\Forms\LiteralField;
 /**
  * @author AzT3k
  */
-class FBUpdate extends SiteTree {
+class FBUpdate extends Page {
 
     private static $table_name = 'FBUpdate';
 

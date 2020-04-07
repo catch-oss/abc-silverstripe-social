@@ -2,13 +2,14 @@
 
 namespace Azt3k\SS\Social\SiteTree;
 
+use Page;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 
 /**
  * @author AzT3k
  */
-class InstagramHolder extends SiteTree {
+class InstagramHolder extends Page {
 
     private static $table_name = 'InstagramHolder';
 	private static $can_be_root = true;
