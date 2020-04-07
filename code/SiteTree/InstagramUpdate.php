@@ -172,7 +172,12 @@ class InstagramUpdate extends Page {
     }
 
     public function OriginalLink() {
+        if(!$this->OriginalUpdate) return null;
+
         $data = json_decode($this->OriginalUpdate);
+
+        if(!$data) return null;
+
         return $data->link;
     }
 
