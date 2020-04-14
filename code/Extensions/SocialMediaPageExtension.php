@@ -134,7 +134,7 @@ class SocialMediaPageExtension extends DataExtension {
     }
 
     public function updateCMSFields(FieldList $fields) {
-        
+
         // clean up
         $fields->removeByName('MetaDescription');
         $fields->removeByName('ExtraMeta');

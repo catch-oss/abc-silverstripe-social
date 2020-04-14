@@ -2,6 +2,9 @@
 
 namespace Azt3k\SS\Social\Extensions;
 
+use Azt3k\SS\Social\SiteTree\Tweet;
+use Azt3k\SS\Social\SiteTree\InstagramUpdate;
+use Azt3k\SS\Social\SiteTree\FBUpdate;
 use SilverStripe\ORM\DataExtension;
 use Silverstripe\SiteConfig\SiteConfig;
 
@@ -9,9 +12,9 @@ class SocialUpdatePageExtension extends DataExtension {
 
     public function UpdateType() {
         switch ($this->owner->ClassName) {
-            case 'Tweet':           return 'Twitter';
-            case 'FBUpdate':        return 'Facebook';
-            case 'InstagramUpdate': return 'Instagram';
+            case Tweet::class:           return 'Twitter';
+            case FBUpdate::class:        return 'Facebook';
+            case InstagramUpdate::class: return 'Instagram';
         }
     }
 
@@ -20,15 +23,15 @@ class SocialUpdatePageExtension extends DataExtension {
         $conf = SiteConfig::current_site_config();
 
         switch ($this->owner->ClassName) {
-            case 'Tweet':
+            case Tweet::class:
                 return $this->owner->PrimaryImageID
                     ? $this->owner->PrimaryImage()
                     : $conf->DefaultTweetImage();
-            case 'FBUpdate':
+            case FBUpdate::class:
                 return $this->owner->PrimaryImageID
                     ? $this->owner->PrimaryImage()
                     : $conf->DefaultFBUpdateImage();
-            case 'InstagramUpdate':
+            case InstagramUpdate::class:
                 return $this->owner->PrimaryImageID
                     ? $this->owner->PrimaryImage()
                     : $conf->DefaultInstagramUpdateImage();
