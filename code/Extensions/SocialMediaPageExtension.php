@@ -21,7 +21,7 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use Azt3k\SS\Social\Controllers\PostToSocialMedia;
-use SilverStripe\Assets\Image;
+use SilverStripe\Assets\Upload_Validator;
 
 /**
  * @todo need reconcile removals in both directions
@@ -180,6 +180,16 @@ class SocialMediaPageExtension extends DataExtension {
                 )
             )
             ->addExtraClass('help');
+
+        // images
+        $iValidator = new Upload_Validator;
+        $iValidator->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+        $fields->AddFieldsToTab(
+            'Root.Images',
+            [
+                UploadField::create('PrimaryImage')->setValidator($iValidator),
+            ]
+        );
     }
 
     public function onAfterPublish() {

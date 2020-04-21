@@ -19,7 +19,7 @@ define('ABC_SOCIAL_DIR', $dir_name);
 
 // attach the social extensions to the config and page classes
 SiteConfig::add_extension(SocialMediaConfig::class);
-// Page::add_extension(SocialUpdatePageExtension::class);
+Page::add_extension(SocialUpdatePageExtension::class);
 
 // attach common behaviours to the social updates
 FBUpdate::add_extension(SocialUpdatePageExtension::class);
