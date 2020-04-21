@@ -9,6 +9,16 @@
             "email": "abcdigital@abcdigital.co.nz"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@gl.catchdesign.co.nz:catch/abc-silverstripe-taggable.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@gl.catchdesign.co.nz:catch/abc-sliverstripe.git"
+        }
+    ],
     "minimum-stability": "dev",
     "require": {
         "php"                               : ">=5.3.0",
@@ -16,10 +26,10 @@
         "silverstripe/framework"            : "^4@stable",
         "silverstripe/cms"                  : "^4@stable",
         "silverstripe/crontask"             : "^2.1",
-        "azt3k/abc-silverstripe"            : ">=0.2.3",
-        "azt3k/abc-silverstripe-taggable"   : ">=3.2",
+        "azt3k/abc-silverstripe"            : "dev-master",
+        "azt3k/abc-silverstripe-taggable"   : "^4",
         "themattharris/tmhoauth"            : "dev-master",
-        "facebook/php-sdk-v4"               : "5.0.*@stable",
+        "facebook/graph-sdk"                : "5@stable",
         "cosenary/instagram"                : "2.3.*@stable",
         "guzzlehttp/guzzle"                 : "*@stable"
     },
