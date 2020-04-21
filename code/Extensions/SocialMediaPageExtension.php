@@ -21,6 +21,7 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use Azt3k\SS\Social\Controllers\PostToSocialMedia;
+use SilverStripe\Assets\Image;
 
 /**
  * @todo need reconcile removals in both directions
@@ -43,6 +44,10 @@ class SocialMediaPageExtension extends DataExtension {
         'PublicationTweets'             => PublicationTweet::class,
         'PublicationFBUpdates'          => PublicationFBUpdate::class,
         'PublicationInstagramUpdates'   => PublicationInstagramUpdate::class
+    );
+
+    private static $has_one = array(
+        'PrimaryImage'                  => Image::class,
     );
 
     private static $defaults = array(
