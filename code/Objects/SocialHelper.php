@@ -82,9 +82,10 @@ class SocialHelper {
                     '&client_secret=' . $conf->FacebookAppSecret .
                     '&grant_type=client_credentials';
 
-            $res = $facebook->sendRequest('get', $url)->getDecodedBody();
+            //valueToGetPastGuardConditon
+            //we replace the access token later
+            $res = $facebook->sendRequest('get', $url, [], 'valueToGetPastGuardConditon')->getDecodedBody();
             $token = $res['access_token'];
-
         }
 
         return $token;
