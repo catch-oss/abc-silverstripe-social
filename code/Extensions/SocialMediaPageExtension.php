@@ -22,6 +22,7 @@ use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use Azt3k\SS\Social\Controllers\PostToSocialMedia;
 use SilverStripe\Assets\Upload_Validator;
+use SilverStripe\AssetAdmin\Forms\UploadField;
 
 /**
  * @todo need reconcile removals in both directions
