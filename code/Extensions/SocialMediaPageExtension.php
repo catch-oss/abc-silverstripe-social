@@ -2,27 +2,27 @@
 
 namespace Azt3k\SS\Social\Extensions;
 
-use Azt3k\SS\Social\Objects\SocialHelper;
 use Azt3k\SS\Classes\AbcStr;
-use SilverStripe\Forms\FieldList;
-use Azt3k\SS\Social\SiteTree\Tweet;
-use Azt3k\SS\Social\SiteTree\InstagramUpdate;
-use Azt3k\SS\Social\SiteTree\FBUpdate;
 use SilverStripe\Assets\Image;
-use Silverstripe\SiteConfig\SiteConfig;
-use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use Azt3k\SS\Social\SiteTree\Tweet;
 use SilverStripe\ORM\DataExtension;
-use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
-use Azt3k\SS\Social\DataObjects\PublicationTweet;
-use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
-use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextareaField;
-use SilverStripe\Forms\TextField;
-use Azt3k\SS\Social\Controllers\PostToSocialMedia;
+use Azt3k\SS\Social\SiteTree\FBUpdate;
+use Silverstripe\SiteConfig\SiteConfig;
+use Azt3k\SS\Social\Objects\SocialHelper;
 use SilverStripe\Assets\Upload_Validator;
+use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
+use Azt3k\SS\Social\DataObjects\PublicationTweet;
+use Azt3k\SS\Social\Controllers\PostToSocialMedia;
+use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
+use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 
 /**
  * @todo need reconcile removals in both directions
@@ -103,7 +103,7 @@ class SocialMediaPageExtension extends DataExtension {
 
     public function parseContent($content, $words = null, $allowedTags = '<br>') {
         $br2nl = false;
-        if (stripos('<br>',$allowedTags) === false) {
+        if (!$allowedTags || stripos('<br>',$allowedTags) === false) {
             $allowedTags.= '<br>';
             $br2nl = true;
         }
