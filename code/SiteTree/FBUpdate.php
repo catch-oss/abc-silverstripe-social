@@ -152,7 +152,7 @@ class FBUpdate extends Page {
             if (file_exists($absPath)) {
 
                 // try to find the existing image
-                if (!$image = DataObject::get_one('Image', "Filename='" . $relPath . "'")) {
+                if (!$image = DataObject::get_one(Image::class, "Filename='" . $relPath . "'")) {
 
                     // create image record
                     $image = new Image;
@@ -166,13 +166,9 @@ class FBUpdate extends Page {
         }
 
         // extract content
-        $content = empty($update->message)
-            ? empty($update->description)
-                ? empty($update->story)
-                    ? null
-                    : $update->story
-                : $update->description
-            : $update->message;
+        $content = $update->message;
+        $content = $content ?: $update->description;
+        $content = $content ?: $update->story;
 
         if (!$content) {
             echo 'Encountered error with: ' . print_r($update,1);

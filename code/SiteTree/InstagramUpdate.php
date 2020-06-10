@@ -114,7 +114,7 @@ class InstagramUpdate extends Page {
             if (file_exists($absPath)) {
 
                 // try to find the existing image
-                if (!$image = DataObject::get_one('Image', "Filename='" . $relPath . "'")) {
+                if (!$image = DataObject::get_one(Image::class, "Filename='" . $relPath . "'")) {
 
                     // create image record
                     $image = new Image;

@@ -3,7 +3,6 @@
 namespace Azt3k\SS\Social\SiteTree;
 
 use Page;
-use Azt3k\SS\Social\SiteTree\Tweet;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Control\Director;
@@ -128,7 +127,7 @@ class Tweet extends Page {
                 if (file_exists($absPath)) {
 
                     // try to find the existing image
-                    if (!$image = DataObject::get_one('Image', "Filename='" . $relPath . "'")) {
+                    if (!$image = DataObject::get_one(Image::class, "Filename='" . $relPath . "'")) {
 
                         // create image record
                         $image = new Image;
