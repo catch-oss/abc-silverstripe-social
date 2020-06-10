@@ -4,6 +4,7 @@ namespace Azt3k\SS\Social\BuildTasks;
 
 use SilverStripe\Dev\BuildTask;
 use Azt3k\SS\Social\SiteTree\Tweet;
+use Azt3k\SS\Social\DataObjects\PublicationTweet;
 use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\Versioned\Versioned;
@@ -61,7 +62,7 @@ class SyncTwitter extends BuildTask implements CronTask{
 
     public function init() {
 
-        if (method_exists(parent,'init')) parent::init();
+        if (method_exists(parent::class,'init')) parent::init();
 
         if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             return Security::permissionFailure();

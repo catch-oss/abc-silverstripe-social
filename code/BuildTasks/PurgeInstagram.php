@@ -45,12 +45,12 @@ class PurgeInstagram extends BuildTask {
             $page->delete();
         }
 
-        foreach(Versioned::get_by_stage('InstagramUpdate', 'Stage') as $page) {
+        foreach(Versioned::get_by_stage(InstagramUpdate::class, 'Stage') as $page) {
             echo "Deleting From Stage: " . $page->Title . $eol;
             $page->deleteFromStage('Stage');
         }
 
-        foreach(Versioned::get_by_stage('InstagramUpdate', 'L$eolive') as $page) {
+        foreach(Versioned::get_by_stage(InstagramUpdate::class, 'L$eolive') as $page) {
             echo "Deleting From Live: " . $page->Title . $eol;
             $page->deleteFromStage('Live');
         }

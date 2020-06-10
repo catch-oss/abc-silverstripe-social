@@ -72,7 +72,7 @@ class SyncFacebook extends BuildTask implements CronTask {
 
     function init() {
 
-        if (method_exists(get_parent_class($this), 'init')) parent::init();
+        if (method_exists(parent::class, 'init')) parent::init();
 
         if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             return Security::permissionFailure();

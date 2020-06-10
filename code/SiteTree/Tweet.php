@@ -97,7 +97,7 @@ class Tweet extends Page {
         }
     }
 
-    public function updateFromTweet(stdClass $tweet, $save = true) {
+    public function updateFromTweet(\stdClass $tweet, $save = true) {
 
         if (!empty($tweet->entities->media[0])) {
 
@@ -181,7 +181,7 @@ class Tweet extends Page {
      *
      * @return \Tweet
      */
-    public function expandTweetData(stdClass $tweet = null){
+    public function expandTweetData(\stdClass $tweet = null){
         $data = $tweet ? json_decode(json_encode($tweet),true) : json_decode($this->OriginalTweet,true);
         $this->customise($data);
         return $this;

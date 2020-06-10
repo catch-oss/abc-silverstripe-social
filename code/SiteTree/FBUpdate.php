@@ -112,7 +112,7 @@ class FBUpdate extends Page {
         return $response->getEffectiveUrl();
     }
 
-    public function updateFromUpdate(stdClass $update, $save = true) {
+    public function updateFromUpdate(\stdClass $update, $save = true) {
 
         // print_r($update);
         $pageid = SiteConfig::current_site_config()->FacebookPageId;
@@ -221,7 +221,7 @@ class FBUpdate extends Page {
      *
      * @return \FBUpdate
      */
-    public function expandUpdateData(stdClass $update = null){
+    public function expandUpdateData(\stdClass $update = null){
 
         $data = $update ? json_decode(json_encode($update),true) : json_decode($this->OriginalUpdate,true) ;
 

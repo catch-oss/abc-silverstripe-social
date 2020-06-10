@@ -4,6 +4,7 @@ namespace Azt3k\SS\Social\BuildTasks;
 
 use MetzWeb\Instagram\Instagram;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
+use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 use Azt3k\SS\Social\Objects\SocialHelper;
 use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\CronTask\Interfaces\CronTask;
@@ -57,7 +58,7 @@ class SyncInstagram extends BuildTask implements CronTask{
 
     public function init() {
 
-        if (method_exists(parent,'init')) parent::init();
+        if (method_exists(parent::class,'init')) parent::init();
 
         if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             return Security::permissionFailure();
@@ -87,7 +88,7 @@ class SyncInstagram extends BuildTask implements CronTask{
         }
 
         // grab the most recent InstagramUpdate
-        $lastInstagramUpdate = DataObject::get_one('InstagramUpdate');
+        $lastInstagramUpdate = DataObject::get_one(InstagramUpdate::class);
 
         // if there was no last InstagramUpdate we need to go into initial population
         $initPop = $lastInstagramUpdate ? false : true ;
@@ -143,13 +144,13 @@ class SyncInstagram extends BuildTask implements CronTask{
 
     }
 
-    public function processResponse(stdClass $resp) {
+    public function processResponse(\stdClass $resp) {
 
         $noNew = true;
 
         foreach ($resp->data as $data) {
-            if (!$savedInstagramUpdate = DataObject::get_one('InstagramUpdate', "UpdateID='" . $data->id . "'")) {
-                if (!$pubInstagramUpdate = DataObject::get_one('PublicationInstagramUpdate', "InstagramUpdateID='" . $data->id . "'")) {
+            if (!$savedInstagramUpdate = DataObject::get_one(InstagramUpdate::class, "UpdateID='" . $data->id . "'")) {
+                if (!$pubInstagramUpdate = DataObject::get_one(PublicationInstagramUpdate::class, "InstagramUpdateID='" . $data->id . "'")) {
 
                     // push output
                     echo "Adding InstagramUpdate " . $data->id . "<br />\n";

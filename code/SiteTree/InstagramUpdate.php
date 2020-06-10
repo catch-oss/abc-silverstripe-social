@@ -85,7 +85,7 @@ class InstagramUpdate extends Page {
         $this->configure();
     }
 
-    public function updateFromUpdate(stdClass $update, $save = true) {
+    public function updateFromUpdate(\stdClass $update, $save = true) {
 
         $content = empty($update->caption) ? '' : $update->caption->text;
         $img = empty($update->images) ? '' : $update->images->standard_resolution->url;
@@ -185,7 +185,7 @@ class InstagramUpdate extends Page {
      *
      * @return \InstagramUpdate
      */
-    public function expandUpdateData(stdClass $update = null){
+    public function expandUpdateData(\stdClass $update = null){
         $data = $update ? json_decode(json_encode($update),true) : json_decode($this->OriginalUpdate,true) ;
         $this->customise($data);
         return $this;
