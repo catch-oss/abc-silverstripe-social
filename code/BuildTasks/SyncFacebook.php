@@ -6,6 +6,7 @@ use Facebook\Facebook;
 use Azt3k\SS\Social\Objects\SocialHelper;
 use Azt3k\SS\Classes\DataObjectHelper;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
+use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
 use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
@@ -100,7 +101,7 @@ class SyncFacebook extends BuildTask implements CronTask {
 
         // grab the most recent tweet
         $params = array();
-        $params['since'] = ($lastUpdate = DataObject::get_one('FBUpdate','','','UpdateID DESC')) ? $lastUpdate->UpdateID  : 1 ;
+        $params['since'] = ($lastUpdate = DataObject::get_one(FBUpdate::class,'','','UpdateID DESC')) ? $lastUpdate->UpdateID  : 1 ;
 
         // set the number of hits
         $params['limit'] = 200;
@@ -201,8 +202,8 @@ class SyncFacebook extends BuildTask implements CronTask {
             // type cast
             $data = (object) $data;
 
-            if (!$savedUpdate = DataObject::get_one('FBUpdate',"UpdateID='".$data->id."'")) {
-                if (!$pubUpdate = DataObject::get_one('PublicationFBUpdate',"FBUpdateID='".$data->id."'")) {
+            if (!$savedUpdate = DataObject::get_one(FBUpdate::class,"UpdateID='".$data->id."'")) {
+                if (!$pubUpdate = DataObject::get_one(PublicationFBUpdate::class,"FBUpdateID='".$data->id."'")) {
 
                     // push output
                     echo "Adding Update ".$data->id."<br />\n";

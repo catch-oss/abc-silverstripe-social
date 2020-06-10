@@ -90,7 +90,7 @@ class SyncTwitter extends BuildTask implements CronTask{
 
         // grab the most recent tweet
         $params = array();
-        if ($lastTweet = DataObject::get_one('Tweet','','','TweetID DESC')) {
+        if ($lastTweet = DataObject::get_one(Tweet::class,'','','TweetID DESC')) {
             if ($lastTweet->TweetID) $params['since_id'] = $lastTweet->TweetID;
         }
 
@@ -131,7 +131,7 @@ class SyncTwitter extends BuildTask implements CronTask{
                      while ($code == 200 && count($resp)) {
 
                         // find the earliest tweet we have in the db
-                        $firstTweet = DataObject::get_one('Tweet','','','TweetID ASC');
+                        $firstTweet = DataObject::get_one(Tweet::class,'','','TweetID ASC');
 
                         // reconfigure the params
                         unset($params['since_id']);
@@ -192,7 +192,7 @@ class SyncTwitter extends BuildTask implements CronTask{
         $noNew = true;
 
         foreach ($resp as $tweetData) {
-            if (!$savedTweet = DataObject::get_one('Tweet',"TweetID='".$tweetData->id_str."'")) {
+            if (!$savedTweet = DataObject::get_one(Tweet::class,"TweetID='".$tweetData->id_str."'")) {
                 if (!$pubTweet = DataObject::get_one('PublicationTweet',"TweetID='".$tweetData->id_str."'")) {
 
                     // push output

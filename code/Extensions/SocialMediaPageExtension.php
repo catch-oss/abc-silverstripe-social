@@ -194,7 +194,7 @@ class SocialMediaPageExtension extends DataExtension {
 
     public function onAfterPublish() {
 
-        if ($this->owner->ClassName != 'Tweet' && $this->owner->ClassName != 'FBUpdate' && $this->owner->ClassName != 'InstagramUpdate') {
+        if ($this->owner->ClassName != Tweet::class && $this->owner->ClassName != FBUpdate::class && $this->owner->ClassName != InstagramUpdate::class) {
 
             // define the date window for repost
             $dateWindow 	= 60 * 60 * 24 * 30; // 30 days
@@ -266,7 +266,7 @@ class SocialMediaPageExtension extends DataExtension {
         $conf = SiteConfig::current_site_config();
 
         // img
-        $img = in_array($this->owner->ClassName, ['Tweet', 'FBUpdate', 'InstagramUpdate'])
+        $img = in_array($this->owner->ClassName, [Tweet::class, FBUpdate::class, InstagramUpdate::class])
             ? $this->owner->UpdateImage()
             : $this->owner->PrimaryImage();
 

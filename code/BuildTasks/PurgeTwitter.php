@@ -43,12 +43,12 @@ class PurgeTwitter extends BuildTask {
             $page->delete();
         }
 
-        foreach(Versioned::get_by_stage('Tweet', 'Stage') as $page) {
+        foreach(Versioned::get_by_stage(Tweet::class, 'Stage') as $page) {
             echo "Deleting From Stage: " . $page->Title . $eol;
             $page->deleteFromStage('Stage');
         }
 
-        foreach(Versioned::get_by_stage('Tweet', 'Live') as $page) {
+        foreach(Versioned::get_by_stage(Tweet::class, 'Live') as $page) {
             echo "Deleting From Live: " . $page->Title . $eol;
             $page->deleteFromStage('Live');
         }
