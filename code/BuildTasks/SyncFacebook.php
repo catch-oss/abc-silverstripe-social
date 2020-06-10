@@ -89,6 +89,8 @@ class SyncFacebook extends BuildTask implements CronTask {
 
     function run($request = null) {
 
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
+
         // output
         echo "<br />\n<br />\nSyncing...<br />\n<br />\n";
         flush();
@@ -110,7 +112,13 @@ class SyncFacebook extends BuildTask implements CronTask {
         $initPop = $lastUpdate ? false : true ;
 
         // get updates
-        $resp = (object) $this->facebook->sendRequest('get', '/' . $this->conf->FacebookPageId . '/' . $this->conf->FacebookPageFeedType)->getDecodedBody();
+        try {
+            $resp = (object) $this->facebook->sendRequest('get', '/' . $this->conf->FacebookPageId . '/' . $this->conf->FacebookPageFeedType)->getDecodedBody();
+        } catch (\Exception $e) {
+            echo 'Caught FB Error: ' . $eol;
+            echo $e->getMessage();
+            return;
+        }
 
         // die(print_r($resp,1));
 

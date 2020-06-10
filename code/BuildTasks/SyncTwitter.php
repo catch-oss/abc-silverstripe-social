@@ -78,6 +78,8 @@ class SyncTwitter extends BuildTask implements CronTask{
 
     public function run($request = null) {
 
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
+
         // output
         echo "<br />\n<br />\nSyncing...<br />\n<br />\n";
         flush();
@@ -193,7 +195,7 @@ class SyncTwitter extends BuildTask implements CronTask{
 
         foreach ($resp as $tweetData) {
             if (!$savedTweet = DataObject::get_one(Tweet::class,"TweetID='".$tweetData->id_str."'")) {
-                if (!$pubTweet = DataObject::get_one('PublicationTweet',"TweetID='".$tweetData->id_str."'")) {
+                if (!$pubTweet = DataObject::get_one(PublicationTweet::class,"TweetID='".$tweetData->id_str."'")) {
 
                     // push output
                     echo "Adding Tweet ".$tweetData->id_str."<br />\n";

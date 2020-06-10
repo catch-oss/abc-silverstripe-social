@@ -74,6 +74,8 @@ class SyncInstagram extends BuildTask implements CronTask{
 
     public function run($request = null) {
 
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
+
         // output
         echo "<br />\n<br />\nSyncing...<br />\n<br />\n";
         flush();
