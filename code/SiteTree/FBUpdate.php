@@ -158,6 +158,7 @@ class FBUpdate extends Page {
                     $image = new Image;
                     $image->setFilename($relPath);
                     $image->write();
+                    $image->doPublish();
                 }
 
                 // associate
