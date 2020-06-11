@@ -29,6 +29,10 @@ class Tweet extends Page {
         'OriginalTweet'     => 'Text'
     );
 
+    private static $owns = [
+        'PrimaryImage'
+    ];
+
     private static $has_one = array(
         'PrimaryImage'      => Image::class
     );

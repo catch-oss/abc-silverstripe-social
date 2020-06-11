@@ -29,6 +29,10 @@ class InstagramUpdate extends Page {
         'OriginalUpdate'    => 'Text'
     );
 
+    private static $owns = [
+        'PrimaryImage'
+    ];
+
     /**
      * @var array
      */

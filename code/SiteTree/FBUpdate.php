@@ -30,6 +30,10 @@ class FBUpdate extends Page {
         'OriginalUpdate'    => 'Text'
     );
 
+    private static $owns = [
+        'PrimaryImage'
+    ];
+
     private static $has_one = array(
         'PrimaryImage'      => Image::class,
     );
