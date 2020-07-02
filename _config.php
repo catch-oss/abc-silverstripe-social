@@ -5,6 +5,7 @@ use Azt3k\SS\Social\SiteTree\FBUpdate;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\Extensions\SocialMediaConfig;
 use Azt3k\SS\Social\Extensions\SocialUpdatePageExtension;
+use Azt3k\SS\Social\Extensions\SocialMediaPageExtension;
 use SilverStripe\Core\Config\Config;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Parsers\ShortcodeParser;
