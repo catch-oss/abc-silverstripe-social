@@ -5,7 +5,6 @@ use Azt3k\SS\Social\SiteTree\FBUpdate;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\Extensions\SocialMediaConfig;
 use Azt3k\SS\Social\Extensions\SocialUpdatePageExtension;
-
 use SilverStripe\Core\Config\Config;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Parsers\ShortcodeParser;
@@ -19,7 +18,7 @@ define('ABC_SOCIAL_DIR', $dir_name);
 
 // attach the social extensions to the config and page classes
 SiteConfig::add_extension(SocialMediaConfig::class);
-Page::add_extension(SocialUpdatePageExtension::class);
+Page::add_extension(SocialMediaPageExtension::class);
 
 // attach common behaviours to the social updates
 FBUpdate::add_extension(SocialUpdatePageExtension::class);
