@@ -149,7 +149,7 @@ class InstagramUpdate extends Page {
         $fields = parent::getCMSFields();
 
         $lastEditedDateField = new DatetimeField('OriginalCreated');
-        $lastEditedDateField->setConfig('showcalendar', true);
+        // $lastEditedDateField->setConfig('showcalendar', true);
         $fields->addFieldToTab('Root.Main', $lastEditedDateField, 'Content');
 
         $fields->addFieldToTab('Root.Original', new LiteralField('OriginalUpdate', str_replace("\n", '<br>', print_r($this->OriginalUpdate,1))));

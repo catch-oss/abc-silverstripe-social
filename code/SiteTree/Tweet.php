@@ -11,8 +11,8 @@ use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\CMS\Model\SiteTree;
 use Azt3k\SS\Social\SiteTree\TweetHolder;
+use SilverStripe\Forms\LiteralField;
 
 /**
  * Description of Tweet
@@ -102,6 +102,8 @@ class Tweet extends Page {
 
     public function updateFromTweet(\stdClass $tweet, $save = true) {
 
+        // echo json_encode($tweet, JSON_PRETTY_PRINT);
+
         if (!empty($tweet->entities->media[0])) {
 
             // extract media
@@ -126,6 +128,10 @@ class Tweet extends Page {
                     $imgData = file_get_contents($img);
                     file_put_contents($absPath, $imgData);
                 }
+
+                // echo $img;
+                // echo $absPath;
+                // echo $relPath;
 
                 // does the file exist
                 if (file_exists($absPath)) {
@@ -164,7 +170,7 @@ class Tweet extends Page {
         $fields = parent::getCMSFields();
 
         $lastEditedDateField = new DatetimeField('OriginalCreated');
-        $lastEditedDateField->setConfig('showcalendar', true);
+        // $lastEditedDateField->setConfig('showcalendar', true);
         $fields->addFieldToTab('Root.Main', $lastEditedDateField, 'Content');
 
         $fields->addFieldToTab('Root.Original', new LiteralField('OriginalTweet', str_replace("\n", '<br>', print_r($this->OriginalTweet,1))));
