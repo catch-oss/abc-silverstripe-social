@@ -35,6 +35,13 @@ class SyncTwitter extends BuildTask implements CronTask{
         parent::__construct();
     }
 
+    protected function flushStatements()
+    {
+        $conn = \SilverStripe\ORM\DB::get_conn();
+        $connector = $conn->getConnector();
+        $connector->flushStatements();
+    }
+
     public function getSchedule() {
         return "*/5 * * * *";
     }
@@ -82,14 +89,17 @@ class SyncTwitter extends BuildTask implements CronTask{
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
         // output
-        echo "<br />\n<br />\nSyncing...<br />\n<br />\n";
+        echo $eol . $eol . 'Syncing...' . $eol . $eol;
         flush();
         @ob_flush();
 
         if (!$this->conf->TwitterPullUpdates) {
-            echo "Sync disabled <br />\n<br />\n";
+            echo 'Sync disabled' . $eol . $eol;
             return;
         }
+
+        // flush first to avoid hitting prepared statements cap
+        $this->flushStatements();
 
         // grab the most recent tweet
         $params = array();
@@ -192,11 +202,14 @@ class SyncTwitter extends BuildTask implements CronTask{
 
     public function processResponse(array $resp) {
 
+        // flush first to avoid hitting prepared statements cap
+        $this->flushStatements();
+
         $noNew = true;
 
         foreach ($resp as $tweetData) {
-            if (!$savedTweet = DataObject::get_one(Tweet::class,"TweetID='".$tweetData->id_str."'")) {
-                if (!$pubTweet = DataObject::get_one(PublicationTweet::class,"TweetID='".$tweetData->id_str."'")) {
+            if (!$savedTweet = DataObject::get_one(Tweet::class, "TweetID='" . $tweetData->id_str . "'")) {
+                if (!$pubTweet = DataObject::get_one(PublicationTweet::class, "TweetID='" . $tweetData->id_str . "'")) {
 
                     // push output
                     echo "Adding Tweet ".$tweetData->id_str."<br />\n";

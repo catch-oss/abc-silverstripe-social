@@ -27,6 +27,13 @@ class RetrySyncFacebookImages extends BuildTask implements CronTask {
         parent::__construct();
     }
 
+    protected function flushStatements()
+    {
+        $conn = \SilverStripe\ORM\DB::get_conn();
+        $connector = $conn->getConnector();
+        $connector->flushStatements();
+    }
+
     public function getSchedule() {
         return "*/15 * * * *";
     }
@@ -76,6 +83,9 @@ class RetrySyncFacebookImages extends BuildTask implements CronTask {
             return;
         }
 
+        // flush first to avoid hitting prepared statements cap
+        $this->flushStatements();
+
         // find any updates that are less than a week old with no image
         $updates = FBUpdate::get()
             ->where('
@@ -90,7 +100,13 @@ class RetrySyncFacebookImages extends BuildTask implements CronTask {
         echo 'Processing ' . $updates->count() . ' updates...' . $eol . $eol;
 
         // loop the loop
-        foreach ($updates as $update) {
+        foreach ($updates as $k => $update) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             $update->updateFromUpdate((object) json_decode($update->OriginalUpdate));
         }
 

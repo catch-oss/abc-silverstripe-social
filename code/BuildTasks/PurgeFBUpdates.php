@@ -15,6 +15,13 @@ use SilverStripe\Control\Director;
  */
 class PurgeFBUpdate extends BuildTask {
 
+    protected function flushStatements()
+    {
+        $conn = \SilverStripe\ORM\DB::get_conn();
+        $connector = $conn->getConnector();
+        $connector->flushStatements();
+    }
+
     public function init() {
 
         parent::init();
@@ -40,17 +47,35 @@ class PurgeFBUpdate extends BuildTask {
         flush();
         @ob_flush();
 
-        foreach(FBUpdate::get() as $page) {
+        foreach(FBUpdate::get() as $k => $page) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             echo "Deleting " . $page->Title . $eol;
             $page->delete();
         }
 
-        foreach(Versioned::get_by_stage(FBUpdate::class, 'Stage') as $page) {
+        foreach(Versioned::get_by_stage(FBUpdate::class, 'Stage') as $k => $page) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             echo "Deleting From Stage: " . $page->Title . $eol;
             $page->deleteFromStage('Stage');
         }
 
-        foreach(Versioned::get_by_stage(FBUpdate::class, 'Live') as $page) {
+        foreach(Versioned::get_by_stage(FBUpdate::class, 'Live') as $k => $page) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             echo "Deleting From Live: " . $page->Title . $eol;
             $page->deleteFromStage('Live');
         }

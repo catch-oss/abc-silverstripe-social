@@ -37,6 +37,13 @@ class SyncFacebook extends BuildTask implements CronTask {
         parent::__construct();
     }
 
+    protected function flushStatements()
+    {
+        $conn = \SilverStripe\ORM\DB::get_conn();
+        $connector = $conn->getConnector();
+        $connector->flushStatements();
+    }
+
     public function getSchedule() {
         return "*/5 * * * *";
     }
@@ -92,14 +99,17 @@ class SyncFacebook extends BuildTask implements CronTask {
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
         // output
-        echo "<br />\n<br />\nSyncing...<br />\n<br />\n";
+        echo $eol . $eol . 'Syncing...' . $eol . $eol;
         flush();
         @ob_flush();
 
         if (!$this->conf->FacebookPullUpdates) {
-            echo "Sync disabled <br />\n<br />\n";
+            echo 'Sync disabled ' . $eol . $eol;
             return;
         }
+
+        // flush first to avoid hitting prepared statements cap
+        $this->flushStatements();
 
         // grab the most recent tweet
         $params = array();
@@ -132,7 +142,7 @@ class SyncFacebook extends BuildTask implements CronTask {
             if ($initPop) {
 
                 //output
-                echo "<br />\n<br />\nDoing initial Population<br />\n<br />\n";
+                echo $eol . $eol . 'Doing initial Population' . $eol . $eol;
                 flush();
                 @ob_flush();
 
@@ -176,7 +186,7 @@ class SyncFacebook extends BuildTask implements CronTask {
 
                     } else{
                         // output
-                        echo "No more pages <br />\n<br />\n";
+                        echo "No more pages" . $eol . $eol;
                         flush();
                         @ob_flush();
                         break;
@@ -185,7 +195,7 @@ class SyncFacebook extends BuildTask implements CronTask {
                  }
 
                 // output
-                echo "Finished\n";
+                echo 'Finished' . $eol . $eol;
                 flush();
                 @ob_flush();
             }
@@ -193,7 +203,7 @@ class SyncFacebook extends BuildTask implements CronTask {
         } else {
 
             // output
-            echo "No hits <br /><br />\n";
+            echo 'No hits' . $eol . $eol;
             flush();
             @ob_flush();
 
@@ -205,16 +215,20 @@ class SyncFacebook extends BuildTask implements CronTask {
 
         $noNew = true;
 
+        // flush first to avoid hitting prepared statements cap
+        $this->flushStatements();
+
+        // look at data
         foreach ($resp as $data) {
 
             // type cast
             $data = (object) $data;
 
-            if (!$savedUpdate = DataObject::get_one(FBUpdate::class,"UpdateID='".$data->id."'")) {
-                if (!$pubUpdate = DataObject::get_one(PublicationFBUpdate::class,"FBUpdateID='".$data->id."'")) {
+            if (!$savedUpdate = DataObject::get_one(FBUpdate::class, "UpdateID='" . $data->id . "'")) {
+                if (!$pubUpdate = DataObject::get_one(PublicationFBUpdate::class, "FBUpdateID='" . $data->id . "'")) {
 
                     // push output
-                    echo "Adding Update ".$data->id."<br />\n";
+                    echo "Adding Update " . $data->id . $eol . $eol;
                     flush();
                     @ob_flush();
 
@@ -226,7 +240,7 @@ class SyncFacebook extends BuildTask implements CronTask {
                     $update = new FBUpdate;
                     if ($update->updateFromUpdate($data)) {
                         if ($update->write() && $update->doRestoreToStage() && $update->doPublish()) {
-                            echo 'Successfully created' . $update->Title ."<br />\n";
+                            echo 'Successfully created' . $update->Title . $eol . $eol;
                         } else {
                             die('Failed to Publish ' . $update->Title);
                         }
@@ -238,7 +252,7 @@ class SyncFacebook extends BuildTask implements CronTask {
                 } else {
 
                     // push output
-                    echo "Update ".$data->id." came from the website<br />\n";
+                    echo 'Update ' . $data->id . 'came from the website' . $eol;
                     flush();
                     @ob_flush();
 
@@ -248,7 +262,7 @@ class SyncFacebook extends BuildTask implements CronTask {
                 // this should only happen during initial population because we should have only got in tweets that are newer than x
 
                 // push output
-                echo "Already added Update ".$data->id."<br />\n";
+                echo 'Already added Update ' . $data->id . $eol;
                 flush();
                 @ob_flush();
 

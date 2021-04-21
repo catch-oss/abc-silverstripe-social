@@ -14,6 +14,13 @@ use SilverStripe\Dev\BuildTask;
  */
 class PurgeTwitter extends BuildTask {
 
+    protected function flushStatements()
+    {
+        $conn = \SilverStripe\ORM\DB::get_conn();
+        $connector = $conn->getConnector();
+        $connector->flushStatements();
+    }
+
     public function init() {
 
         parent::init();
@@ -38,17 +45,35 @@ class PurgeTwitter extends BuildTask {
         flush();
         @ob_flush();
 
-        foreach(Tweet::get() as $page) {
+        foreach(Tweet::get() as $k => $page) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             echo "Deleting " . $page->Title . $eol;
             $page->delete();
         }
 
-        foreach(Versioned::get_by_stage(Tweet::class, 'Stage') as $page) {
+        foreach(Versioned::get_by_stage(Tweet::class, 'Stage') as $k => $page) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             echo "Deleting From Stage: " . $page->Title . $eol;
             $page->deleteFromStage('Stage');
         }
 
-        foreach(Versioned::get_by_stage(Tweet::class, 'Live') as $page) {
+        foreach(Versioned::get_by_stage(Tweet::class, 'Live') as $k => $page) {
+
+            // make sure we dont hit the prepared statements cap
+            if ($k % 1000 == 0) {
+                $this->flushStatements();
+            }
+
             echo "Deleting From Live: " . $page->Title . $eol;
             $page->deleteFromStage('Live');
         }

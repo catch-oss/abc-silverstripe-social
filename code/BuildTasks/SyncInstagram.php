@@ -17,6 +17,10 @@ use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 
 
+// need to update to this
+// https://developers.facebook.com/docs/instagram-basic-display-api - get posts
+// https://developers.facebook.com/docs/instagram-api - make posts
+
 class SyncInstagram extends BuildTask implements CronTask{
 
     protected static $conf_instance;
@@ -32,6 +36,13 @@ class SyncInstagram extends BuildTask implements CronTask{
         $this->instagram = static::get_instagram();
 
         parent::__construct();
+    }
+
+    protected function flushStatements()
+    {
+        $conn = \SilverStripe\ORM\DB::get_conn();
+        $connector = $conn->getConnector();
+        $connector->flushStatements();
     }
 
     public function getSchedule() {
@@ -78,14 +89,17 @@ class SyncInstagram extends BuildTask implements CronTask{
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
         // output
-        echo "<br />\n<br />\nSyncing...<br />\n<br />\n";
+        echo $eol . $eol . 'Syncing...' . $eol . $eol;
         flush();
         @ob_flush();
 
         if (!$this->conf->InstagramPullUpdates) {
-            echo "Sync disabled <br />\n<br />\n";
+            echo 'Sync disabled' . $eol . $eol;
             return;
         }
+
+        // flush first to avoid hitting prepared statements cap
+        $this->flushStatements();
 
         // grab the most recent InstagramUpdate
         $lastInstagramUpdate = DataObject::get_one(InstagramUpdate::class);
