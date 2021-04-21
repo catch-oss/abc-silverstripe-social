@@ -136,7 +136,7 @@ class SyncTwitter extends BuildTask implements CronTask{
                 if ($initPop) {
 
                     //output
-                    echo "<br />\n<br />\nDoing initial Population<br />\n<br />\n";
+                    echo $eol . $eol . 'Doing initial Population' . $eol . $eol;
                     flush();
                     @ob_flush();
 
@@ -186,7 +186,7 @@ class SyncTwitter extends BuildTask implements CronTask{
             } else {
 
                 // output
-                echo "No hits <br />\n<br />\n";
+                echo 'No hits' . $eol . $eol;
                 flush();
                 @ob_flush();
 
@@ -202,6 +202,8 @@ class SyncTwitter extends BuildTask implements CronTask{
 
     public function processResponse(array $resp) {
 
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
+
         // flush first to avoid hitting prepared statements cap
         $this->flushStatements();
 
@@ -212,7 +214,7 @@ class SyncTwitter extends BuildTask implements CronTask{
                 if (!$pubTweet = DataObject::get_one(PublicationTweet::class, "TweetID='" . $tweetData->id_str . "'")) {
 
                     // push output
-                    echo "Adding Tweet ".$tweetData->id_str."<br />\n";
+                    echo 'Adding Tweet ' . $tweetData->id_str . $eol;
                     flush();
                     @ob_flush();
 
@@ -220,7 +222,7 @@ class SyncTwitter extends BuildTask implements CronTask{
                     $tweet = new Tweet;
                     $tweet->updateFromTweet($tweetData);
                     if ($tweet->write() && $tweet->doRestoreToStage() && $tweet->doPublish()) {
-                        echo 'Successfully created' . $tweet->Title ."<br />\n";
+                        echo 'Successfully created' . $tweet->Title . $eol;
                     } else {
                         die('Failed to Publish ' . $tweet->Title);
                     }
@@ -231,7 +233,7 @@ class SyncTwitter extends BuildTask implements CronTask{
                 } else {
 
                     // push output
-                    echo "Tweet ".$tweetData->id_str." came from the website<br />\n";
+                    echo 'Tweet ' . $tweetData->id_str . ' came from the website' . $eol;
                     flush();
                     @ob_flush();
 
@@ -242,7 +244,7 @@ class SyncTwitter extends BuildTask implements CronTask{
                 // this should only happen during initial population because we should have only got in tweets that are newer than x
 
                 // push output
-                echo "Already added Tweet ".$tweetData->id_str."<br />\n";
+                echo 'Already added Tweet ' . $tweetData->id_str . $eol;
                 flush();
                 @ob_flush();
 

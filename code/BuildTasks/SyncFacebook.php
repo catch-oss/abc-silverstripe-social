@@ -181,12 +181,12 @@ class SyncFacebook extends BuildTask implements CronTask {
 
                             }
                         } else {
-                            echo "Encountered Error with : " . print_r($resp,1);
+                            echo 'Encountered Error with : ' . print_r($resp,1);
                         }
 
                     } else{
                         // output
-                        echo "No more pages" . $eol . $eol;
+                        echo 'No more pages' . $eol . $eol;
                         flush();
                         @ob_flush();
                         break;
@@ -228,7 +228,7 @@ class SyncFacebook extends BuildTask implements CronTask {
                 if (!$pubUpdate = DataObject::get_one(PublicationFBUpdate::class, "FBUpdateID='" . $data->id . "'")) {
 
                     // push output
-                    echo "Adding Update " . $data->id . $eol . $eol;
+                    echo 'Adding Update ' . $data->id . $eol . $eol;
                     flush();
                     @ob_flush();
 
