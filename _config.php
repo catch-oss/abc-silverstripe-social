@@ -31,7 +31,7 @@ if (!Config::inst()->get('SocialGlobalConf', 'disable_wysiwyg_embed')) {
     //$this->shortcodes[$tag], $attributes, $content, $this, $tag, $extra);
 
     ShortcodeParser::get('default')->register('social_embed', function($arguments, $content = null, $parser = null, $tagName){
-        return SocialUpdatePageExtension::SocialEmbedParser($arguments, $content, $parser, $tagName);
+        return SocialMediaPageExtension::SocialEmbedParser($arguments, $content, $parser, $tagName);
     });
     HtmlEditorConfig::get('cms')->enablePlugins(array(
         'social_embed' => '/vendor/azt3k/abc-silverstripe-social/js/editor-plugin.js'
