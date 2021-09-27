@@ -30,7 +30,7 @@ InstagramUpdate::add_extension(SocialUpdatePageExtension::class);
 if (!Config::inst()->get('SocialGlobalConf', 'disable_wysiwyg_embed')) {
     //$this->shortcodes[$tag], $attributes, $content, $this, $tag, $extra);
 
-    ShortcodeParser::get('default')->register('social_embed', function($arguments, $content = null, $parser = null, $tagName){
+    ShortcodeParser::get('default')->register('social_embed', function($arguments, $content = null, $parser = null, $tagName = null){
         return SocialMediaPageExtension::SocialEmbedParser($arguments, $content, $parser, $tagName);
     });
     HtmlEditorConfig::get('cms')->enablePlugins(array(

@@ -72,7 +72,7 @@ class SocialMediaPageExtension extends DataExtension {
      * @param [type] $parser    [description]
      * @param [type] $tagName   [description]
      */
-    public static function SocialEmbedParser($arguments, $content = null, $parser = null, $tagName) {
+    public static function SocialEmbedParser($arguments, $content = null, $parser = null, $tagName = null) {
         if ($embed = OEmbedCacheItem::fetch($arguments)) {
             if ($data = $embed->data()) return $data->html;
         }
