@@ -46,7 +46,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gl.catchdesign.co.nz:catch/abc-silverstripe-taggable.git",
-                "reference": "97460fd1950ffe01fc4adc5d80f296d7a69975dc"
+                "reference": "d2ee02a885baa36888f9721eedbe19c1fb822de2"
             },
             "require": {
                 "azt3k/abc-silverstripe": "*",
