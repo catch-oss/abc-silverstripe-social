@@ -31,7 +31,7 @@
         "themattharris/tmhoauth": "dev-master",
         "janu-software/facebook-php-sdk": "0.1.*@stable",
         "cosenary/instagram": "2.3.*@stable",
-        "guzzlehttp/guzzle": "*@stable",
+        "guzzlehttp/guzzle": ">=7.4.5",
         "composer-fallback/php-http.client-implementation.guzzle7": "*@stable"
     },
     "autoload": {
