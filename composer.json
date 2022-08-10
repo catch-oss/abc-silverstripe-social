@@ -29,7 +29,7 @@
         "azt3k/abc-silverstripe"            : "dev-master",
         "azt3k/abc-silverstripe-taggable"   : "^4",
         "themattharris/tmhoauth"            : "dev-master",
-        "facebook/graph-sdk"                : "5.7.*@stable",
+        "janu-software/graph-sdk"           : "0.1.*@stable",
         "cosenary/instagram"                : "2.3.*@stable",
         "guzzlehttp/guzzle"                 : "*@stable"
     },
