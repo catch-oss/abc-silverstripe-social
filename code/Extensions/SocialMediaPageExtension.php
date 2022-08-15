@@ -331,17 +331,17 @@ class SocialMediaPageExtension extends DataExtension {
      * @param string $key the meta data you want
      * @return string the value for the key passed in
      */
-    public function Meta($key)
+    public function Meta($key): string
     {
         $map = $this->MetaMap();
-        return $map[$key];
+        return $map[$key] ?? '';
     }
 
     /**
      * Returns some meta data for the template
      * @return array a map of meta values
      */
-    public function MetaMap()
+    public function MetaMap(): array
     {
         $conf = SiteConfig::current_site_config();
         return [
