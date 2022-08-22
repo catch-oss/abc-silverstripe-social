@@ -8,9 +8,7 @@ use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
 use Silverstripe\SiteConfig\SiteConfig;
-use \Exception;
-
-use SilverStripe\Security\Member;
+use Exception;
 
 class InstagramAuthenticator extends Controller {
 
@@ -110,7 +108,7 @@ class InstagramAuthenticator extends Controller {
     public function index() {
 
         // authorise
-        $user = Member::currentUser();
+        $user = Security::getCurrentUser();
         if (!Permission::checkMember($user, 'ADMIN')) return $this->httpError(401, 'You do not have access to the requested content');
 
         // trigger various modes

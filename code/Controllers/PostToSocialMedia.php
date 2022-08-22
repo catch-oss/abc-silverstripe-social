@@ -3,17 +3,12 @@
 namespace Azt3k\SS\Social\Controllers;
 
 use SilverStripe\Control\Controller;
-use Azt3k\SS\Social\Objects\SocialHelper;
-use Facebook\Facebook;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Permission;
+use JanuSoftware\Facebook\Facebook;
 use Silverstripe\SiteConfig\SiteConfig;
-use SilverStripe\Security\Member;
-
 use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
 use tmhOAuth;
-use \Exception;
+use Exception;
 
 
 /**
@@ -111,7 +106,7 @@ class PostToSocialMedia extends Controller {
             try {
                 $post_id = $facebook->api("/".static::$conf->FacebookPageId."/feed", "post", $data);
                 $ids['facebook'] = $post_id['id'];
-            } catch (FacebookApiException $e) {
+            } catch (Exception $e) {
                 SS_Log::log('Error '.$e->getCode().' : '.$e->getFile().' Line '.$e->getLine().' : '.$e->getMessage()."\n".'BackTrace: '."\n".$e->getTraceAsString(),SS_Log::ERR);
             }
 

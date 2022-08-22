@@ -2,15 +2,13 @@
 
 namespace Azt3k\SS\Social\Controllers;
 
-use Facebook\Facebook;
+use JanuSoftware\Facebook\Facebook;
 use Azt3k\SS\Social\Objects\SocialHelper;
-use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
 use Silverstripe\SiteConfig\SiteConfig;
-use \Exception;
-
-use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
+use Exception;
 
 /**
  * @author AzT3k
@@ -130,7 +128,7 @@ class FBAuthenticator extends Controller {
     public function purge(){
 
         // authorise
-        $user = Member::currentUser();
+        $user = Security::getCurrentUser();
         if (!Permission::checkMember($user, 'ADMIN')) return $this->httpError(401, 'You do not have access to the requested content');
 
         // purge
@@ -143,7 +141,7 @@ class FBAuthenticator extends Controller {
     public function index() {
 
         // authorise
-        $user = Member::currentUser();
+        $user = Security::getCurrentUser();
         if (!Permission::checkMember($user, 'ADMIN')) return $this->httpError(401, 'You do not have access to the requested content');
 
         // grab the API Lib

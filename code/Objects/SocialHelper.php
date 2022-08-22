@@ -3,9 +3,7 @@
 namespace Azt3k\SS\Social\Objects;
 
 use SilverStripe\Core\Extensible;
-use SilverStripe\Core\Config\Config;
-use Azt3k\SS\Social\Objects\SocialHelper;
-use Facebook\Facebook;
+use JanuSoftware\Facebook\Facebook;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Config\Configurable;

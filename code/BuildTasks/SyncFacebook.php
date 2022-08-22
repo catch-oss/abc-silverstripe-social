@@ -2,7 +2,7 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
-use Facebook\Facebook;
+use JanuSoftware\Facebook\Facebook;
 use Azt3k\SS\Social\Objects\SocialHelper;
 use Azt3k\SS\Classes\DataObjectHelper;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
