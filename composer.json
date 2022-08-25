@@ -32,7 +32,7 @@
         "silverstripe/crontask": "^2.1",
         "azt3k/abc-silverstripe": "dev-master",
         "azt3k/abc-silverstripe-taggable": "^4",
-        "axispointalliance/tmhoauth": "dev-master",
+        "catchnz/tmhoauth": "dev-master",
         "janu-software/facebook-php-sdk": "0.1.*@stable",
         "cosenary/instagram": "2.3.*@stable",
         "guzzlehttp/guzzle": ">=7.4.5",
