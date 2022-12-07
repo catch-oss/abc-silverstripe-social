@@ -31,7 +31,7 @@
         "themattharris/tmhoauth"            : "dev-master",
         "facebook/graph-sdk"                : "5.7.*@stable",
         "cosenary/instagram"                : "2.3.*@stable",
-        "guzzlehttp/guzzle"                 : "*@stable"
+        "guzzlehttp/guzzle"                 : "~7.4.5"
     },
     "autoload": {
         "psr-4": {
