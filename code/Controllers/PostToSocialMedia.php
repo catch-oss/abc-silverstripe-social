@@ -100,6 +100,7 @@ class PostToSocialMedia extends Controller {
             $facebook = new Facebook(array(
                 'appId'  => static::$conf->FacebookAppId,
                 'secret' => static::$conf->FacebookAppSecret,
+                'default_graph_version' => 'v15.0'
             ));
 
             $facebook->setAccessToken(static::$conf->FacebookPageAccessToken);
