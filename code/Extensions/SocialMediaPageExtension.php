@@ -198,24 +198,24 @@ class SocialMediaPageExtension extends DataExtension {
         if ($this->owner->ClassName != Tweet::class && $this->owner->ClassName != FBUpdate::class && $this->owner->ClassName != InstagramUpdate::class) {
 
             // define the date window for repost
-            $dateWindow 	= 60 * 60 * 24 * 30; // 30 days
-            $lastPost 		= $this->owner->LastPostedToSocialMedia ? strtotime($this->owner->LastPostedToSocialMedia) : null;
-            $time 			= time();
+            $dateWindow = 60 * 60 * 24 * 30; // 30 days
+            $lastPost = !empty($this->owner->LastPostedToSocialMedia) ? strtotime($this->owner->LastPostedToSocialMedia) : null;
+            $time = time();
             $embargoExpired = false;
 
             if ($time > $lastPost + $dateWindow) $embargoExpired = true;
             if (empty($this->justPosted)) $this->justPosted = false;
 
             if (
-				(
-					$embargoExpired ||
-					!$this->owner->PublicationFBUpdateID ||
-					!$this->owner->PublicationInstagramUpdateID ||
-					!$this->owner->PublicationTweetID ||
-					$this->owner->ForceUpdateMode == 'Force'
-				) &&
-				$this->owner->ForceUpdateMode != 'Block'
-			) {
+                (
+                    $embargoExpired ||
+                    !$this->owner->PublicationFBUpdateID ||
+                    !$this->owner->PublicationInstagramUpdateID ||
+                    !$this->owner->PublicationTweetID ||
+                    $this->owner->ForceUpdateMode == 'Force'
+                ) &&
+                $this->owner->ForceUpdateMode != 'Block'
+            ) {
 
                 // what are we posting to
                 $postTo = array();
