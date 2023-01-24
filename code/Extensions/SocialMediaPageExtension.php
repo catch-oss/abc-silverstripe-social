@@ -117,7 +117,7 @@ class SocialMediaPageExtension extends DataExtension {
                     preg_replace(
                         '/[\s\t\n ]+/',
                         ' ',
-                        $content
+                        $content ?? ''
                     )
                 ),
                 $allowedTags
