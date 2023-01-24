@@ -37,7 +37,8 @@ class FBAuthenticator extends Controller {
 
             static::$facebook_instance = new Facebook(array(
                 'app_id'        => $conf->FacebookAppId,
-                'app_secret'    => $conf->FacebookAppSecret
+                'app_secret'    => $conf->FacebookAppSecret,
+                'default_graph_version' => 'v15.0'
             ));
         }
 

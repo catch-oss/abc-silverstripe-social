@@ -199,7 +199,7 @@ class SocialMediaPageExtension extends DataExtension {
 
             // define the date window for repost
             $dateWindow 	= 60 * 60 * 24 * 30; // 30 days
-            $lastPost 		= strtotime($this->owner->LastPostedToSocialMedia);
+            $lastPost 		= $this->owner->LastPostedToSocialMedia ? strtotime($this->owner->LastPostedToSocialMedia) : null;
             $time 			= time();
             $embargoExpired = false;
 
