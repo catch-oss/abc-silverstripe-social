@@ -9,7 +9,7 @@
       "email": "az@catchdesign.co.nz"
     }
   ],
-  "repositories": [
+  "repositories": {
     "tmhOAuth": {
       "type": "vcs",
       "url": "git@github.com:catch-oss/tmhOAuth.git"
@@ -23,7 +23,7 @@
       "type": "vcs",
       "url": "git@github.com:catch-oss/abc-silverstripe.git"
     }
-  ],
+  },
   "minimum-stability": "dev",
   "require": {
     "php": "^8.1",
