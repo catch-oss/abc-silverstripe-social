@@ -15,7 +15,6 @@
       "url": "git@github.com:catch-oss/tmhOAuth.git"
     },
     "abc-silverstripe-taggable": {
-    {
       "type": "vcs",
       "url": "git@github.com:catch-oss/abc-silverstripe-taggable.git"
     },
