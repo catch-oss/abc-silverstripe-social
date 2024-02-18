@@ -32,7 +32,7 @@
     "composer/installers": "^2.2",
     "catch-oss/abc-silverstripe": "dev-feature/ss5-update",
     "catch-oss/abc-silverstripe-taggable": "dev-feature/ss5-update",
-    "catch-oss/tmhoauth": "dev-feature/ss5-update",
+    "themattharris/tmhoauth": "dev-feature/ss5-update",
     "janu-software/facebook-php-sdk": "0.1.*@stable",
     "cosenary/instagram": "2.3.*@stable",
     "guzzlehttp/guzzle": ">=7.4.5",
