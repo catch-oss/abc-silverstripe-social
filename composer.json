@@ -10,7 +10,7 @@
     }
   ],
   "repositories": {
-    "tmhOAuth": {
+    "tmhoauth": {
       "type": "vcs",
       "url": "git@github.com:catch-oss/tmhOAuth.git"
     },
