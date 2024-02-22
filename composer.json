@@ -12,15 +12,15 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@gl.catchdesign.co.nz:catch/tmhOAuth.git"
+      "url": "git@github.com:catch-oss/tmhOAuth.git"
     },
     {
       "type": "vcs",
-      "url": "git@gl.catchdesign.co.nz:catch/abc-silverstripe-taggable.git"
+      "url": "git@github.com:catch-oss/abc-silverstripe-taggable.git"
     },
     {
       "type": "vcs",
-      "url": "git@gl.catchdesign.co.nz:catch/abc-sliverstripe.git"
+      "url": "git@github.com:catch-oss/abc-silverstripe.git"
     }
   ],
   "minimum-stability": "dev",
@@ -32,7 +32,7 @@
     "composer/installers": "^2.2",
     "azt3k/abc-silverstripe": "dev-feature/ss5-update",
     "azt3k/abc-silverstripe-taggable": "dev-feature/ss5-update",
-    "themattharris/tmhoauth": "dev-master",
+    "themattharris/tmhoauth": "dev-feature/ss5-update",
     "janu-software/facebook-php-sdk": "0.1.*@stable",
     "cosenary/instagram": "2.3.*@stable",
     "guzzlehttp/guzzle": ">=7.4.5",
