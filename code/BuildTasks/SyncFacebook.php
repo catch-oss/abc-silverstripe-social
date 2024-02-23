@@ -20,7 +20,8 @@ use SilverStripe\CMS\Model\SiteTree;
 /**
  * @todo need reconcile removals in both directions
  */
-class SyncFacebook extends BuildTask implements CronTask {
+class SyncFacebook extends BuildTask implements CronTask
+{
 
     protected static $conf_instance;
     protected static $facebook_instance;
@@ -29,7 +30,8 @@ class SyncFacebook extends BuildTask implements CronTask {
     protected $errors = array();
     protected $messages = array();
 
-    public function __construct() {
+    public function __construct()
+    {
 
         $this->conf     = $this->getConf();
         $this->facebook = $this->getFacebook();
@@ -37,23 +39,19 @@ class SyncFacebook extends BuildTask implements CronTask {
         parent::__construct();
     }
 
-    protected function flushStatements()
+    public function getSchedule()
     {
-        $conn = \SilverStripe\ORM\DB::get_conn();
-        $connector = $conn->getConnector();
-        $connector->flushStatements();
-    }
-
-    public function getSchedule() {
         return "*/5 * * * *";
     }
 
-    public function getConf() {
+    public function getConf()
+    {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public function getFacebook() {
+    public function getFacebook()
+    {
 
         if (!$this->conf) $this->conf = $this->getConf();
 
@@ -77,7 +75,8 @@ class SyncFacebook extends BuildTask implements CronTask {
         return static::$facebook_instance;
     }
 
-    function init() {
+    function init()
+    {
 
         if (method_exists(parent::class, 'init')) parent::init();
 
@@ -86,15 +85,16 @@ class SyncFacebook extends BuildTask implements CronTask {
         }
 
         if (!$this->conf || !$this->facebook) $this->__construct();
-
     }
 
-    public function process() {
+    public function process()
+    {
         $this->init();
         $this->run();
     }
 
-    function run($request = null) {
+    function run($request = null)
+    {
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
@@ -108,18 +108,15 @@ class SyncFacebook extends BuildTask implements CronTask {
             return;
         }
 
-        // flush first to avoid hitting prepared statements cap
-        $this->flushStatements();
-
         // grab the most recent tweet
         $params = array();
-        $params['since'] = ($lastUpdate = DataObject::get_one(FBUpdate::class,'','','UpdateID DESC')) ? $lastUpdate->UpdateID  : 1 ;
+        $params['since'] = ($lastUpdate = DataObject::get_one(FBUpdate::class, '', '', 'UpdateID DESC')) ? $lastUpdate->UpdateID  : 1;
 
         // set the number of hits
         $params['limit'] = 200;
 
         // if there was no last tweet we need to go into initial population
-        $initPop = $lastUpdate ? false : true ;
+        $initPop = $lastUpdate ? false : true;
 
         // get updates
         try {
@@ -167,7 +164,7 @@ class SyncFacebook extends BuildTask implements CronTask {
                             $resp = (object) $this->facebook->sendRequest(
                                 'get',
                                 '/' . $this->conf->FacebookPageId .
-                                '/' . $this->conf->FacebookPageFeedType. '?limit=25&until=' . $until
+                                    '/' . $this->conf->FacebookPageFeedType . '?limit=25&until=' . $until
                             )->getDecodedBody();
 
                             // only proceed if we have results to work with
@@ -178,45 +175,38 @@ class SyncFacebook extends BuildTask implements CronTask {
 
                                 // break if we haven't added anything
                                 if ($noNew) break;
-
                             }
                         } else {
-                            echo 'Encountered Error with : ' . print_r($resp,1);
+                            echo 'Encountered Error with : ' . print_r($resp, 1);
                         }
-
-                    } else{
+                    } else {
                         // output
                         echo 'No more pages' . $eol . $eol;
                         flush();
                         @ob_flush();
                         break;
                     }
-
-                 }
+                }
 
                 // output
                 echo 'Finished' . $eol . $eol;
                 flush();
                 @ob_flush();
             }
-
         } else {
 
             // output
             echo 'No hits' . $eol . $eol;
             flush();
             @ob_flush();
-
         }
-
     }
 
-    public function processResponse(array $resp) {
+    public function processResponse(array $resp)
+    {
 
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
         $noNew = true;
-
-        // flush first to avoid hitting prepared statements cap
-        $this->flushStatements();
 
         // look at data
         foreach ($resp as $data) {
@@ -248,14 +238,12 @@ class SyncFacebook extends BuildTask implements CronTask {
 
                     // set no new flag
                     $noNew = false;
-
                 } else {
 
                     // push output
                     echo 'Update ' . $data->id . 'came from the website' . $eol;
                     flush();
                     @ob_flush();
-
                 }
             } else {
 
@@ -265,12 +253,9 @@ class SyncFacebook extends BuildTask implements CronTask {
                 echo 'Already added Update ' . $data->id . $eol;
                 flush();
                 @ob_flush();
-
             }
         }
 
         return $noNew;
-
     }
-
 }
