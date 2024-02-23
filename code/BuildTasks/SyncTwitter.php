@@ -96,8 +96,6 @@ class SyncTwitter extends BuildTask implements CronTask
             return;
         }
 
-        // flush first to avoid hitting prepared statements cap
-        $this->flushStatements();
 
         // grab the most recent tweet
         $params = array();
@@ -195,9 +193,6 @@ class SyncTwitter extends BuildTask implements CronTask
     {
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
-
-        // flush first to avoid hitting prepared statements cap
-        $this->flushStatements();
 
         $noNew = true;
 

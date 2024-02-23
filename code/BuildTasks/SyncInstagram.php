@@ -96,8 +96,6 @@ class SyncInstagram extends BuildTask implements CronTask
             return;
         }
 
-        // flush first to avoid hitting prepared statements cap
-        $this->flushStatements();
 
         // grab the most recent InstagramUpdate
         $lastInstagramUpdate = DataObject::get_one(InstagramUpdate::class);
