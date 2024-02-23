@@ -8,10 +8,11 @@ use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use Silverstripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
-use tmhOAuth;
 use \Exception;
+use themattharris\tmhOAuth;
 
-class TwitterAuthenticator extends Controller {
+class TwitterAuthenticator extends Controller
+{
 
 	protected static $conf_instance;
 	protected static $tmh_oauth_instance;
@@ -20,7 +21,8 @@ class TwitterAuthenticator extends Controller {
 	protected $errors = array();
 	protected $messages = array();
 
-	public function __construct() {
+	public function __construct()
+	{
 
 		$this->conf		= static::get_conf();
 		$this->tmhOAuth = static::get_tmh_oauth();
@@ -28,12 +30,14 @@ class TwitterAuthenticator extends Controller {
 		parent::__construct();
 	}
 
-	public static function get_conf() {
+	public static function get_conf()
+	{
 		if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
 		return static::$conf_instance;
 	}
 
-	public static function get_tmh_oauth() {
+	public static function get_tmh_oauth()
+	{
 
 		$conf = static::get_conf();
 
@@ -47,7 +51,8 @@ class TwitterAuthenticator extends Controller {
 		return static::$tmh_oauth_instance;
 	}
 
-	public static function validate_current_conf() {
+	public static function validate_current_conf()
+	{
 
 		$conf		= static::get_conf();
 		$tmhOAuth	= static::get_tmh_oauth();
@@ -56,7 +61,8 @@ class TwitterAuthenticator extends Controller {
 		$tmhOAuth->config['user_secret']	= $conf->TwitterOAuthSecret;
 
 		$code = $tmhOAuth->request(
-			'GET', $tmhOAuth->url('1.1/account/verify_credentials')
+			'GET',
+			$tmhOAuth->url('1.1/account/verify_credentials')
 		);
 
 		if ($code == 200) {
@@ -67,15 +73,18 @@ class TwitterAuthenticator extends Controller {
 		}
 	}
 
-	protected function addError() {
-		$this->errors[] = 'There was an error: '.$this->tmhOAuth->response['response'];
+	protected function addError()
+	{
+		$this->errors[] = 'There was an error: ' . $this->tmhOAuth->response['response'];
 	}
 
-	protected function addMsg($msg) {
+	protected function addMsg($msg)
+	{
 		$this->messages[] = $msg;
 	}
 
-	protected function wipe() {
+	protected function wipe()
+	{
 		$this->conf->TwitterOAuthToken = null;
 		$this->conf->TwitterOAuthSecret = null;
 		$this->conf->write();
@@ -84,7 +93,8 @@ class TwitterAuthenticator extends Controller {
 	}
 
 	// Step 1: Request a temporary token
-	protected function request_token() {
+	protected function request_token()
+	{
 		$code = $this->tmhOAuth->request(
 			'POST',
 			$this->tmhOAuth->url('oauth/request_token', ''),
@@ -102,9 +112,10 @@ class TwitterAuthenticator extends Controller {
 	}
 
 	// Step 2: Direct the user to the authorize web page
-	protected function authorize() {
+	protected function authorize()
+	{
 		$authurl = $this->tmhOAuth->url("oauth/authorize", '') . "?oauth_token={$_SESSION['oauth']['oauth_token']}";
-		header("Location: ".$authurl);
+		header("Location: " . $authurl);
 		exit;
 
 		// in case the redirect doesn't fire
@@ -112,7 +123,8 @@ class TwitterAuthenticator extends Controller {
 	}
 
 	// Step 3: This is the code that runs when Twitter redirects the user to the callback. Exchange the temporary token for a permanent access token
-	protected function access_token() {
+	protected function access_token()
+	{
 
 		$this->tmhOAuth->config['user_token'] = $_SESSION['oauth']['oauth_token'];
 		$this->tmhOAuth->config['user_secret'] = $_SESSION['oauth']['oauth_token_secret'];
@@ -139,13 +151,15 @@ class TwitterAuthenticator extends Controller {
 	}
 
 	// Step 4: Now the user has authenticated, do something with the permanent token and secret we received
-	protected function verify_credentials() {
+	protected function verify_credentials()
+	{
 
 		$this->tmhOAuth->config['user_token']	= $this->conf->TwitterOAuthToken;
 		$this->tmhOAuth->config['user_secret']	= $this->conf->TwitterOAuthSecret;
 
 		$code = $this->tmhOAuth->request(
-			'GET', $this->tmhOAuth->url('1.1/account/verify_credentials')
+			'GET',
+			$this->tmhOAuth->url('1.1/account/verify_credentials')
 		);
 
 		// print_r($this->tmhOAuth->response);
@@ -154,14 +168,15 @@ class TwitterAuthenticator extends Controller {
 			$resp = json_decode($this->tmhOAuth->response['response']);
 			$this->addMsg(
 				'<p>Authourised as ' . $resp->screen_name . '</p>' .
-				'<p>The access level of this token is: ' . $this->tmhOAuth->response['headers']['x-access-level'] . '</p>'
+					'<p>The access level of this token is: ' . $this->tmhOAuth->response['headers']['x-access-level'] . '</p>'
 			);
 		} else {
 			$this->addError();
 		}
 	}
 
-	public function index() {
+	public function index()
+	{
 
 		// authorise
 		$user = Security::getCurrentUser();
@@ -177,14 +192,13 @@ class TwitterAuthenticator extends Controller {
 		if ($this->conf->TwitterOAuthToken && $this->conf->TwitterOAuthSecret && !isset($_REQUEST['verify'])) $this->verify_credentials();
 
 		// display output
-		$errMsg = count($this->errors) ? "<p>".implode("<br />",$this->errors)."</p>" : '' ;
-		$msgMsg = count($this->messages) ? "<p>".implode("<br />",$this->messages)."</p>" : '' ;
+		$errMsg = count($this->errors) ? "<p>" . implode("<br />", $this->errors) . "</p>" : '';
+		$msgMsg = count($this->messages) ? "<p>" . implode("<br />", $this->messages) . "</p>" : '';
 
-		return '<p>'.$msgMsg.$errMsg.(
+		return '<p>' . $msgMsg . $errMsg . (
 			$this->conf->TwitterOAuthToken && $this->conf->TwitterOAuthSecret
-				? 'Do you want to: <ul><li><a href="?verify=1">reverify the credentials?</a></li><li><a href="?wipe=1">wipe them and start again</a></li></ul>'
-				: '<a href="?start=1">Click to authorize</a>.'
-		).'</p>';
+			? 'Do you want to: <ul><li><a href="?verify=1">reverify the credentials?</a></li><li><a href="?wipe=1">wipe them and start again</a></li></ul>'
+			: '<a href="?start=1">Click to authorize</a>.'
+		) . '</p>';
 	}
-
 }

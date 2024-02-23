@@ -7,30 +7,33 @@ use JanuSoftware\Facebook\Facebook;
 use Silverstripe\SiteConfig\SiteConfig;
 use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
-use tmhOAuth;
 use Exception;
-
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
+use themattharris\tmhOAuth;
 
 /**
  * @author AzT3k
  */
-class PostToSocialMedia extends Controller {
+class PostToSocialMedia extends Controller
+{
 
     protected static $conf;
 
-    public function __construct() {
+    public function __construct()
+    {
 
         static::$conf = SiteConfig::current_site_config();
 
         parent::__construct();
-
     }
 
     /**
      * @todo actually validate the configuration - will need to create a class extened from controller for authenticating / validating the configuration refer to FBAuthenticator
      * @return boolean
      */
-    public function confirmTwitterAccess() {
+    public function confirmTwitterAccess()
+    {
 
         if (!static::$conf->TwitterPushUpdates) return false;
 
@@ -58,7 +61,8 @@ class PostToSocialMedia extends Controller {
      *
      * @return boolean
      */
-    public function confirmFacebookAccess() {
+    public function confirmFacebookAccess()
+    {
 
         if (!static::$conf->FacebookPushUpdates) return false;
 
@@ -86,7 +90,8 @@ class PostToSocialMedia extends Controller {
      * @param array $data
      * @param array $services
      */
-    public function sendToSocialMedia(array $data, array $services = array('facebook','twitter')) {
+    public function sendToSocialMedia(array $data, array $services = array('facebook', 'twitter'))
+    {
 
         // init output
         $ids = array(
@@ -102,14 +107,20 @@ class PostToSocialMedia extends Controller {
                 'secret' => static::$conf->FacebookAppSecret,
             ));
 
-            $facebook->setAccessToken(static::$conf->FacebookPageAccessToken);
+            $facebook->setDefaultAccessToken(static::$conf->FacebookPageAccessToken);
             try {
-                $post_id = $facebook->api("/".static::$conf->FacebookPageId."/feed", "post", $data);
+
+                $post_id = $facebook->post("/" . static::$conf->FacebookPageId . "/feed", $data, static::$conf->FacebookPageAccessToken);
+
+                // @todo: don't think a post ID is returned here, no ids are no the response class
+                // need another approach here
                 $ids['facebook'] = $post_id['id'];
             } catch (Exception $e) {
-                SS_Log::log('Error '.$e->getCode().' : '.$e->getFile().' Line '.$e->getLine().' : '.$e->getMessage()."\n".'BackTrace: '."\n".$e->getTraceAsString(),SS_Log::ERR);
-            }
 
+                Injector::inst()
+                    ->get(LoggerInterface::class)
+                    ->error('Error ' . $e->getCode() . ' : ' . $e->getFile() . ' Line ' . $e->getLine() . ' : ' . $e->getMessage() . "\n" . 'BackTrace: ' . "\n" . $e->getTraceAsString());
+            }
         }
 
         // Twitter
@@ -129,11 +140,8 @@ class PostToSocialMedia extends Controller {
                 $data = json_decode($connection->response['response']);
                 $ids['twitter'] = $data->id_str;
             }
-
-
         }
 
         return $ids;
-
     }
 }
