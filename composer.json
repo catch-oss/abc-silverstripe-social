@@ -33,7 +33,7 @@
     "azt3k/abc-silverstripe": "dev-feature/ss5-update",
     "azt3k/abc-silverstripe-taggable": "dev-feature/ss5-update",
     "themattharris/tmhoauth": "dev-feature/ss5-update",
-    "janu-software/facebook-php-sdk": "0.1.*@stable",
+    "janu-software/facebook-php-sdk": "0.2.*@stable",
     "cosenary/instagram": "2.3.*@stable",
     "guzzlehttp/guzzle": ">=7.4.5",
     "composer-fallback/php-http.client-implementation.guzzle7": "*@stable"
