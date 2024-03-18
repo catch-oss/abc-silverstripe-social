@@ -10,15 +10,11 @@ use SilverStripe\Control\Controller;
 /**
  * @author AzT3k
  */
-class FBUpdateHolder extends Page {
+class FBUpdateHolder extends Page
+{
 
-	private static $can_be_root = true;
+    private static $can_be_root = true;
     private static $allowed_children = array(
         FBUpdate::class
     );
-
-}
-
-class FBUpdateHolder_Controller extends Controller {
-
 }

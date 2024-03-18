@@ -17,28 +17,25 @@ use Silverstripe\SiteConfig\SiteConfig;
 /**
  * Facebook images are not always instantly available so this is a rety job that should look for any
  */
-class RetrySyncFacebookImages extends BuildTask implements CronTask {
+class RetrySyncFacebookImages extends BuildTask implements CronTask
+{
 
     protected static $conf_instance;
     protected $conf;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->conf = $this->getConf();
         parent::__construct();
     }
 
-    protected function flushStatements()
+    public function getSchedule()
     {
-        $conn = \SilverStripe\ORM\DB::get_conn();
-        $connector = $conn->getConnector();
-        $connector->flushStatements();
-    }
-
-    public function getSchedule() {
         return "*/15 * * * *";
     }
 
-    public function getConf() {
+    public function getConf()
+    {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
@@ -47,28 +44,30 @@ class RetrySyncFacebookImages extends BuildTask implements CronTask {
      * Initialise the script
      * @return void
      */
-    function init() {
+    function init()
+    {
 
-        if (method_exists(parent::class,'init')) parent::init();
+        if (method_exists(parent::class, 'init')) parent::init();
 
         if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             return Security::permissionFailure();
         }
 
         if (!$this->conf) $this->__construct();
-
     }
 
     /**
      * adpacter for cron task
      * @return [type] [description]
      */
-    public function process() {
+    public function process()
+    {
         $this->init();
         $this->run();
     }
 
-    public function run($request = null) {
+    public function run($request = null)
+    {
 
         // eol
         $eol = php_sapi_name() == 'cli' ? "\n" : "<br>\n";
@@ -82,9 +81,6 @@ class RetrySyncFacebookImages extends BuildTask implements CronTask {
             echo 'Sync disabled' . $eol . $eol;
             return;
         }
-
-        // flush first to avoid hitting prepared statements cap
-        $this->flushStatements();
 
         // find any updates that are less than a week old with no image
         $updates = FBUpdate::get()
@@ -102,13 +98,7 @@ class RetrySyncFacebookImages extends BuildTask implements CronTask {
         // loop the loop
         foreach ($updates as $k => $update) {
 
-            // make sure we dont hit the prepared statements cap
-            if ($k % 1000 == 0) {
-                $this->flushStatements();
-            }
-
             $update->updateFromUpdate((object) json_decode($update->OriginalUpdate));
         }
-
     }
 }

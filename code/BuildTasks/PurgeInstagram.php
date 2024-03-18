@@ -4,6 +4,7 @@ namespace Azt3k\SS\Social\BuildTasks;
 
 use SilverStripe\Control\Director;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
+use SilverStripe\Control\Controller;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
@@ -13,31 +14,28 @@ use SilverStripe\Dev\BuildTask;
 /**
  * @author AzT3k
  */
-class PurgeInstagram extends BuildTask {
+class PurgeInstagram extends BuildTask
+{
 
-    protected function flushStatements()
+
+    public function init()
     {
-        $conn = \SilverStripe\ORM\DB::get_conn();
-        $connector = $conn->getConnector();
-        $connector->flushStatements();
-    }
-
-    public function init() {
 
         parent::init();
 
         if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
             return Security::permissionFailure();
         }
-
     }
 
-    public function process() {
+    public function process()
+    {
         $this->init();
-        $this->run();
+        $this->run(Controller::curr()->getRequest());
     }
 
-    public function run($request) {
+    public function run($request)
+    {
 
         // eol
         $eol = php_sapi_name() == 'cli' ? "\n" : "<br>\n";
@@ -47,38 +45,22 @@ class PurgeInstagram extends BuildTask {
         flush();
         @ob_flush();
 
-        foreach(InstagramUpdate::get() as $k => $page) {
-
-            // make sure we dont hit the prepared statements cap
-            if ($k % 1000 == 0) {
-                $this->flushStatements();
-            }
+        foreach (InstagramUpdate::get() as $k => $page) {
 
             echo "Deleting " . $page->Title . $eol;
             $page->delete();
         }
 
-        foreach(Versioned::get_by_stage(InstagramUpdate::class, 'Stage') as $k => $page) {
-
-            // make sure we dont hit the prepared statements cap
-            if ($k % 1000 == 0) {
-                $this->flushStatements();
-            }
+        foreach (Versioned::get_by_stage(InstagramUpdate::class, 'Stage') as $k => $page) {
 
             echo "Deleting From Stage: " . $page->Title . $eol;
             $page->deleteFromStage('Stage');
         }
 
-        foreach(Versioned::get_by_stage(InstagramUpdate::class, 'L$eolive') as $k => $page) {
-
-            // make sure we dont hit the prepared statements cap
-            if ($k % 1000 == 0) {
-                $this->flushStatements();
-            }
+        foreach (Versioned::get_by_stage(InstagramUpdate::class, 'L$eolive') as $k => $page) {
 
             echo "Deleting From Live: " . $page->Title . $eol;
             $page->deleteFromStage('Live');
         }
-
     }
 }
