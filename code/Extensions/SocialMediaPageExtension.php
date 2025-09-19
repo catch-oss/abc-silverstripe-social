@@ -59,6 +59,14 @@ class SocialMediaPageExtension extends DataExtension {
         //'SocialEmbedParser'              => 'HTMLText'
     );
 
+    private static $indexes = [
+        'ForceUpdateMode' => true,
+        'LastPostedToSocialMedia'  => true,
+        'PublicationFBUpdateID' => true,
+        'PublicationTweetID' => true,
+
+    ];
+
     // Short Code parser
     // -----------------
 
