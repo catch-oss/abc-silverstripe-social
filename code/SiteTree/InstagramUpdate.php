@@ -6,7 +6,6 @@ use Page;
 use Azt3k\SS\Social\SiteTree\InstagramUpdateHolder;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
-use MetzWeb\Instagram\Instagram;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DatetimeField;
@@ -98,8 +97,15 @@ class InstagramUpdate extends Page
     public function updateFromUpdate(\stdClass $update, $save = true)
     {
 
-        $content = empty($update->caption) ? '' : $update->caption->text;
-        $img = empty($update->images) ? '' : $update->images->standard_resolution->url;
+        if (is_array($update)) {
+            $update = json_decode(json_encode($update));
+        }
+
+        $content = $update->caption ?? '';
+        $img = $update->media_url ?? '';
+        if (!empty($update->media_type) && $update->media_type === 'VIDEO' && !empty($update->thumbnail_url)) {
+            $img = $update->thumbnail_url;
+        }
 
         if (!$content && !$img) {
             echo 'Encountered error with: ' . print_r($update, 1);
@@ -141,7 +147,8 @@ class InstagramUpdate extends Page
             $this->Title            = 'Instagram Update - ' . $update->id;
             $this->URLSegment       = 'InstagramUpdate-' . $update->id;
             $this->UpdateID         = $update->id;
-            $this->OriginalCreated  = date('Y-m-d H:i:s', $update->created_time);
+            $timestamp = $update->timestamp ?? null;
+            $this->OriginalCreated  = $timestamp ? date('Y-m-d H:i:s', strtotime($timestamp)) : null;
             $this->Content          = $content;
             $this->OriginalUpdate   = json_encode($update);
             $this->findParent();
@@ -191,7 +198,7 @@ class InstagramUpdate extends Page
 
         if (!$data) return null;
 
-        return $data->link;
+        return $data->permalink ?? $data->link ?? null;
     }
 
     /**

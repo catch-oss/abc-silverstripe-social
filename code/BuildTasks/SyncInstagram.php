@@ -2,7 +2,7 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
-use MetzWeb\Instagram\Instagram;
+use Azt3k\SS\Social\Clients\InstagramBasicDisplayClient;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 use Azt3k\SS\Social\Objects\SocialHelper;
@@ -53,11 +53,11 @@ class SyncInstagram extends BuildTask implements CronTask
     {
         if (!static::$instagram_instance) {
             $conf = static::get_conf();
-            static::$instagram_instance = new Instagram(array(
-                'apiKey'      => $conf->InstagramApiKey,
-                'apiSecret'   => $conf->InstagramApiSecret,
-                'apiCallback' => SocialHelper::php_self(),
-            ));
+            static::$instagram_instance = new InstagramBasicDisplayClient(
+                (string) $conf->InstagramApiKey,
+                (string) $conf->InstagramApiSecret,
+                SocialHelper::php_self()
+            );
         }
 
         return static::$instagram_instance;
@@ -96,6 +96,13 @@ class SyncInstagram extends BuildTask implements CronTask
             return;
         }
 
+        if (!$this->conf->InstagramOAuthToken) {
+            echo 'No Instagram OAuth token configured' . $eol . $eol;
+            return;
+        }
+
+        $this->refreshAccessTokenIfNeeded();
+
 
         // grab the most recent InstagramUpdate
         $lastInstagramUpdate = DataObject::get_one(InstagramUpdate::class);
@@ -104,55 +111,72 @@ class SyncInstagram extends BuildTask implements CronTask
         $initPop = $lastInstagramUpdate ? false : true;
 
         // get the first 90
-        $updates = $this->instagram->getUserMedia($this->conf->InstagramUserId, 90);
+        $updates = $this->instagram->getUserMedia((string) $this->conf->InstagramOAuthToken, 90);
 
-        // die(print_r($updates, 1));
+        if (!empty($updates['data'])) {
 
-        // only proceed if the request was valid
-        if ((!empty($updates->meta) && $updates->meta->code == 200)) {
+            // process the response
+            $this->processResponse($updates['data']);
 
-            if (!empty($updates->data)) {
+            // check if we need to do an initial population
+            if ($initPop) {
 
-                // process the response
-                $this->processResponse($updates);
+                //output
+                echo "<br />\n<br />\nDoing initial Population<br />\n<br />\n";
+                flush();
+                @ob_flush();
 
-                // check if we need to do an initial population
-                if ($initPop) {
-
-                    //output
-                    echo "<br />\n<br />\nDoing initial Population<br />\n<br />\n";
-                    flush();
-                    @ob_flush();
-
-                    // keep going until we hit a problem
-                    while ($updates = $this->instagram->pagination($updates)) {
-
-                        if ((!empty($updates->meta) && $updates->meta->code == 200)) {
-                            if (!empty($updates->data)) $this->processResponse($updates);
-                        } else die(print_r($updates, 1));
+                $next = $updates['paging']['next'] ?? null;
+                while ($next) {
+                    $updates = $this->instagram->getMediaPage($next);
+                    if (!empty($updates['data'])) {
+                        $this->processResponse($updates['data']);
                     }
-
-                    // output
-                    echo "Finished";
-                    flush();
-                    @ob_flush();
+                    $next = $updates['paging']['next'] ?? null;
                 }
-            } else {
 
                 // output
-                echo "No hits <br />\n<br />\n";
+                echo "Finished";
                 flush();
                 @ob_flush();
             }
-        } else die(print_r($updates, 1));
+        } else {
+
+            // output
+            echo "No hits <br />\n<br />\n";
+            flush();
+            @ob_flush();
+        }
     }
 
-    public function processResponse(\stdClass $resp)
+    protected function refreshAccessTokenIfNeeded(): void
+    {
+        if (!$this->conf->InstagramOAuthToken || !$this->conf->InstagramOAuthTokenExpires) {
+            return;
+        }
+
+        $expiresAt = strtotime($this->conf->InstagramOAuthTokenExpires);
+        if ($expiresAt && $expiresAt <= time() + 604800) {
+            $refresh = $this->instagram->refreshAccessToken((string) $this->conf->InstagramOAuthToken);
+            if (!empty($refresh['access_token'])) {
+                $this->conf->InstagramOAuthToken = $refresh['access_token'];
+                $this->conf->InstagramOAuthTokenExpires = !empty($refresh['expires_in'])
+                    ? date('Y-m-d H:i:s', time() + (int) $refresh['expires_in'])
+                    : $this->conf->InstagramOAuthTokenExpires;
+                $this->conf->write();
+            }
+        }
+    }
+
+    public function processResponse(array $updates)
     {
 
         $noNew = true;
 
-        foreach ($resp->data as $data) {
+        foreach ($updates as $data) {
+            if (is_array($data)) {
+                $data = json_decode(json_encode($data));
+            }
             if (!$savedInstagramUpdate = DataObject::get_one(InstagramUpdate::class, "UpdateID='" . $data->id . "'")) {
                 if (!$pubInstagramUpdate = DataObject::get_one(PublicationInstagramUpdate::class, "InstagramUpdateID='" . $data->id . "'")) {
 
