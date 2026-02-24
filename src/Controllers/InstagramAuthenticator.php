@@ -8,7 +8,7 @@ use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
 use SilverStripe\SiteConfig\SiteConfig;
-use Exception;
+use RuntimeException;
 
 class InstagramAuthenticator extends Controller {
 
@@ -57,8 +57,7 @@ class InstagramAuthenticator extends Controller {
         if (!empty($res['id'])) {
             return true;
         } else {
-            throw new Exception('There was an error: ' . print_r($res, 1));
-            return false;
+            throw new RuntimeException('There was an error: ' . print_r($res, 1));
         }
     }
 
@@ -80,14 +79,12 @@ class InstagramAuthenticator extends Controller {
         $cnf->InstagramUsername = null;
         $cnf->InstagramUserId = null;
         $cnf->write();
-        header('Location: ' . SocialHelper::php_self());
     }
 
-    // Step 1: Request a temporary token
-    protected function request_token(): void
+    // Step 1: Request a temporary token - returns login URL for redirect
+    protected function getLoginUrl(): string
     {
-        header("Location: " . static::get_instagram()->getLoginUrl());
-        exit;
+        return static::get_instagram()->getLoginUrl();
     }
 
     // Step 2: This is the code that runs when Instagram redirects the user to the callback. Exchange the temporary token for a permanent access token
@@ -126,10 +123,16 @@ class InstagramAuthenticator extends Controller {
         if (!Permission::checkMember($user, 'ADMIN')) return $this->httpError(401, 'You do not have access to the requested content');
 
         // trigger various modes
-        if (isset($_REQUEST['start']))          $this->request_token();
-        else if (isset($_REQUEST['code']))      $this->access_token();
-        else if (isset($_REQUEST['verify']))    $this->verify_credentials();
-        else if (isset($_REQUEST['wipe']))      $this->wipe();
+        if (isset($_REQUEST['start'])) {
+            return $this->redirect($this->getLoginUrl());
+        } elseif (isset($_REQUEST['code'])) {
+            $this->access_token();
+        } elseif (isset($_REQUEST['verify'])) {
+            $this->verify_credentials();
+        } elseif (isset($_REQUEST['wipe'])) {
+            $this->wipe();
+            return $this->redirect(SocialHelper::php_self());
+        }
 
         // verify credentials if available
         if ($this->conf->InstagramOAuthToken && !isset($_REQUEST['verify'])) $this->verify_credentials();

@@ -12,7 +12,8 @@ use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
-use \Exception;
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\LiteralField;
 
 /**
@@ -39,6 +40,15 @@ class FBUpdate extends Page {
     private static $defaults = array(
         'holder_class'      => 'FBUpdateHolder',
     );
+
+    /**
+     * Facebook placeholder image URLs to exclude when downloading post images.
+     * @config
+     */
+    private static $placeholder_images = [
+        'https://fbstatic-a.akamaihd.net/rsrc.php/v2/yA/r/gPCjrIGykBe.gif',
+        'https://fbstatic-a.akamaihd.net/rsrc.php/v2/y6/r/_xS7LcbxKS4.gif',
+    ];
 
     /**
      * @config
@@ -131,11 +141,8 @@ class FBUpdate extends Page {
             $picUrl = '';
         }
 
-        if (
-            $picUrl &&
-            $picUrl != 'https://fbstatic-a.akamaihd.net/rsrc.php/v2/yA/r/gPCjrIGykBe.gif' &&
-            $picUrl != 'https://fbstatic-a.akamaihd.net/rsrc.php/v2/y6/r/_xS7LcbxKS4.gif'
-        ) {
+        $placeholders = Config::inst()->get(static::class, 'placeholder_images') ?: [];
+        if ($picUrl && !in_array($picUrl, $placeholders)) {
 
             // get url
             $img = $picUrl;
@@ -143,16 +150,18 @@ class FBUpdate extends Page {
             // sanity check
             if (!is_dir(ASSETS_PATH . '/social-updates/')) mkdir(ASSETS_PATH . '/social-updates/');
 
-            // prep img data
+            // prep img data - sanitize basename to prevent path traversal
             $noq = explode('?', $img);
-            $pi = pathinfo($noq[0]);
-            $absPath = ASSETS_PATH . '/social-updates/' . $pi['basename'];
-            $relPath = ASSETS_DIR . '/social-updates/' . $pi['basename'];
+            $basename = basename(pathinfo($noq[0], PATHINFO_BASENAME));
+            $absPath = ASSETS_PATH . '/social-updates/' . $basename;
+            $relPath = ASSETS_DIR . '/social-updates/' . $basename;
 
             // pull down image
             if (!file_exists($absPath)) {
                 $imgData = file_get_contents($img);
-                file_put_contents($absPath, $imgData);
+                if ($imgData !== false) {
+                    file_put_contents($absPath, $imgData);
+                }
             }
 
             // does the file exist
@@ -179,7 +188,9 @@ class FBUpdate extends Page {
         $content = $content ?: $update->story;
 
         if (!$content) {
-            echo 'Encountered error with: ' . print_r($update,1);
+            Injector::inst()->get(LoggerInterface::class)->warning(
+                'FBUpdate: No content found for update ' . ($update->id ?? 'unknown')
+            );
             return false;
         }
         else {

@@ -8,7 +8,7 @@ use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
-use \Exception;
+use RuntimeException;
 use themattharris\tmhOAuth;
 
 class TwitterAuthenticator extends Controller
@@ -70,8 +70,7 @@ class TwitterAuthenticator extends Controller
 		if ($code == 200) {
 			return true;
 		} else {
-			throw new Exception('There was an error: ' . $tmhOAuth->response['response']);
-			return false;
+			throw new RuntimeException('There was an error: ' . $tmhOAuth->response['response']);
 		}
 	}
 
@@ -91,11 +90,10 @@ class TwitterAuthenticator extends Controller
 		$this->conf->TwitterOAuthSecret = null;
 		$this->conf->write();
 		unset($_SESSION['oauth']);
-		header('Location: ' . SocialHelper::php_self());
 	}
 
-	// Step 1: Request a temporary token
-	protected function request_token(): void
+	// Step 1: Request a temporary token, returns authorize URL on success
+	protected function request_token(): ?string
 	{
 		$code = $this->tmhOAuth->request(
 			'POST',
@@ -107,25 +105,21 @@ class TwitterAuthenticator extends Controller
 
 		if ($code == 200) {
 			$_SESSION['oauth'] = $this->tmhOAuth->extract_params($this->tmhOAuth->response['response']);
-			$this->authorize();
+			return $this->getAuthorizeUrl();
 		} else {
 			$this->addError();
+			return null;
 		}
 	}
 
-	// Step 2: Direct the user to the authorize web page
-	protected function authorize(): void
+	// Step 2: Build the authorize URL for the user
+	protected function getAuthorizeUrl(): string
 	{
-		$authurl = $this->tmhOAuth->url("oauth/authorize", '') . "?oauth_token={$_SESSION['oauth']['oauth_token']}";
-		header("Location: " . $authurl);
-		exit;
-
-		// in case the redirect doesn't fire
-		$this->addMsg('<p>To complete the OAuth flow please visit URL: <a href="' . $authurl . '">' . $authurl . '</a></p>');
+		return $this->tmhOAuth->url("oauth/authorize", '') . "?oauth_token={$_SESSION['oauth']['oauth_token']}";
 	}
 
-	// Step 3: This is the code that runs when Twitter redirects the user to the callback. Exchange the temporary token for a permanent access token
-	protected function access_token(): void
+	// Step 3: Exchange the temporary token for a permanent access token
+	protected function access_token(): bool
 	{
 
 		$this->tmhOAuth->config['user_token'] = $_SESSION['oauth']['oauth_token'];
@@ -146,9 +140,10 @@ class TwitterAuthenticator extends Controller
 			$this->conf->TwitterUsername = $token['screen_name'];
 			$this->conf->write();
 			unset($_SESSION['oauth']);
-			header('Location: ' . SocialHelper::php_self());
+			return true;
 		} else {
 			$this->addError();
+			return false;
 		}
 	}
 
@@ -185,10 +180,17 @@ class TwitterAuthenticator extends Controller
 		if (!Permission::checkMember($user, 'ADMIN')) return $this->httpError(401, 'You do not have access to the requested content');
 
 		// trigger various modes
-		if (isset($_REQUEST['start']))					$this->request_token();
-		elseif (isset($_REQUEST['oauth_verifier']))		$this->access_token();
-		elseif (isset($_REQUEST['verify']))				$this->verify_credentials();
-		elseif (isset($_REQUEST['wipe']))				$this->wipe();
+		if (isset($_REQUEST['start'])) {
+			$redirectUrl = $this->request_token();
+			if ($redirectUrl) return $this->redirect($redirectUrl);
+		} elseif (isset($_REQUEST['oauth_verifier'])) {
+			if ($this->access_token()) return $this->redirect(SocialHelper::php_self());
+		} elseif (isset($_REQUEST['verify'])) {
+			$this->verify_credentials();
+		} elseif (isset($_REQUEST['wipe'])) {
+			$this->wipe();
+			return $this->redirect(SocialHelper::php_self());
+		}
 
 		// verify credentials if available
 		if ($this->conf->TwitterOAuthToken && $this->conf->TwitterOAuthSecret && !isset($_REQUEST['verify'])) $this->verify_credentials();

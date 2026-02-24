@@ -14,9 +14,6 @@ use Azt3k\SS\Social\Controllers\InstagramAuthenticator;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\CheckboxField;
-use \Exception;
-
-
 class SocialMediaConfig extends Extension {
 
     private static $db = array(
@@ -98,18 +95,18 @@ class SocialMediaConfig extends Extension {
         $userValid = $pageValid = false;
         try {
             $pageValid = FBAuthenticator::validate_current_conf('page');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $pageMsg = $e->getMessage();
             $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'FacebookBrokenPageConf',
-                '<span style="color:red">Your facebook page configuration is broken (' . $pageValid . ')</span>'
+                '<span style="color:red">Your facebook page configuration is broken (' . $pageMsg . ')</span>'
             ));
         }
 
         // Validate User Access Token
         try {
             $userValid = FBAuthenticator::validate_current_conf('user');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $userMsg = $e->getMessage();
             $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'FacebookBrokenUserConf',
@@ -148,7 +145,7 @@ class SocialMediaConfig extends Extension {
         // user
         try {
             $twitterValid = TwitterAuthenticator::validate_current_conf();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $twitterMsg = $e->getMessage();
             $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'TwitterBrokenConf',
@@ -182,7 +179,7 @@ class SocialMediaConfig extends Extension {
         // user
         try {
             $instagramValid = InstagramAuthenticator::validate_current_conf();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $instagramMsg = $e->getMessage();
             $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'InstagramBrokenConf',

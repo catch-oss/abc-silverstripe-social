@@ -8,7 +8,7 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Security;
-use Exception;
+use RuntimeException;
 
 /**
  * @author AzT3k
@@ -124,8 +124,7 @@ class FBAuthenticator extends Controller {
             $msg = '';
             if (!$pageValid) $msg.= 'Unable to fetch page data; ';
             if (!$userValid) $msg.= 'Unable to fetch user data; ';
-            throw new Exception($msg);
-            return false;
+            throw new RuntimeException($msg);
         }
 
     }
@@ -163,9 +162,7 @@ class FBAuthenticator extends Controller {
 
         // if the code is empty shoot off to fb and grab one - it will redirect back here with a code
         if (empty($code)) {
-            $dialog_url = static::getOAuthDialogURL();
-            header('Location: '.$dialog_url);
-            exit;
+            return $this->redirect(static::getOAuthDialogURL());
         }
 
         // so we've got a code now - lets do some more authorisation
@@ -215,9 +212,8 @@ class FBAuthenticator extends Controller {
             $freshConf = SiteConfig::current_site_config();
 
             // final output
-            echo '<p>User ' . $this->conf->FacebookUserId . ($freshConf->FacebookUserAccessToken ? ' was authenticated' : ' was not authenticated') . '</p>';
-            echo '<p>Page ' . $this->conf->FacebookPageId . ($freshConf->FacebookPageAccessToken ? ' was authenticated' : ' was not authenticated') . '</p>';
-            exit;
+            return '<p>User ' . $this->conf->FacebookUserId . ($freshConf->FacebookUserAccessToken ? ' was authenticated' : ' was not authenticated') . '</p>'
+                 . '<p>Page ' . $this->conf->FacebookPageId . ($freshConf->FacebookPageAccessToken ? ' was authenticated' : ' was not authenticated') . '</p>';
 
         }else{
 

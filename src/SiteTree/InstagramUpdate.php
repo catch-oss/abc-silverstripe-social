@@ -11,6 +11,8 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\LiteralField;
 
@@ -109,22 +111,26 @@ class InstagramUpdate extends Page
         }
 
         if (!$content && !$img) {
-            echo 'Encountered error with: ' . print_r($update, 1);
+            Injector::inst()->get(LoggerInterface::class)->warning(
+                'InstagramUpdate: No content or image found for update ' . ($update->id ?? 'unknown')
+            );
             return false;
         } else {
 
             // sanity check
             if (!is_dir(ASSETS_PATH . '/social-updates/')) mkdir(ASSETS_PATH . '/social-updates/');
 
-            // prep img data
-            $pi = pathinfo($img);
-            $absPath = ASSETS_PATH . '/social-updates/' . $pi['basename'];
-            $relPath = ASSETS_DIR . '/social-updates/' . $pi['basename'];
+            // prep img data - sanitize basename to prevent path traversal
+            $basename = basename(pathinfo($img, PATHINFO_BASENAME));
+            $absPath = ASSETS_PATH . '/social-updates/' . $basename;
+            $relPath = ASSETS_DIR . '/social-updates/' . $basename;
 
             // pull down image
             if (!file_exists($absPath)) {
                 $imgData = file_get_contents($img);
-                file_put_contents($absPath, $imgData);
+                if ($imgData !== false) {
+                    file_put_contents($absPath, $imgData);
+                }
             }
 
             // does the file exist
