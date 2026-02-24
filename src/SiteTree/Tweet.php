@@ -7,6 +7,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -51,7 +52,7 @@ class Tweet extends Page
      *  @param  array|object $conf An associative array containing the configuration - see static::$conf for an example
      *  @return void
      */
-    public static function set_conf($conf)
+    public static function set_conf(array|object $conf): void
     {
         $conf = (array) $conf;
         static::$conf = array_merge(static::$conf, $conf);
@@ -60,7 +61,7 @@ class Tweet extends Page
     /**
      *  @return stdClass
      */
-    public static function get_conf()
+    public static function get_conf(): object
     {
         return (object) array_merge(static::$defaults, static::$conf);
     }
@@ -68,7 +69,7 @@ class Tweet extends Page
     /**
      * @return void
      */
-    protected static function set_conf_from_yaml()
+    protected static function set_conf_from_yaml(): void
     {
         $conf = (array) Config::inst()->get(__CLASS__, 'conf');
         if (!empty($conf))
@@ -78,7 +79,7 @@ class Tweet extends Page
     /**
      *  @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         static::set_conf_from_yaml();
     }
@@ -89,13 +90,13 @@ class Tweet extends Page
         $this->configure();
     }
 
-    public function onBeforeWrite()
+    public function onBeforeWrite(): void
     {
         parent::onBeforeWrite();
         $this->findParent();
     }
 
-    public function findParent()
+    public function findParent(): void
     {
         if (!$this->ParentID) {
             $conf = static::get_conf();
@@ -108,7 +109,7 @@ class Tweet extends Page
         }
     }
 
-    public function updateFromTweet(\stdClass $tweet, $save = true)
+    public function updateFromTweet(\stdClass $tweet, bool $save = true): mixed
     {
 
         // echo json_encode($tweet, JSON_PRETTY_PRINT);
@@ -172,7 +173,7 @@ class Tweet extends Page
         return $save ? $this->write() : true;
     }
 
-    public function getCMSFields()
+    public function getCMSFields(): FieldList
     {
 
         $fields = parent::getCMSFields();
@@ -186,7 +187,7 @@ class Tweet extends Page
         return $fields;
     }
 
-    public function OriginalLink()
+    public function OriginalLink(): string
     {
         return 'https://twitter.com/' .
             SiteConfig::current_site_config()->TwitterUsername .
@@ -199,7 +200,7 @@ class Tweet extends Page
      *
      * @return \Tweet
      */
-    public function expandTweetData(\stdClass $tweet = null)
+    public function expandTweetData(?\stdClass $tweet = null): static
     {
         $data = $tweet ? json_decode(json_encode($tweet), true) : json_decode($this->OriginalTweet, true);
         $this->customise($data);
@@ -211,7 +212,7 @@ class Tweet extends Page
      * @param type $member
      * @return boolean
      */
-    public function canPublish($member = null)
+    public function canPublish($member = null): bool
     {
         if (Director::is_cli()) return true;
         else return parent::canPublish($member);
@@ -220,7 +221,7 @@ class Tweet extends Page
     /**
      * Parses the tokens out of the html
      */
-    public function Content()
+    public function Content(): DBField
     {
 
         // links

@@ -32,7 +32,7 @@ class PostToSocialMedia extends Controller
      * @todo actually validate the configuration - will need to create a class extened from controller for authenticating / validating the configuration refer to FBAuthenticator
      * @return boolean
      */
-    public function confirmTwitterAccess()
+    public function confirmTwitterAccess(): bool
     {
 
         if (!static::$conf->TwitterPushUpdates) return false;
@@ -61,7 +61,7 @@ class PostToSocialMedia extends Controller
      *
      * @return boolean
      */
-    public function confirmFacebookAccess()
+    public function confirmFacebookAccess(): bool
     {
 
         if (!static::$conf->FacebookPushUpdates) return false;
@@ -90,7 +90,7 @@ class PostToSocialMedia extends Controller
      * @param array $data
      * @param array $services
      */
-    public function sendToSocialMedia(array $data, array $services = array('facebook', 'twitter'))
+    public function sendToSocialMedia(array $data, array $services = ['facebook', 'twitter']): array
     {
 
         // init output

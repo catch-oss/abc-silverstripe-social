@@ -16,20 +16,24 @@ class SocialAdmin extends Controller {
 		'htmlfragment'
 	);
 
-	public function ModuleDir() {
+	public function ModuleDir(): string
+	{
 		return ABC_SOCIAL_DIR;
 	}
 
-	public function init() {
+	public function init(): void
+	{
 		parent::init();
 		if (!Permission::check('CMS_ACCESS')) Security::permissionFailure();
 	}
 
-	public function index() {
+	public function index(): mixed
+	{
 		return $this->renderWith('SocialAdmin');
 	}
 
-	public function htmlfragment() {
+	public function htmlfragment(): mixed
+	{
 		$url = $this->request->getVar('pUrl');
 		$nocache = (int) $this->request->getVar('nocache');
 		if ($embed = OEmbedCacheItem::fetch(array('url' => $url))) {

@@ -39,18 +39,18 @@ class SyncTwitter extends PolyCommand implements CronTask
         parent::__construct();
     }
 
-    public function getSchedule()
+    public function getSchedule(): string
     {
         return "*/5 * * * *";
     }
 
-    public function getConf()
+    public function getConf(): mixed
     {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public function getTmhOauth()
+    public function getTmhOauth(): ?tmhOAuth
     {
 
         if (!$this->conf) $this->conf = $this->getConf();
@@ -70,7 +70,7 @@ class SyncTwitter extends PolyCommand implements CronTask
     /**
      * adapter for cron task
      */
-    public function process()
+    public function process(): void
     {
         if (!$this->conf || !$this->tmhOAuth) $this->__construct();
 
@@ -217,7 +217,7 @@ class SyncTwitter extends PolyCommand implements CronTask
         }
     }
 
-    public function processResponse(array $resp, ?PolyOutput $output = null)
+    public function processResponse(array $resp, ?PolyOutput $output = null): bool
     {
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';

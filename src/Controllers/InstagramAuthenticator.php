@@ -29,12 +29,14 @@ class InstagramAuthenticator extends Controller {
         parent::__construct();
     }
 
-    public static function get_conf() {
+    public static function get_conf(): mixed
+    {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public static function get_instagram() {
+    public static function get_instagram(): InstagramBasicDisplayClient
+    {
         if (!static::$instagram_instance) {
             $conf = static::get_conf();
             static::$instagram_instance = new InstagramBasicDisplayClient(
@@ -47,7 +49,8 @@ class InstagramAuthenticator extends Controller {
         return static::$instagram_instance;
     }
 
-    public static function validate_current_conf() {
+    public static function validate_current_conf(): bool
+    {
 
         $res = static::get_instagram()->getUser((string) static::get_conf()->InstagramOAuthToken);
 
@@ -59,15 +62,18 @@ class InstagramAuthenticator extends Controller {
         }
     }
 
-    protected function addError($err) {
+    protected function addError(string $err): void
+    {
         $this->errors[] = 'There was an error: ' . $err;
     }
 
-    protected function addMsg($msg) {
+    protected function addMsg(string $msg): void
+    {
         $this->messages[] = $msg;
     }
 
-    protected function wipe() {
+    protected function wipe(): void
+    {
         $cnf = static::get_conf();
         $cnf->InstagramOAuthToken = null;
         $cnf->InstagramOAuthTokenExpires = null;
@@ -78,13 +84,15 @@ class InstagramAuthenticator extends Controller {
     }
 
     // Step 1: Request a temporary token
-    protected function request_token() {
+    protected function request_token(): void
+    {
         header("Location: " . static::get_instagram()->getLoginUrl());
         exit;
     }
 
     // Step 2: This is the code that runs when Instagram redirects the user to the callback. Exchange the temporary token for a permanent access token
-    protected function access_token() {
+    protected function access_token(): void
+    {
         $data = static::get_instagram()->exchangeCodeForToken($_REQUEST['code']);
         $this->conf->InstagramOAuthToken = $data['access_token'];
         $this->conf->InstagramOAuthTokenExpires = !empty($data['expires_in'])
@@ -96,7 +104,8 @@ class InstagramAuthenticator extends Controller {
     }
 
     // Step 3: Now the user has authenticated, do something with the permanent token and secret we received
-    protected function verify_credentials() {
+    protected function verify_credentials(): void
+    {
 
         $res = static::get_instagram()->getUser((string) static::get_conf()->InstagramOAuthToken);
 
@@ -109,7 +118,8 @@ class InstagramAuthenticator extends Controller {
         }
     }
 
-    public function index() {
+    public function index(): mixed
+    {
 
         // authorise
         $user = Security::getCurrentUser();

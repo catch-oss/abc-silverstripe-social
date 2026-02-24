@@ -7,6 +7,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -48,7 +49,8 @@ class FBUpdate extends Page {
      *  @param  array|object $conf An associative array containing the configuration - see static::$conf for an example
      *  @return void
      */
-    public static function set_conf($conf) {
+    public static function set_conf(array|object $conf): void
+    {
         $conf = (array) $conf;
         static::$conf = array_merge(static::$conf, $conf);
     }
@@ -56,14 +58,16 @@ class FBUpdate extends Page {
     /**
      *  @return stdClass
      */
-    public static function get_conf() {
+    public static function get_conf(): object
+    {
         return (object) array_merge(static::$defaults, static::$conf);
     }
 
     /**
      * @return void
      */
-    protected static function set_conf_from_yaml() {
+    protected static function set_conf_from_yaml(): void
+    {
         $conf = (array) Config::inst()->get(__CLASS__, 'conf');
         if (!empty($conf))
             static::$conf = array_merge(static::$conf, $conf);
@@ -72,7 +76,8 @@ class FBUpdate extends Page {
     /**
      *  @return void
      */
-    protected function configure() {
+    protected function configure(): void
+    {
         static::set_conf_from_yaml();
     }
 
@@ -81,12 +86,14 @@ class FBUpdate extends Page {
         $this->configure();
     }
 
-    public function onBeforeWrite() {
+    public function onBeforeWrite(): void
+    {
         parent::onBeforeWrite();
         $this->findParent();
     }
 
-    public function findParent() {
+    public function findParent(): void
+    {
         if (!$this->ParentID) {
             $conf = static::get_conf();
             if (!$parent = DataObject::get_one($conf->holder_class)) {
@@ -98,7 +105,8 @@ class FBUpdate extends Page {
         }
     }
 
-    public function resolveUrl($url) {
+    public function resolveUrl(string $url): string
+    {
 
         try {
             $client = new GuzzleClient(['allow_redirects' => ['track_redirects' => true]]);
@@ -110,7 +118,8 @@ class FBUpdate extends Page {
         }
     }
 
-    public function updateFromUpdate(\stdClass $update, $save = true) {
+    public function updateFromUpdate(\stdClass $update, bool $save = true): mixed
+    {
 
         // print_r($update);
         $pageid = SiteConfig::current_site_config()->FacebookPageId;
@@ -189,7 +198,8 @@ class FBUpdate extends Page {
 
     }
 
-    public function getCMSFields() {
+    public function getCMSFields(): FieldList
+    {
 
         $fields = parent::getCMSFields();
 
@@ -203,7 +213,8 @@ class FBUpdate extends Page {
 
     }
 
-    public function OriginalLink() {
+    public function OriginalLink(): string
+    {
         $id = SiteConfig::current_site_config()->FacebookPageId;
         return 'https://www.facebook.com/' .
             $id .
@@ -216,7 +227,8 @@ class FBUpdate extends Page {
      *
      * @return \FBUpdate
      */
-    public function expandUpdateData(\stdClass $update = null){
+    public function expandUpdateData(?\stdClass $update = null): static
+    {
 
         $data = $update ? json_decode(json_encode($update),true) : json_decode($this->OriginalUpdate,true) ;
 
@@ -230,7 +242,8 @@ class FBUpdate extends Page {
      * @param type $member
      * @return boolean
      */
-    public function canPublish($member = null) {
+    public function canPublish($member = null): bool
+    {
         if (Director::is_cli()) return true;
         else return parent::canPublish($member);
     }

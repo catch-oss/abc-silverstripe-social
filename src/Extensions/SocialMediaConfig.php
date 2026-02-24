@@ -60,7 +60,8 @@ class SocialMediaConfig extends Extension {
         'DefaultInstagramUpdateImage'       => Image::class,
     );
 
-    public function updateCMSFields(FieldList $fields) {
+    public function updateCMSFields(FieldList $fields): void
+    {
 
 
         // ---------
@@ -207,23 +208,25 @@ class SocialMediaConfig extends Extension {
         $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('InstagramUserLink', '<p><a target="_blank" href="' . $this->InstagramPageLink(). '">' . $this->owner->InstagramUsername . '(' . $this->owner->InstagramUserId . ')</a></p>'));
         $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('InstagramOAuthToken', '<p>OAuth Token</p><p>'.($this->owner->InstagramOAuthToken ? $this->owner->InstagramOAuthToken.' <a href="/InstagramAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/InstagramAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
 
-        return $fields;
-
     }
 
-    public function InstagramPageLink() {
+    public function InstagramPageLink(): ?string
+    {
         return SocialHelper::link($this->owner->InstagramUsername, 'instagram');
     }
 
-    public function TwitterPageLink() {
+    public function TwitterPageLink(): ?string
+    {
         return SocialHelper::link($this->owner->TwitterUsername, 'twitter');
     }
 
-    public function FacebookUserLink() {
+    public function FacebookUserLink(): ?string
+    {
         return SocialHelper::link($this->owner->FacebookUserId, 'facebook');
     }
 
-    public function FacebookPageLink() {
+    public function FacebookPageLink(): ?string
+    {
         return SocialHelper::link($this->owner->FacebookPageId, 'facebook', 'page');
     }
 }

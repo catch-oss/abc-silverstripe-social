@@ -25,12 +25,14 @@ class FBAuthenticator extends Controller {
     protected $conf;
     protected $facebook;
 
-    public static function get_conf() {
+    public static function get_conf(): mixed
+    {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public static function get_facebook() {
+    public static function get_facebook(): Facebook
+    {
         if (!static::$facebook_instance) {
 
             $conf = static::get_conf();
@@ -52,7 +54,8 @@ class FBAuthenticator extends Controller {
         parent::__construct();
     }
 
-    public static function getOAuthDialogURL() {
+    public static function getOAuthDialogURL(): string
+    {
 
         // get the required vars for the dance
         $conf       = static::get_conf();
@@ -84,18 +87,20 @@ class FBAuthenticator extends Controller {
 
     }
 
-    public static function validate_crsf() {
+    public static function validate_crsf(): bool
+    {
         return $_SESSION['state'] && ($_SESSION['state'] === $_REQUEST['state']);
     }
 
-    public static function purge_auth_tokens() {
+    public static function purge_auth_tokens(): void
+    {
         $conf = static::get_conf();
         $conf->FacebookUserAccessToken = null;
         $conf->FacebookPageAccessToken = null;
         $conf->write();
     }
 
-    public static function validate_current_conf($validate = array('page','user'))
+    public static function validate_current_conf(array|string $validate = ['page', 'user']): bool
     {
         $userValid = $pageValid = true;
         $conf      = static::get_conf();
@@ -125,7 +130,8 @@ class FBAuthenticator extends Controller {
 
     }
 
-    public function purge(){
+    public function purge(): mixed
+    {
 
         // authorise
         $user = Security::getCurrentUser();
@@ -138,7 +144,8 @@ class FBAuthenticator extends Controller {
 
     }
 
-    public function index() {
+    public function index(): mixed
+    {
 
         // authorise
         $user = Security::getCurrentUser();

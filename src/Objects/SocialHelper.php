@@ -20,7 +20,8 @@ class SocialHelper {
      * @param  boolean $dropqs [description]
      * @return string          [description]
      */
-    public static function php_self($dropqs = true) {
+    public static function php_self(bool $dropqs = true): string
+    {
 
         // figure out what the protocol is
         $protocol = 'http';
@@ -56,7 +57,8 @@ class SocialHelper {
         else return $url;
     }
 
-    public static function fb_access_token() {
+    public static function fb_access_token(): mixed
+    {
 
         $conf = SiteConfig::current_site_config();
         $token = null;
@@ -97,7 +99,8 @@ class SocialHelper {
      * @param  string $type    [description]
      * @return string          [description]
      */
-    public static function link($id, $service, $type = 'user') {
+    public static function link(string $id, string $service, string $type = 'user'): ?string
+    {
         switch ($service) {
             case 'facebook':
                 if ($type == 'user') return 'https://www.facebook.com/' . $id;

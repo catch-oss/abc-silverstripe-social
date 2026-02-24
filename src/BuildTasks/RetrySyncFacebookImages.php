@@ -32,12 +32,12 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
         parent::__construct();
     }
 
-    public function getSchedule()
+    public function getSchedule(): string
     {
         return "*/15 * * * *";
     }
 
-    public function getConf()
+    public function getConf(): mixed
     {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
@@ -46,7 +46,7 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
     /**
      * adapter for cron task
      */
-    public function process()
+    public function process(): void
     {
         if (!$this->conf) $this->__construct();
         echo "\n\nSyncing\n\n";

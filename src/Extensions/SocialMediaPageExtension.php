@@ -80,7 +80,8 @@ class SocialMediaPageExtension extends Extension {
      * @param [type] $parser    [description]
      * @param [type] $tagName   [description]
      */
-    public static function SocialEmbedParser($arguments, $content = null, $parser = null, $tagName = null) {
+    public static function SocialEmbedParser(array $arguments, $content = null, $parser = null, $tagName = null): ?string
+    {
         if ($embed = OEmbedCacheItem::fetch($arguments)) {
             if ($data = $embed->data()) return $data->html;
         }
@@ -90,26 +91,31 @@ class SocialMediaPageExtension extends Extension {
     // Dummy getters - can be overridden on a per project basis to channel specific content to updates
     // ------------------------------------------------------------------------------------------------
 
-    public function AssociatedImage() {
+    public function AssociatedImage(): mixed
+    {
         return false;
     }
 
-    public function SharedContent() {
+    public function SharedContent(): mixed
+    {
         return $this->owner->Content;
     }
 
-    public function SharedTitle() {
+    public function SharedTitle(): mixed
+    {
         return $this->owner->Title;
     }
 
-    public function SharedLink() {
+    public function SharedLink(): string
+    {
         return $this->owner->AbsoluteLink();
     }
 
     // Other Methods
     // ------------------------------------------------------------------------------------------------
 
-    public function parseContent($content, $words = null, $allowedTags = '<br>') {
+    public function parseContent(string $content, ?int $words = null, ?string $allowedTags = '<br>'): string
+    {
         $br2nl = false;
         if (!$allowedTags || stripos('<br>',$allowedTags) === false) {
             $allowedTags.= '<br>';
@@ -135,7 +141,8 @@ class SocialMediaPageExtension extends Extension {
         return $words ? AbcStr::get($str)->limitWords($words)->str : $str;
     }
 
-    public function getFieldsToPush() {
+    public function getFieldsToPush(): array
+    {
         $content = $this->parseContent($this->owner->SharedContent(), 25, null);
         $image = $this->owner->AssociatedImage() ? $this->owner->AssociatedImage()->getAbsoluteURL() : null ;
         return array(
@@ -147,7 +154,8 @@ class SocialMediaPageExtension extends Extension {
         );
     }
 
-    public function updateCMSFields(FieldList $fields) {
+    public function updateCMSFields(FieldList $fields): void
+    {
 
         // clean up
         $fields->removeByName('MetaDescription');
@@ -201,7 +209,8 @@ class SocialMediaPageExtension extends Extension {
         );
     }
 
-    public function onAfterPublish() {
+    public function onAfterPublish(): void
+    {
 
         if ($this->owner->ClassName != Tweet::class && $this->owner->ClassName != FBUpdate::class && $this->owner->ClassName != InstagramUpdate::class) {
 
@@ -269,7 +278,8 @@ class SocialMediaPageExtension extends Extension {
         return;
     }
 
-    public function ImageWithFallback() {
+    public function ImageWithFallback(): ?Image
+    {
 
         // get site conf
         $conf = SiteConfig::current_site_config();
@@ -291,7 +301,8 @@ class SocialMediaPageExtension extends Extension {
      * @param string $service the service you want a url for
      * @return string the share url
      */
-    public function ShareUrl($service = 'facebook') {
+    public function ShareUrl(string $service = 'facebook'): ?string
+    {
 
         $conf       = SiteConfig::current_site_config();
         $img        = ($img = $this->owner->ImageWithFallback()) ? rawurlencode($img->AbsoluteURL) : null;
@@ -300,6 +311,7 @@ class SocialMediaPageExtension extends Extension {
         $src        = rawurlencode($conf->Title);
         $rawSummary = $this->owner->MetaDescription ? $this->owner->MetaDescription : $this->owner->obj('Content')->FirstParagraph();
         $summary    = rawurlencode($rawSummary);
+        $url        = null;
 
         switch ($service) {
             case 'facebook' :

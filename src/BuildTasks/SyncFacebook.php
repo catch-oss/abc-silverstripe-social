@@ -42,18 +42,18 @@ class SyncFacebook extends PolyCommand implements CronTask
         parent::__construct();
     }
 
-    public function getSchedule()
+    public function getSchedule(): string
     {
         return "*/5 * * * *";
     }
 
-    public function getConf()
+    public function getConf(): mixed
     {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public function getFacebook()
+    public function getFacebook(): ?Facebook
     {
 
         if (!$this->conf) $this->conf = $this->getConf();
@@ -81,7 +81,7 @@ class SyncFacebook extends PolyCommand implements CronTask
     /**
      * adapter for cron task
      */
-    public function process()
+    public function process(): void
     {
         if (!$this->conf || !$this->facebook) $this->__construct();
 
@@ -240,7 +240,7 @@ class SyncFacebook extends PolyCommand implements CronTask
         }
     }
 
-    public function processResponse(array $resp, ?PolyOutput $output = null)
+    public function processResponse(array $resp, ?PolyOutput $output = null): bool
     {
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';

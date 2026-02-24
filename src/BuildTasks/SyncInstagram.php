@@ -42,18 +42,18 @@ class SyncInstagram extends PolyCommand implements CronTask
         parent::__construct();
     }
 
-    public function getSchedule()
+    public function getSchedule(): string
     {
         return "*/5 * * * *";
     }
 
-    public static function get_conf()
+    public static function get_conf(): mixed
     {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public static function get_instagram()
+    public static function get_instagram(): InstagramBasicDisplayClient
     {
         if (!static::$instagram_instance) {
             $conf = static::get_conf();
@@ -70,7 +70,7 @@ class SyncInstagram extends PolyCommand implements CronTask
     /**
      * adapter for cron task
      */
-    public function process()
+    public function process(): void
     {
         if (!$this->conf || !$this->instagram) $this->__construct();
 
@@ -199,7 +199,7 @@ class SyncInstagram extends PolyCommand implements CronTask
         }
     }
 
-    public function processResponse(array $updates, ?PolyOutput $output = null)
+    public function processResponse(array $updates, ?PolyOutput $output = null): bool
     {
 
         $noNew = true;

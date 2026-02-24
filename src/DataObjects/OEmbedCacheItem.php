@@ -17,11 +17,13 @@ class OEmbedCacheItem extends DataObject {
 		'URL' => true
 	);
 
-	public function data() {
+	public function data(): ?object
+	{
 		return $this->Response ? json_decode($this->Response) : null;
 	}
 
-	public static function fetch($conf, $nocache = false) {
+	public static function fetch(array $conf, bool $nocache = false): OEmbedCacheItem|false|null
+	{
 
 		// handle embeds with no service attr
 		if (empty($conf['service'])) {

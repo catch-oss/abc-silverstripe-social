@@ -5,20 +5,24 @@ namespace Azt3k\SS\Social\Extensions;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
+use SilverStripe\Assets\Image;
 use SilverStripe\Core\Extension;
 use SilverStripe\SiteConfig\SiteConfig;
 
 class SocialUpdatePageExtension extends Extension {
 
-    public function UpdateType() {
+    public function UpdateType(): ?string
+    {
         switch ($this->owner->ClassName) {
             case Tweet::class:           return 'Twitter';
             case FBUpdate::class:        return 'Facebook';
             case InstagramUpdate::class: return 'Instagram';
         }
+        return null;
     }
 
-    public function UpdateImage() {
+    public function UpdateImage(): ?Image
+    {
 
         $conf = SiteConfig::current_site_config();
 
@@ -36,5 +40,6 @@ class SocialUpdatePageExtension extends Extension {
                     ? $this->owner->PrimaryImage()
                     : $conf->DefaultInstagramUpdateImage();
         }
+        return null;
     }
 }

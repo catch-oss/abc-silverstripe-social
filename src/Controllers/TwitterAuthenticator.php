@@ -32,13 +32,13 @@ class TwitterAuthenticator extends Controller
 		parent::__construct();
 	}
 
-	public static function get_conf()
+	public static function get_conf(): mixed
 	{
 		if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
 		return static::$conf_instance;
 	}
 
-	public static function get_tmh_oauth()
+	public static function get_tmh_oauth(): tmhOAuth
 	{
 
 		$conf = static::get_conf();
@@ -53,7 +53,7 @@ class TwitterAuthenticator extends Controller
 		return static::$tmh_oauth_instance;
 	}
 
-	public static function validate_current_conf()
+	public static function validate_current_conf(): bool
 	{
 
 		$conf		= static::get_conf();
@@ -75,17 +75,17 @@ class TwitterAuthenticator extends Controller
 		}
 	}
 
-	protected function addError()
+	protected function addError(): void
 	{
 		$this->errors[] = 'There was an error: ' . $this->tmhOAuth->response['response'];
 	}
 
-	protected function addMsg($msg)
+	protected function addMsg(string $msg): void
 	{
 		$this->messages[] = $msg;
 	}
 
-	protected function wipe()
+	protected function wipe(): void
 	{
 		$this->conf->TwitterOAuthToken = null;
 		$this->conf->TwitterOAuthSecret = null;
@@ -95,7 +95,7 @@ class TwitterAuthenticator extends Controller
 	}
 
 	// Step 1: Request a temporary token
-	protected function request_token()
+	protected function request_token(): void
 	{
 		$code = $this->tmhOAuth->request(
 			'POST',
@@ -114,7 +114,7 @@ class TwitterAuthenticator extends Controller
 	}
 
 	// Step 2: Direct the user to the authorize web page
-	protected function authorize()
+	protected function authorize(): void
 	{
 		$authurl = $this->tmhOAuth->url("oauth/authorize", '') . "?oauth_token={$_SESSION['oauth']['oauth_token']}";
 		header("Location: " . $authurl);
@@ -125,7 +125,7 @@ class TwitterAuthenticator extends Controller
 	}
 
 	// Step 3: This is the code that runs when Twitter redirects the user to the callback. Exchange the temporary token for a permanent access token
-	protected function access_token()
+	protected function access_token(): void
 	{
 
 		$this->tmhOAuth->config['user_token'] = $_SESSION['oauth']['oauth_token'];
@@ -153,7 +153,7 @@ class TwitterAuthenticator extends Controller
 	}
 
 	// Step 4: Now the user has authenticated, do something with the permanent token and secret we received
-	protected function verify_credentials()
+	protected function verify_credentials(): void
 	{
 
 		$this->tmhOAuth->config['user_token']	= $this->conf->TwitterOAuthToken;
@@ -177,7 +177,7 @@ class TwitterAuthenticator extends Controller
 		}
 	}
 
-	public function index()
+	public function index(): mixed
 	{
 
 		// authorise
