@@ -2,12 +2,12 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
-use SilverStripe\Control\Director;
+use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Permission;
-use SilverStripe\PolyExecution\PolyCommand;
 
 /**
  * @author AzT3k
@@ -15,48 +15,40 @@ use SilverStripe\PolyExecution\PolyCommand;
 class PurgeTwitter extends PolyCommand
 {
 
-    public function init()
+    protected static string $commandName = 'social:purge-twitter';
+    protected string $title = 'Purge Twitter';
+    protected static string $description = 'Purges all Tweet pages';
+
+    public function run(InputInterface $input, PolyOutput $output): int
     {
 
-        parent::init();
-
-        if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
-            return Security::permissionFailure();
-        }
-    }
-
-    public function process()
-    {
-        $this->init();
-        $this->run();
-    }
-
-    public function run($request = null)
-    {
-        // eol
-        $eol = php_sapi_name() == 'cli' ? "\n" : "<br>\n";
-
-        // output
-        echo $eol . $eol . 'Purging...' . $eol . $eol;
-        flush();
-        @ob_flush();
+        $output->writeln('');
+        $output->writeln('Purging...');
+        $output->writeln('');
 
         foreach (Tweet::get() as $k => $page) {
 
-            echo "Deleting " . $page->Title . $eol;
+            $output->writeln("Deleting " . $page->Title);
             $page->delete();
         }
 
         foreach (Versioned::get_by_stage(Tweet::class, 'Stage') as $k => $page) {
 
-            echo "Deleting From Stage: " . $page->Title . $eol;
+            $output->writeln("Deleting From Stage: " . $page->Title);
             $page->deleteFromStage('Stage');
         }
 
         foreach (Versioned::get_by_stage(Tweet::class, 'Live') as $k => $page) {
 
-            echo "Deleting From Live: " . $page->Title . $eol;
+            $output->writeln("Deleting From Live: " . $page->Title);
             $page->deleteFromStage('Live');
         }
+
+        return Command::SUCCESS;
+    }
+
+    public function getOptions(): array
+    {
+        return [];
     }
 }

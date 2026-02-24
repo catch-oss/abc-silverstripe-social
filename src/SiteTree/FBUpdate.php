@@ -76,8 +76,8 @@ class FBUpdate extends Page {
         static::set_conf_from_yaml();
     }
 
-    public function __construct($record = null, $isSingleton = false, $model = null) {
-        parent::__construct($record, $isSingleton, $model);
+    public function __construct($record = null, $isSingleton = false) {
+        parent::__construct($record, $isSingleton);
         $this->configure();
     }
 
@@ -92,7 +92,7 @@ class FBUpdate extends Page {
             if (!$parent = DataObject::get_one($conf->holder_class)) {
                 $parent = new $conf->holder_class;
                 $parent->write();
-                $parent->doPublish();
+                $parent->publishRecursive();
             }
             $this->ParentID = $parent->ID;
         }
@@ -100,17 +100,14 @@ class FBUpdate extends Page {
 
     public function resolveUrl($url) {
 
-        $client   = new GuzzleClient($url);
-        $history  = new HistoryPlugin();
-        $client->addSubscriber($history);
-
-        $response = $client->head($url)->send();
-
-        if (!$response->isSuccessful()) {
-            throw new Exception(sprintf("Url %s is not a valid URL or website is down.", $url));
+        try {
+            $client = new GuzzleClient(['allow_redirects' => ['track_redirects' => true]]);
+            $response = $client->head($url);
+            $redirects = $response->getHeader('X-Guzzle-Redirect-History');
+            return !empty($redirects) ? end($redirects) : $url;
+        } catch (\Exception $e) {
+            return $url;
         }
-
-        return $response->getEffectiveUrl();
     }
 
     public function updateFromUpdate(\stdClass $update, $save = true) {
@@ -159,7 +156,7 @@ class FBUpdate extends Page {
                     $image = new Image;
                     $image->setFilename($relPath);
                     $image->write();
-                    $image->doPublish();
+                    $image->publishRecursive();
                 }
 
                 // associate
@@ -237,9 +234,5 @@ class FBUpdate extends Page {
         if (Director::is_cli()) return true;
         else return parent::canPublish($member);
     }
-
-}
-
-class FBUpdate_Controller extends Controller {
 
 }

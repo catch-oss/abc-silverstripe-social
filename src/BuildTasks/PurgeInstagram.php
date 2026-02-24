@@ -2,13 +2,12 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
-use SilverStripe\Control\Director;
-use Azt3k\SS\Social\SiteTree\InstagramUpdate;
-use SilverStripe\Control\Controller;
-use SilverStripe\Versioned\Versioned;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Permission;
 use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Azt3k\SS\Social\SiteTree\InstagramUpdate;
+use SilverStripe\Versioned\Versioned;
 
 
 /**
@@ -17,50 +16,40 @@ use SilverStripe\PolyExecution\PolyCommand;
 class PurgeInstagram extends PolyCommand
 {
 
+    protected static string $commandName = 'social:purge-instagram';
+    protected string $title = 'Purge Instagram';
+    protected static string $description = 'Purges all Instagram update pages';
 
-    public function init()
+    public function run(InputInterface $input, PolyOutput $output): int
     {
 
-        parent::init();
-
-        if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
-            return Security::permissionFailure();
-        }
-    }
-
-    public function process()
-    {
-        $this->init();
-        $this->run(Controller::curr()->getRequest());
-    }
-
-    public function run($request)
-    {
-
-        // eol
-        $eol = php_sapi_name() == 'cli' ? "\n" : "<br>\n";
-
-        // output
-        echo $eol . $eol . 'Purging...' . $eol . $eol;
-        flush();
-        @ob_flush();
+        $output->writeln('');
+        $output->writeln('Purging...');
+        $output->writeln('');
 
         foreach (InstagramUpdate::get() as $k => $page) {
 
-            echo "Deleting " . $page->Title . $eol;
+            $output->writeln("Deleting " . $page->Title);
             $page->delete();
         }
 
         foreach (Versioned::get_by_stage(InstagramUpdate::class, 'Stage') as $k => $page) {
 
-            echo "Deleting From Stage: " . $page->Title . $eol;
+            $output->writeln("Deleting From Stage: " . $page->Title);
             $page->deleteFromStage('Stage');
         }
 
-        foreach (Versioned::get_by_stage(InstagramUpdate::class, 'L$eolive') as $k => $page) {
+        foreach (Versioned::get_by_stage(InstagramUpdate::class, 'Live') as $k => $page) {
 
-            echo "Deleting From Live: " . $page->Title . $eol;
+            $output->writeln("Deleting From Live: " . $page->Title);
             $page->deleteFromStage('Live');
         }
+
+        return Command::SUCCESS;
+    }
+
+    public function getOptions(): array
+    {
+        return [];
     }
 }

@@ -12,6 +12,8 @@ use Exception;
 
 class InstagramAuthenticator extends Controller {
 
+    private static $allowed_actions = ['index'];
+
     protected static $conf_instance;
     protected static $instagram_instance;
     protected $conf;

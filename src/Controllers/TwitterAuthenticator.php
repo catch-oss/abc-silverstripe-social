@@ -14,6 +14,8 @@ use themattharris\tmhOAuth;
 class TwitterAuthenticator extends Controller
 {
 
+	private static $allowed_actions = ['index'];
+
 	protected static $conf_instance;
 	protected static $tmh_oauth_instance;
 	protected $conf;

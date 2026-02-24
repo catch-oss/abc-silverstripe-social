@@ -260,7 +260,7 @@ class SocialMediaPageExtension extends Extension {
                 if ($save) {
                     $this->justPosted = true;
                     $this->owner->write();
-                    $this->owner->doPublish();
+                    $this->owner->publishRecursive();
                 }
 
             }

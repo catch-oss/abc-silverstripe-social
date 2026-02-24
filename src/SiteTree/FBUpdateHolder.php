@@ -13,6 +13,7 @@ use SilverStripe\Control\Controller;
 class FBUpdateHolder extends Page
 {
 
+    private static $table_name = 'FBUpdateHolder';
     private static $can_be_root = true;
     private static $allowed_children = array(
         FBUpdate::class

@@ -8,11 +8,10 @@ use Azt3k\SS\Classes\DataObjectHelper;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
 use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
 use SilverStripe\CronTask\Interfaces\CronTask;
-use SilverStripe\Versioned\Versioned;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Permission;
-use SilverStripe\Control\Director;
 use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\CMS\Model\SiteTree;
@@ -22,6 +21,10 @@ use SilverStripe\CMS\Model\SiteTree;
  */
 class SyncFacebook extends PolyCommand implements CronTask
 {
+
+    protected static string $commandName = 'social:sync-facebook';
+    protected string $title = 'Sync Facebook';
+    protected static string $description = 'Syncs Facebook updates from a configured page';
 
     protected static $conf_instance;
     protected static $facebook_instance;
@@ -75,30 +78,15 @@ class SyncFacebook extends PolyCommand implements CronTask
         return static::$facebook_instance;
     }
 
-    function init()
-    {
-
-        if (method_exists(parent::class, 'init')) parent::init();
-
-        if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
-            return Security::permissionFailure();
-        }
-
-        if (!$this->conf || !$this->facebook) $this->__construct();
-    }
-
+    /**
+     * adapter for cron task
+     */
     public function process()
     {
-        $this->init();
-        $this->run();
-    }
-
-    function run($request = null)
-    {
+        if (!$this->conf || !$this->facebook) $this->__construct();
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
-        // output
         echo $eol . $eol . 'Syncing...' . $eol . $eol;
         flush();
         @ob_flush();
@@ -107,6 +95,35 @@ class SyncFacebook extends PolyCommand implements CronTask
             echo 'Sync disabled ' . $eol . $eol;
             return;
         }
+
+        $this->doSync(null);
+    }
+
+    public function run(InputInterface $input, PolyOutput $output): int
+    {
+
+        if (!$this->conf || !$this->facebook) $this->__construct();
+
+        $output->writeln('');
+        $output->writeln('Syncing...');
+        $output->writeln('');
+
+        if (!$this->conf->FacebookPullUpdates) {
+            $output->writeln('Sync disabled');
+            return Command::SUCCESS;
+        }
+
+        $this->doSync($output);
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Shared sync logic used by both run() and process()
+     */
+    protected function doSync(?PolyOutput $output): void
+    {
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
         // grab the most recent tweet
         $params = array();
@@ -122,26 +139,34 @@ class SyncFacebook extends PolyCommand implements CronTask
         try {
             $resp = (object) $this->facebook->sendRequest('get', '/' . $this->conf->FacebookPageId . '/' . $this->conf->FacebookPageFeedType)->getDecodedBody();
         } catch (\Exception $e) {
-            echo 'Caught FB Error: ' . $eol;
-            echo $e->getMessage();
+            if ($output) {
+                $output->writeln('Caught FB Error:');
+                $output->writeln($e->getMessage());
+            } else {
+                echo 'Caught FB Error: ' . $eol;
+                echo $e->getMessage();
+            }
             return;
         }
-
-        // die(print_r($resp,1));
 
         // only proceed if we have results to work with
         if (count($resp->data)) {
 
             // process the response
-            $this->processResponse($resp->data);
+            $this->processResponse($resp->data, $output);
 
             // check if we need to do an initial population
             if ($initPop) {
 
-                //output
-                echo $eol . $eol . 'Doing initial Population' . $eol . $eol;
-                flush();
-                @ob_flush();
+                if ($output) {
+                    $output->writeln('');
+                    $output->writeln('Doing initial Population');
+                    $output->writeln('');
+                } else {
+                    echo $eol . $eol . 'Doing initial Population' . $eol . $eol;
+                    flush();
+                    @ob_flush();
+                }
 
                 // keep going until we hit a problem
                 while (count($resp)) {
@@ -171,38 +196,51 @@ class SyncFacebook extends PolyCommand implements CronTask
                             if (count($resp->data)) {
 
                                 // process the response
-                                $noNew = $this->processResponse($resp->data);
+                                $noNew = $this->processResponse($resp->data, $output);
 
                                 // break if we haven't added anything
                                 if ($noNew) break;
                             }
                         } else {
-                            echo 'Encountered Error with : ' . print_r($resp, 1);
+                            if ($output) {
+                                $output->writeln('Encountered Error with : ' . print_r($resp, 1));
+                            } else {
+                                echo 'Encountered Error with : ' . print_r($resp, 1);
+                            }
                         }
                     } else {
-                        // output
-                        echo 'No more pages' . $eol . $eol;
-                        flush();
-                        @ob_flush();
+                        if ($output) {
+                            $output->writeln('No more pages');
+                        } else {
+                            echo 'No more pages' . $eol . $eol;
+                            flush();
+                            @ob_flush();
+                        }
                         break;
                     }
                 }
 
-                // output
-                echo 'Finished' . $eol . $eol;
-                flush();
-                @ob_flush();
+                if ($output) {
+                    $output->writeln('Finished');
+                } else {
+                    echo 'Finished' . $eol . $eol;
+                    flush();
+                    @ob_flush();
+                }
             }
         } else {
 
-            // output
-            echo 'No hits' . $eol . $eol;
-            flush();
-            @ob_flush();
+            if ($output) {
+                $output->writeln('No hits');
+            } else {
+                echo 'No hits' . $eol . $eol;
+                flush();
+                @ob_flush();
+            }
         }
     }
 
-    public function processResponse(array $resp)
+    public function processResponse(array $resp, ?PolyOutput $output = null)
     {
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
@@ -217,20 +255,23 @@ class SyncFacebook extends PolyCommand implements CronTask
             if (!$savedUpdate = DataObject::get_one(FBUpdate::class, "UpdateID='" . $data->id . "'")) {
                 if (!$pubUpdate = DataObject::get_one(PublicationFBUpdate::class, "FBUpdateID='" . $data->id . "'")) {
 
-                    // push output
-                    echo 'Adding Update ' . $data->id . $eol . $eol;
-                    flush();
-                    @ob_flush();
-
-                    // get extended info
-                    // $res = (object) $this->facebook->sendRequest('get', '/' . $data->id)->getDecodedBody();
-                    // die(print_r($res,1));
+                    if ($output) {
+                        $output->writeln('Adding Update ' . $data->id);
+                    } else {
+                        echo 'Adding Update ' . $data->id . $eol . $eol;
+                        flush();
+                        @ob_flush();
+                    }
 
                     // create the FBUpdate Page
                     $update = new FBUpdate;
                     if ($update->updateFromUpdate($data)) {
-                        if ($update->write() && $update->doRestoreToStage() && $update->doPublish()) {
-                            echo 'Successfully created' . $update->Title . $eol . $eol;
+                        if ($update->write() && $update->doRestoreToStage() && $update->publishRecursive()) {
+                            if ($output) {
+                                $output->writeln('Successfully created' . $update->Title);
+                            } else {
+                                echo 'Successfully created' . $update->Title . $eol . $eol;
+                            }
                         } else {
                             die('Failed to Publish ' . $update->Title);
                         }
@@ -240,22 +281,31 @@ class SyncFacebook extends PolyCommand implements CronTask
                     $noNew = false;
                 } else {
 
-                    // push output
-                    echo 'Update ' . $data->id . 'came from the website' . $eol;
-                    flush();
-                    @ob_flush();
+                    if ($output) {
+                        $output->writeln('Update ' . $data->id . 'came from the website');
+                    } else {
+                        echo 'Update ' . $data->id . 'came from the website' . $eol;
+                        flush();
+                        @ob_flush();
+                    }
                 }
             } else {
 
-                // this should only happen during initial population because we should have only got in tweets that are newer than x
-
-                // push output
-                echo 'Already added Update ' . $data->id . $eol;
-                flush();
-                @ob_flush();
+                if ($output) {
+                    $output->writeln('Already added Update ' . $data->id);
+                } else {
+                    echo 'Already added Update ' . $data->id . $eol;
+                    flush();
+                    @ob_flush();
+                }
             }
         }
 
         return $noNew;
+    }
+
+    public function getOptions(): array
+    {
+        return [];
     }
 }

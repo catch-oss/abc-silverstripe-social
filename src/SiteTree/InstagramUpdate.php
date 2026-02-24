@@ -88,9 +88,9 @@ class InstagramUpdate extends Page
         static::set_conf_from_yaml();
     }
 
-    public function __construct($record = null, $isSingleton = false, $model = null)
+    public function __construct($record = null, $isSingleton = false)
     {
-        parent::__construct($record, $isSingleton, $model);
+        parent::__construct($record, $isSingleton);
         $this->configure();
     }
 
@@ -136,7 +136,7 @@ class InstagramUpdate extends Page
                     $image = new Image;
                     $image->setFilename($relPath);
                     $image->write();
-                    $image->doPublish();
+                    $image->publishRecursive();
                 }
 
                 // associate
@@ -184,7 +184,7 @@ class InstagramUpdate extends Page
             if (!$parent = DataObject::get_one($conf->holder_class)) {
                 $parent = new $conf->holder_class;
                 $parent->write();
-                $parent->doPublish();
+                $parent->publishRecursive();
             }
             $this->ParentID = $parent->ID;
         }

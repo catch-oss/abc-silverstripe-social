@@ -3,12 +3,12 @@
 namespace Azt3k\SS\Social\BuildTasks;
 
 use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use Azt3k\SS\Social\DataObjects\PublicationTweet;
 use SilverStripe\CronTask\Interfaces\CronTask;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Permission;
-use SilverStripe\Control\Director;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use themattharris\tmhOAuth;
@@ -18,6 +18,10 @@ use themattharris\tmhOAuth;
  */
 class SyncTwitter extends PolyCommand implements CronTask
 {
+
+    protected static string $commandName = 'social:sync-twitter';
+    protected string $title = 'Sync Twitter';
+    protected static string $description = 'Syncs Twitter updates from a configured account';
 
     protected static $conf_instance;
     protected static $tmh_oauth_instance;
@@ -63,30 +67,15 @@ class SyncTwitter extends PolyCommand implements CronTask
         return static::$tmh_oauth_instance;
     }
 
-    public function init()
-    {
-
-        if (method_exists(parent::class, 'init')) parent::init();
-
-        if (!Director::is_cli() && !Permission::check("ADMIN") && $_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
-            return Security::permissionFailure();
-        }
-
-        if (!$this->conf || !$this->tmhOAuth) $this->__construct();
-    }
-
+    /**
+     * adapter for cron task
+     */
     public function process()
     {
-        $this->init();
-        $this->run();
-    }
-
-    public function run($request = null)
-    {
+        if (!$this->conf || !$this->tmhOAuth) $this->__construct();
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
-        // output
         echo $eol . $eol . 'Syncing...' . $eol . $eol;
         flush();
         @ob_flush();
@@ -96,6 +85,34 @@ class SyncTwitter extends PolyCommand implements CronTask
             return;
         }
 
+        $this->doSync(null);
+    }
+
+    public function run(InputInterface $input, PolyOutput $output): int
+    {
+
+        if (!$this->conf || !$this->tmhOAuth) $this->__construct();
+
+        $output->writeln('');
+        $output->writeln('Syncing...');
+        $output->writeln('');
+
+        if (!$this->conf->TwitterPullUpdates) {
+            $output->writeln('Sync disabled');
+            return Command::SUCCESS;
+        }
+
+        $this->doSync($output);
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Shared sync logic used by both run() and process()
+     */
+    protected function doSync(?PolyOutput $output): void
+    {
+        $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
         // grab the most recent tweet
         $params = array();
@@ -126,15 +143,20 @@ class SyncTwitter extends PolyCommand implements CronTask
             if (count($resp)) {
 
                 // process the response
-                $this->processResponse($resp);
+                $this->processResponse($resp, $output);
 
                 // check if we need to do an initial population
                 if ($initPop) {
 
-                    //output
-                    echo $eol . $eol . 'Doing initial Population' . $eol . $eol;
-                    flush();
-                    @ob_flush();
+                    if ($output) {
+                        $output->writeln('');
+                        $output->writeln('Doing initial Population');
+                        $output->writeln('');
+                    } else {
+                        echo $eol . $eol . 'Doing initial Population' . $eol . $eol;
+                        flush();
+                        @ob_flush();
+                    }
 
                     // keep going until we hit a problem
                     while ($code == 200 && count($resp)) {
@@ -163,7 +185,7 @@ class SyncTwitter extends PolyCommand implements CronTask
                             if (count($resp)) {
 
                                 // process the response
-                                $noNew = $this->processResponse($resp);
+                                $noNew = $this->processResponse($resp, $output);
 
                                 // break if we haven't added anything
                                 if ($noNew) break;
@@ -171,17 +193,23 @@ class SyncTwitter extends PolyCommand implements CronTask
                         }
                     }
 
-                    // output
-                    echo "Finished";
-                    flush();
-                    @ob_flush();
+                    if ($output) {
+                        $output->writeln('Finished');
+                    } else {
+                        echo "Finished";
+                        flush();
+                        @ob_flush();
+                    }
                 }
             } else {
 
-                // output
-                echo 'No hits' . $eol . $eol;
-                flush();
-                @ob_flush();
+                if ($output) {
+                    $output->writeln('No hits');
+                } else {
+                    echo 'No hits' . $eol . $eol;
+                    flush();
+                    @ob_flush();
+                }
             }
         } else {
 
@@ -189,7 +217,7 @@ class SyncTwitter extends PolyCommand implements CronTask
         }
     }
 
-    public function processResponse(array $resp)
+    public function processResponse(array $resp, ?PolyOutput $output = null)
     {
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
@@ -200,16 +228,23 @@ class SyncTwitter extends PolyCommand implements CronTask
             if (!$savedTweet = DataObject::get_one(Tweet::class, "TweetID='" . $tweetData->id_str . "'")) {
                 if (!$pubTweet = DataObject::get_one(PublicationTweet::class, "TweetID='" . $tweetData->id_str . "'")) {
 
-                    // push output
-                    echo 'Adding Tweet ' . $tweetData->id_str . $eol;
-                    flush();
-                    @ob_flush();
+                    if ($output) {
+                        $output->writeln('Adding Tweet ' . $tweetData->id_str);
+                    } else {
+                        echo 'Adding Tweet ' . $tweetData->id_str . $eol;
+                        flush();
+                        @ob_flush();
+                    }
 
                     // create the Tweet Page
                     $tweet = new Tweet;
                     $tweet->updateFromTweet($tweetData);
-                    if ($tweet->write() && $tweet->doRestoreToStage() && $tweet->doPublish()) {
-                        echo 'Successfully created' . $tweet->Title . $eol;
+                    if ($tweet->write() && $tweet->doRestoreToStage() && $tweet->publishRecursive()) {
+                        if ($output) {
+                            $output->writeln('Successfully created' . $tweet->Title);
+                        } else {
+                            echo 'Successfully created' . $tweet->Title . $eol;
+                        }
                     } else {
                         die('Failed to Publish ' . $tweet->Title);
                     }
@@ -218,22 +253,31 @@ class SyncTwitter extends PolyCommand implements CronTask
                     $noNew = false;
                 } else {
 
-                    // push output
-                    echo 'Tweet ' . $tweetData->id_str . ' came from the website' . $eol;
-                    flush();
-                    @ob_flush();
+                    if ($output) {
+                        $output->writeln('Tweet ' . $tweetData->id_str . ' came from the website');
+                    } else {
+                        echo 'Tweet ' . $tweetData->id_str . ' came from the website' . $eol;
+                        flush();
+                        @ob_flush();
+                    }
                 }
             } else {
 
-                // this should only happen during initial population because we should have only got in tweets that are newer than x
-
-                // push output
-                echo 'Already added Tweet ' . $tweetData->id_str . $eol;
-                flush();
-                @ob_flush();
+                if ($output) {
+                    $output->writeln('Already added Tweet ' . $tweetData->id_str);
+                } else {
+                    echo 'Already added Tweet ' . $tweetData->id_str . $eol;
+                    flush();
+                    @ob_flush();
+                }
             }
         }
 
         return $noNew;
+    }
+
+    public function getOptions(): array
+    {
+        return [];
     }
 }
