@@ -1,14 +1,7 @@
 ---
 Name: abc-silverstripe-social-extensions
 ---
-SilverStripe\SiteConfig\SiteConfig:
-  extensions:
-    social-media-config: Azt3k\SS\Social\Extensions\SocialMediaConfig
-
-Page:
-  extensions:
-    social-media-page: Azt3k\SS\Social\Extensions\SocialMediaPageExtension
-
+# Internal module extensions - applied to this module's own classes
 Azt3k\SS\Social\SiteTree\FBUpdate:
   extensions:
     social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension

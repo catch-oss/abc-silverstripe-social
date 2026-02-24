@@ -24,38 +24,101 @@ Library that adds some social media functionality to Silverstripe:
 | release/6 | ^6.0 | ^8.5 |
 | release/5 | ^5.1 | ~8.4 |
 
-## What can this thing do
+## Features
 
-- Downloads your facebook, instagram or twitter feed and puts it somewhere of your choosing in your site tree
-- Shares the current page to facebook or twitter when you save it (WIP).
-- Improves the Page meta data with twitter, open graph and micro data
-- Provides a number of new tokens to the page template for generating things like share urls
+- Downloads your Facebook, Instagram or Twitter feed and puts it somewhere of your choosing in your site tree
+- Shares the current page to Facebook or Twitter when you publish it (WIP)
+- Improves Page meta data with Twitter Cards, Open Graph and micro data
+- Provides template helpers for generating share URLs
 
+## Setup
 
-## meta data
+This module does **not** automatically apply extensions to `SiteConfig` or `Page`. You must opt in by adding the extensions you need in your project's YAML config.
 
-Include the `Meta` partial in your page template e.g.:
+### SocialMediaConfig (on SiteConfig)
 
-````html
+Adds Facebook, Twitter and Instagram API credentials, OAuth tokens, default images and push/pull toggles to the CMS Settings screen under a **Social Media** tab.
+
+```yaml
+# app/_config/social.yml
+---
+Name: project-social-extensions
+---
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    social-media-config: Azt3k\SS\Social\Extensions\SocialMediaConfig
+```
+
+**What it adds to SiteConfig:**
+- Facebook: App ID/Secret, User/Page access tokens, Page ID, feed type, push/pull toggles
+- Twitter: Consumer Key/Secret, OAuth token/secret, username, push/pull toggles
+- Instagram: API Key/Secret, OAuth token, username/user ID, push/pull toggles
+- Default fallback images for each social network
+
+### SocialMediaPageExtension (on Page)
+
+Adds social media meta data, share URLs, publication tracking and auto-posting to every page.
+
+```yaml
+# app/_config/social.yml (append to same file)
+Page:
+  extensions:
+    social-media-page: Azt3k\SS\Social\Extensions\SocialMediaPageExtension
+```
+
+**What it adds to Page:**
+- `MetaTitle`, `MetaKeywords` fields and a **Meta** tab in the CMS
+- `PrimaryImage` upload for social sharing image (with fallback to SiteConfig default)
+- `ForceUpdateMode` (Default/Block/Force) to control auto-posting behaviour
+- Publication tracking (`PublicationTweets`, `PublicationFBUpdates`, `PublicationInstagramUpdates`)
+- `$Meta('Title')`, `$Meta('Description')`, `$Meta('Image')` etc. template helpers
+- `$ShareUrl('facebook')`, `$ShareUrl('twitter')`, `$ShareUrl('linked_in')` template helpers
+- Auto-post to Facebook/Twitter on publish (when push is enabled in SiteConfig)
+
+### Both extensions together
+
+For full functionality, enable both:
+
+```yaml
+# app/_config/social.yml
+---
+Name: project-social-extensions
+---
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    social-media-config: Azt3k\SS\Social\Extensions\SocialMediaConfig
+
+Page:
+  extensions:
+    social-media-page: Azt3k\SS\Social\Extensions\SocialMediaPageExtension
+```
+
+Then run `dev/build` to apply the database changes.
+
+## Meta data
+
+Include the `Meta` partial in your page template:
+
+```html
 <head>
+    <% base_tag %>
+    <title>$Meta('Title')</title>
+    <%-- meta data --%>
+    <% include Meta %>
+</head>
+```
 
-	<% base_tag %>
-	<title>$Meta('Title')</title>
+Available meta keys: `Title`, `Description`, `Keywords`, `SiteName`, `Link`, `Image`, `TwitterCreator`, `TwitterPublisher`, `TimeModified`, `TimeCreated`
 
-	<%-- meta data --%>
-	<% include Meta %>
-````
+## Share URLs
 
+In your template:
 
-## todo
-
-- DOCS!!!
-- Cleanup the unnecessary manual management of twitter username and fb page url - these should be generated from the oauth data / page / user ids
-- Need clear setup instructions for each social network
-- Instagram push
-- Common update behaviour should go into an extension
-- Code Cleanup
-- config.yml
+```html
+<a href="$ShareUrl('facebook')">Share on Facebook</a>
+<a href="$ShareUrl('twitter')">Share on Twitter</a>
+<a href="$ShareUrl('linked_in')">Share on LinkedIn</a>
+```
 
 
 ## License

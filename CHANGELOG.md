@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Guzzle 3.x `resolveUrl()` rewritten with Guzzle 7 redirect tracking
 - `doPublish()` calls replaced with `publishRecursive()`
 - Extension registration moved from `_config.php` to YAML with named keys
+- **Breaking**: `SocialMediaConfig` and `SocialMediaPageExtension` no longer auto-applied to `SiteConfig`/`Page` — projects must opt in via YAML (see README)
 - TinyMCE editor plugin removed (TinyMCE no longer bundled in SS6)
 - All `die()` calls replaced with exceptions (BuildTasks) and `httpError()` (Controllers)
 - CSRF token generation upgraded to `bin2hex(random_bytes(32))`
@@ -30,6 +31,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `phpunit.xml.dist` with SS framework bootstrap
 
 ### Fixed
+- SQL injection risk: raw WHERE clauses replaced with ORM `filter()` across 9 call sites
+- `header()`/`exit` in authenticators replaced with SS framework `$this->redirect()`
+- Variable shadowing: error display used wrong variable in SocialMediaConfig
+- File path sanitization added to image download operations
 - PHP 8.5 compatibility (implicit nullable params, return types on ~100 methods)
 - PSR-4 class/file name mismatch (`PurgeFBUpdates.php` -> `PurgeFBUpdate.php`)
 - Logic error in `AssociatedImage()`: `&&` changed to `||` for null check
