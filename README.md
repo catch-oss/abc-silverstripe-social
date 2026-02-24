@@ -1,6 +1,7 @@
 # abc-silverstripe-social
 
 <!-- PROJECT SHIELDS -->
+
 [![SonarCloud](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/sonar.yml/badge.svg)](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/sonar.yml)
 [![Test](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/test.yml/badge.svg)](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/test.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=catch-design_catch-oss-abc-silverstripe-social&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=catch-design_catch-oss-abc-silverstripe-social)
@@ -19,10 +20,10 @@ Library that adds some social media functionality to Silverstripe:
 
 ## Compatibility
 
-| Version | Silverstripe | PHP |
-|---------|-------------|-----|
-| release/6 | ^6.0 | ^8.5 |
-| release/5 | ^5.1 | ~8.4 |
+| Version   | Silverstripe | PHP  |
+| --------- | ------------ | ---- |
+| release/6 | ^6.0         | ^8.5 |
+| release/5 | ^5.1         | ~8.4 |
 
 ## Features
 
@@ -33,7 +34,7 @@ Library that adds some social media functionality to Silverstripe:
 
 ## Setup
 
-This module does **not** automatically apply extensions to `SiteConfig` or `Page`. You must opt in by adding the extensions you need in your project's YAML config.
+This module does not automatically apply extensions to `SiteConfig` or `Page`. You must opt in by adding the extensions you need in your project's YAML config.
 
 ### SocialMediaConfig (on SiteConfig)
 
@@ -50,6 +51,7 @@ SilverStripe\SiteConfig\SiteConfig:
 ```
 
 **What it adds to SiteConfig:**
+
 - Facebook: App ID/Secret, User/Page access tokens, Page ID, feed type, push/pull toggles
 - Twitter: Consumer Key/Secret, OAuth token/secret, username, push/pull toggles
 - Instagram: API Key/Secret, OAuth token, username/user ID, push/pull toggles
@@ -67,6 +69,7 @@ Page:
 ```
 
 **What it adds to Page:**
+
 - `MetaTitle`, `MetaKeywords` fields and a **Meta** tab in the CMS
 - `PrimaryImage` upload for social sharing image (with fallback to SiteConfig default)
 - `ForceUpdateMode` (Default/Block/Force) to control auto-posting behaviour
@@ -101,10 +104,9 @@ Include the `Meta` partial in your page template:
 
 ```html
 <head>
-    <% base_tag %>
-    <title>$Meta('Title')</title>
-    <%-- meta data --%>
-    <% include Meta %>
+  <% base_tag %>
+  <title>$Meta('Title')</title>
+  <%-- meta data --%> <% include Meta %>
 </head>
 ```
 
@@ -137,18 +139,21 @@ The shortcode accepts a `url` parameter pointing to any supported social media p
 ### Supported platforms
 
 **Twitter/X:**
+
 ```
 [social_embed,url="https://twitter.com/nytimes/status/701590150434967553"]
 [social_embed,url="https://x.com/nytimes/status/701590150434967553"]
 ```
 
 **Facebook posts:**
+
 ```
 [social_embed,url="https://www.facebook.com/telesurenglish/photos/a.492297374247003.1073741828.479681268841947/791129364363801/"]
 [social_embed,url="https://www.facebook.com/username/posts/123456789"]
 ```
 
 **Instagram:**
+
 ```
 [social_embed,url="https://www.instagram.com/p/BCEoPpwDw-t/"]
 [social_embed,url="https://instagr.am/p/BCEoPpwDw-t/"]
