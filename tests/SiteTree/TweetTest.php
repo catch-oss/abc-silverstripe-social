@@ -14,6 +14,10 @@ class TweetTest extends SapphireTest
 {
     protected $usesDatabase = true;
 
+    protected static $required_extensions = [
+        SiteConfig::class => [\Azt3k\SS\Social\Extensions\SocialMediaConfig::class],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
