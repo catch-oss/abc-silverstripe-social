@@ -20,7 +20,6 @@ class SyncTwitter extends PolyCommand implements CronTask
 {
 
     protected static string $commandName = 'social:sync-twitter';
-    protected string $title = 'Sync Twitter';
     protected static string $description = 'Syncs Twitter updates from a configured account';
 
     protected static $conf_instance;
@@ -29,6 +28,11 @@ class SyncTwitter extends PolyCommand implements CronTask
     protected $tmhOAuth;
     protected $errors = array();
     protected $messages = array();
+
+    public function getTitle(): string
+    {
+        return 'Sync Twitter';
+    }
 
     public function __construct()
     {
@@ -274,10 +278,5 @@ class SyncTwitter extends PolyCommand implements CronTask
         }
 
         return $noNew;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

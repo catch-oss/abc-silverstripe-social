@@ -16,8 +16,12 @@ class PurgeTwitter extends PolyCommand
 {
 
     protected static string $commandName = 'social:purge-twitter';
-    protected string $title = 'Purge Twitter';
     protected static string $description = 'Purges all Tweet pages';
+
+    public function getTitle(): string
+    {
+        return 'Purge Twitter';
+    }
 
     public function run(InputInterface $input, PolyOutput $output): int
     {
@@ -45,10 +49,5 @@ class PurgeTwitter extends PolyCommand
         }
 
         return Command::SUCCESS;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

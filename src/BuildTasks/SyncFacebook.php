@@ -23,7 +23,6 @@ class SyncFacebook extends PolyCommand implements CronTask
 {
 
     protected static string $commandName = 'social:sync-facebook';
-    protected string $title = 'Sync Facebook';
     protected static string $description = 'Syncs Facebook updates from a configured page';
 
     protected static $conf_instance;
@@ -32,6 +31,11 @@ class SyncFacebook extends PolyCommand implements CronTask
     protected $facebook;
     protected $errors = array();
     protected $messages = array();
+
+    public function getTitle(): string
+    {
+        return 'Sync Facebook';
+    }
 
     public function __construct()
     {
@@ -302,10 +306,5 @@ class SyncFacebook extends PolyCommand implements CronTask
         }
 
         return $noNew;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

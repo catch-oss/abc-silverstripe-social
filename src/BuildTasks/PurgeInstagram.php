@@ -17,8 +17,12 @@ class PurgeInstagram extends PolyCommand
 {
 
     protected static string $commandName = 'social:purge-instagram';
-    protected string $title = 'Purge Instagram';
     protected static string $description = 'Purges all Instagram update pages';
+
+    public function getTitle(): string
+    {
+        return 'Purge Instagram';
+    }
 
     public function run(InputInterface $input, PolyOutput $output): int
     {
@@ -46,10 +50,5 @@ class PurgeInstagram extends PolyCommand
         }
 
         return Command::SUCCESS;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

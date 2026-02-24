@@ -20,11 +20,15 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
 {
 
     protected static string $commandName = 'social:retry-sync-facebook-images';
-    protected string $title = 'Retry Sync Facebook Images';
     protected static string $description = 'Retries syncing Facebook images that were not immediately available';
 
     protected static $conf_instance;
     protected $conf;
+
+    public function getTitle(): string
+    {
+        return 'Retry Sync Facebook Images';
+    }
 
     public function __construct()
     {
@@ -107,10 +111,5 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
         }
 
         return Command::SUCCESS;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

@@ -17,8 +17,12 @@ class PurgeFBUpdate extends PolyCommand
 {
 
     protected static string $commandName = 'social:purge-fb-updates';
-    protected string $title = 'Purge FB Updates';
     protected static string $description = 'Purges all Facebook update pages';
+
+    public function getTitle(): string
+    {
+        return 'Purge FB Updates';
+    }
 
     public function run(InputInterface $input, PolyOutput $output): int
     {
@@ -46,10 +50,5 @@ class PurgeFBUpdate extends PolyCommand
         }
 
         return Command::SUCCESS;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

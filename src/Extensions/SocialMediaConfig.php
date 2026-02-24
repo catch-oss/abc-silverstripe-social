@@ -92,7 +92,7 @@ class SocialMediaConfig extends Extension {
         // Facebook
         // ---------
 
-        $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField('FacebookHeading',    '<h3>Facebook</h3>'));
+        $fields->addFieldToTab('Root.SocialMedia',    new LiteralField('FacebookHeading',    '<h3>Facebook</h3>'));
 
         // Validate Page Access Token
         $userValid = $pageValid = false;
@@ -100,7 +100,7 @@ class SocialMediaConfig extends Extension {
             $pageValid = FBAuthenticator::validate_current_conf('page');
         } catch (Exception $e) {
             $pageMsg = $e->getMessage();
-            $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField(
+            $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'FacebookBrokenPageConf',
                 '<span style="color:red">Your facebook page configuration is broken (' . $pageValid . ')</span>'
             ));
@@ -111,7 +111,7 @@ class SocialMediaConfig extends Extension {
             $userValid = FBAuthenticator::validate_current_conf('user');
         } catch (Exception $e) {
             $userMsg = $e->getMessage();
-            $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField(
+            $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'FacebookBrokenUserConf',
                 '<p style="color:red">Your facebook user configuration is broken (' . $userMsg . ')</p>'
             ));
@@ -143,70 +143,70 @@ class SocialMediaConfig extends Extension {
         // Twitter
         // ---------
 
-        $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField('TwitterHeading', '<br><h3>Twitter</h3>'));
+        $fields->addFieldToTab('Root.SocialMedia',    new LiteralField('TwitterHeading', '<br><h3>Twitter</h3>'));
 
         // user
         try {
             $twitterValid = TwitterAuthenticator::validate_current_conf();
         } catch (Exception $e) {
             $twitterMsg = $e->getMessage();
-            $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField(
+            $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'TwitterBrokenConf',
                 '<p style="color:red">Your twitter configuration is broken</p>'
             ));
 
         }
 
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('TwitterAppLink', '<p>Manage your apps here: <a href="https://apps.twitter.com/">https://apps.twitter.com/</a></p>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new TextField('TwitterConsumerKey', 'Twitter Consumer Key'));
-        $fields->addFieldsToTab('Root.SocialMedia', new TextField('TwitterConsumerSecret', 'Twitter Consumer Secret'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('TwitterAppLink', '<p>Manage your apps here: <a href="https://apps.twitter.com/">https://apps.twitter.com/</a></p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new TextField('TwitterConsumerKey', 'Twitter Consumer Key'));
+        $fields->addFieldToTab('Root.SocialMedia', new TextField('TwitterConsumerSecret', 'Twitter Consumer Secret'));
 
         // only add the username field if we don't have an auth token
         if (!$this->owner->TwitterOAuthToken)
-            $fields->addFieldsToTab('Root.SocialMedia', new TextField('TwitterUsername', 'Twitter Username (optional)'));
+            $fields->addFieldToTab('Root.SocialMedia', new TextField('TwitterUsername', 'Twitter Username (optional)'));
 
-        $fields->addFieldsToTab('Root.SocialMedia', new CheckboxField('TwitterPushUpdates', 'Push publication updates to authorised Twitter account'));
-        $fields->addFieldsToTab('Root.SocialMedia', new CheckboxField('TwitterPullUpdates', 'Pull publication updates from authorised Twitter account'));
+        $fields->addFieldToTab('Root.SocialMedia', new CheckboxField('TwitterPushUpdates', 'Push publication updates to authorised Twitter account'));
+        $fields->addFieldToTab('Root.SocialMedia', new CheckboxField('TwitterPullUpdates', 'Pull publication updates from authorised Twitter account'));
 
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('TwitterUserData', '<h4>Twitter User</h4>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('TwitterUserLink', '<p><a href="' . $this->TwitterPageLink(). '">' . $this->owner->TwitterUsername . '</a></p>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('TwitterOAuthToken', '<p>Twitter OAuth Token</p><p>'.($this->owner->TwitterOAuthToken ? $this->owner->TwitterOAuthToken.' <a href="/TwitterAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/TwitterAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('TwitterOAuthSecret', '<p>Twitter OAuth Secret</p><p>'.($this->owner->TwitterOAuthSecret ? $this->owner->TwitterOAuthSecret.' <a href="/TwitterAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/TwitterAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('TwitterUserData', '<h4>Twitter User</h4>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('TwitterUserLink', '<p><a href="' . $this->TwitterPageLink(). '">' . $this->owner->TwitterUsername . '</a></p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('TwitterOAuthToken', '<p>Twitter OAuth Token</p><p>'.($this->owner->TwitterOAuthToken ? $this->owner->TwitterOAuthToken.' <a href="/TwitterAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/TwitterAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('TwitterOAuthSecret', '<p>Twitter OAuth Secret</p><p>'.($this->owner->TwitterOAuthSecret ? $this->owner->TwitterOAuthSecret.' <a href="/TwitterAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/TwitterAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
 
         // ---------
         // Instagram
         // ---------
 
-        $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField('InstagramHeading', '<br><h3>Instagram</h3>'));
+        $fields->addFieldToTab('Root.SocialMedia',    new LiteralField('InstagramHeading', '<br><h3>Instagram</h3>'));
 
         // user
         try {
             $instagramValid = InstagramAuthenticator::validate_current_conf();
         } catch (Exception $e) {
             $instagramMsg = $e->getMessage();
-            $fields->addFieldsToTab('Root.SocialMedia',    new LiteralField(
+            $fields->addFieldToTab('Root.SocialMedia',    new LiteralField(
                 'InstagramBrokenConf',
                 '<p style="color:red">Your instagram configuration is broken</p>'
             ));
 
         }
 
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('InstagramAppLink', '<p>Manage your apps here: <a href="https://developers.facebook.com/apps/">https://developers.facebook.com/apps/</a></p>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new TextField('InstagramApiKey', 'Instagram App ID'));
-        $fields->addFieldsToTab('Root.SocialMedia', new TextField('InstagramApiSecret', 'Instagram App Secret'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('InstagramAppLink', '<p>Manage your apps here: <a href="https://developers.facebook.com/apps/">https://developers.facebook.com/apps/</a></p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new TextField('InstagramApiKey', 'Instagram App ID'));
+        $fields->addFieldToTab('Root.SocialMedia', new TextField('InstagramApiSecret', 'Instagram App Secret'));
 
         // only add the username field if we don't have an auth token
         if (!$this->owner->InstagramOAuthToken) {
-            $fields->addFieldsToTab('Root.SocialMedia', new TextField('InstagramUsername', 'Instagram Username'));
-            $fields->addFieldsToTab('Root.SocialMedia', new TextField('InstagramUserId', 'Instagram User ID'));
+            $fields->addFieldToTab('Root.SocialMedia', new TextField('InstagramUsername', 'Instagram Username'));
+            $fields->addFieldToTab('Root.SocialMedia', new TextField('InstagramUserId', 'Instagram User ID'));
         }
 
-        $fields->addFieldsToTab('Root.SocialMedia', new CheckboxField('InstagramPushUpdates', 'Push publication updates to authorised Instagram account'));
-        $fields->addFieldsToTab('Root.SocialMedia', new CheckboxField('InstagramPullUpdates', 'Pull publication updates from authorised Instagram account'));
+        $fields->addFieldToTab('Root.SocialMedia', new CheckboxField('InstagramPushUpdates', 'Push publication updates to authorised Instagram account'));
+        $fields->addFieldToTab('Root.SocialMedia', new CheckboxField('InstagramPullUpdates', 'Pull publication updates from authorised Instagram account'));
 
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('InstagramUserData', '<h4>Instagram User</h4>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('InstagramUserLink', '<p><a target="_blank" href="' . $this->InstagramPageLink(). '">' . $this->owner->InstagramUsername . '(' . $this->owner->InstagramUserId . ')</a></p>'));
-        $fields->addFieldsToTab('Root.SocialMedia', new LiteralField('InstagramOAuthToken', '<p>OAuth Token</p><p>'.($this->owner->InstagramOAuthToken ? $this->owner->InstagramOAuthToken.' <a href="/InstagramAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/InstagramAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('InstagramUserData', '<h4>Instagram User</h4>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('InstagramUserLink', '<p><a target="_blank" href="' . $this->InstagramPageLink(). '">' . $this->owner->InstagramUsername . '(' . $this->owner->InstagramUserId . ')</a></p>'));
+        $fields->addFieldToTab('Root.SocialMedia', new LiteralField('InstagramOAuthToken', '<p>OAuth Token</p><p>'.($this->owner->InstagramOAuthToken ? $this->owner->InstagramOAuthToken.' <a href="/InstagramAuthenticator?wipe=1" target="_blank">Wipe</a>' : '<a href="/InstagramAuthenticator?start=1" target="_blank">Authenticate</a>').'</p>'));
 
     }
 

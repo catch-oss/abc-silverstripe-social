@@ -99,7 +99,7 @@ class SocialHelper {
      * @param  string $type    [description]
      * @return string          [description]
      */
-    public static function link(string $id, string $service, string $type = 'user'): ?string
+    public static function link(?string $id, string $service, string $type = 'user'): ?string
     {
         switch ($service) {
             case 'facebook':

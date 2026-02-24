@@ -23,7 +23,6 @@ class SyncInstagram extends PolyCommand implements CronTask
 {
 
     protected static string $commandName = 'social:sync-instagram';
-    protected string $title = 'Sync Instagram';
     protected static string $description = 'Syncs Instagram updates from a configured account';
 
     protected static $conf_instance;
@@ -32,6 +31,11 @@ class SyncInstagram extends PolyCommand implements CronTask
     protected $instagram;
     protected $errors = array();
     protected $messages = array();
+
+    public function getTitle(): string
+    {
+        return 'Sync Instagram';
+    }
 
     public function __construct()
     {
@@ -260,10 +264,5 @@ class SyncInstagram extends PolyCommand implements CronTask
         }
 
         return $noNew;
-    }
-
-    public function getOptions(): array
-    {
-        return [];
     }
 }

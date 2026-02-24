@@ -1,0 +1,9 @@
+vendor/
+.phpunit.cache/
+app/
+public/
+.htaccess
+index.php
+web.config
+.env
+composer.lock
