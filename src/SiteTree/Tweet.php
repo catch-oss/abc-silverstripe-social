@@ -128,15 +128,17 @@ class Tweet extends Page
                 // sanity check
                 if (!is_dir(ASSETS_PATH . '/social-updates/')) mkdir(ASSETS_PATH . '/social-updates/');
 
-                // prep img data
-                $pi = pathinfo($img);
-                $absPath = ASSETS_PATH . '/social-updates/' . $pi['basename'];
-                $relPath = ASSETS_DIR . '/social-updates/' . $pi['basename'];
+                // prep img data - sanitize basename to prevent path traversal
+                $basename = basename(pathinfo($img, PATHINFO_BASENAME));
+                $absPath = ASSETS_PATH . '/social-updates/' . $basename;
+                $relPath = ASSETS_DIR . '/social-updates/' . $basename;
 
                 // pull down image
                 if (!file_exists($absPath)) {
                     $imgData = file_get_contents($img);
-                    file_put_contents($absPath, $imgData);
+                    if ($imgData !== false) {
+                        file_put_contents($absPath, $imgData);
+                    }
                 }
 
                 // echo $img;
@@ -147,7 +149,7 @@ class Tweet extends Page
                 if (file_exists($absPath)) {
 
                     // try to find the existing image
-                    if (!$image = DataObject::get_one(Image::class, "Filename='" . $relPath . "'")) {
+                    if (!$image = Image::get()->filter('Filename', $relPath)->first()) {
 
                         // create image record
                         $image = new Image;

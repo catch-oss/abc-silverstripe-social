@@ -229,8 +229,8 @@ class SyncTwitter extends PolyCommand implements CronTask
         $noNew = true;
 
         foreach ($resp as $tweetData) {
-            if (!$savedTweet = DataObject::get_one(Tweet::class, "TweetID='" . $tweetData->id_str . "'")) {
-                if (!$pubTweet = DataObject::get_one(PublicationTweet::class, "TweetID='" . $tweetData->id_str . "'")) {
+            if (!$savedTweet = Tweet::get()->filter('TweetID', $tweetData->id_str)->first()) {
+                if (!$pubTweet = PublicationTweet::get()->filter('TweetID', $tweetData->id_str)->first()) {
 
                     if ($output) {
                         $output->writeln('Adding Tweet ' . $tweetData->id_str);

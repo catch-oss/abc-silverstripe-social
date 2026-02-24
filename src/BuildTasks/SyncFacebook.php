@@ -256,8 +256,8 @@ class SyncFacebook extends PolyCommand implements CronTask
             // type cast
             $data = (object) $data;
 
-            if (!$savedUpdate = DataObject::get_one(FBUpdate::class, "UpdateID='" . $data->id . "'")) {
-                if (!$pubUpdate = DataObject::get_one(PublicationFBUpdate::class, "FBUpdateID='" . $data->id . "'")) {
+            if (!$savedUpdate = FBUpdate::get()->filter('UpdateID', $data->id)->first()) {
+                if (!$pubUpdate = PublicationFBUpdate::get()->filter('FBUpdateID', $data->id)->first()) {
 
                     if ($output) {
                         $output->writeln('Adding Update ' . $data->id);

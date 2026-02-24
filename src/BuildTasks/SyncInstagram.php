@@ -212,8 +212,8 @@ class SyncInstagram extends PolyCommand implements CronTask
             if (is_array($data)) {
                 $data = json_decode(json_encode($data));
             }
-            if (!$savedInstagramUpdate = DataObject::get_one(InstagramUpdate::class, "UpdateID='" . $data->id . "'")) {
-                if (!$pubInstagramUpdate = DataObject::get_one(PublicationInstagramUpdate::class, "InstagramUpdateID='" . $data->id . "'")) {
+            if (!$savedInstagramUpdate = InstagramUpdate::get()->filter('UpdateID', $data->id)->first()) {
+                if (!$pubInstagramUpdate = PublicationInstagramUpdate::get()->filter('InstagramUpdateID', $data->id)->first()) {
 
                     if ($output) {
                         $output->writeln("Adding InstagramUpdate " . $data->id);

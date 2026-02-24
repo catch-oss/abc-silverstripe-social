@@ -168,7 +168,7 @@ class FBUpdate extends Page {
             if (file_exists($absPath)) {
 
                 // try to find the existing image
-                if (!$image = DataObject::get_one(Image::class, "Filename='" . $relPath . "'")) {
+                if (!$image = Image::get()->filter('Filename', $relPath)->first()) {
 
                     // create image record
                     $image = new Image;
