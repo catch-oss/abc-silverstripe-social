@@ -165,6 +165,26 @@ class SocialHelperTest extends SapphireTest
         $this->assertNull($result);
     }
 
+    public function testLinkReturnsNullForNullId(): void
+    {
+        // GIVEN a null ID
+        // WHEN we call link() with null id
+        $result = SocialHelper::link(null, 'facebook');
+
+        // THEN it should return null
+        $this->assertNull($result);
+    }
+
+    public function testLinkReturnsNullForEmptyId(): void
+    {
+        // GIVEN an empty string ID
+        // WHEN we call link() with empty id
+        $result = SocialHelper::link('', 'twitter');
+
+        // THEN it should return null
+        $this->assertNull($result);
+    }
+
     public function testUsesExtensibleTrait(): void
     {
         // GIVEN the SocialHelper class

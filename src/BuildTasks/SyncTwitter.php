@@ -217,7 +217,7 @@ class SyncTwitter extends PolyCommand implements CronTask
             }
         } else {
 
-            die($code . " : " . $this->tmhOAuth->response['response']);
+            throw new \RuntimeException($code . " : " . $this->tmhOAuth->response['response']);
         }
     }
 
@@ -250,7 +250,7 @@ class SyncTwitter extends PolyCommand implements CronTask
                             echo 'Successfully created' . $tweet->Title . $eol;
                         }
                     } else {
-                        die('Failed to Publish ' . $tweet->Title);
+                        throw new \RuntimeException('Failed to Publish ' . $tweet->Title);
                     }
 
                     // set no new flag

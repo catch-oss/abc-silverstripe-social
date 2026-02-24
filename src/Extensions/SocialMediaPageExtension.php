@@ -290,7 +290,7 @@ class SocialMediaPageExtension extends Extension {
             : $this->owner->PrimaryImage();
 
         // fall back to site default
-        if (!$img && empty($img->ID)) $img = $conf->DefaultImage();
+        if (!$img || empty($img->ID)) $img = $conf->DefaultImage();
 
         // return an image if we can
         return $img && !empty($img->ID) ? $img : null;

@@ -63,7 +63,7 @@ class FBAuthenticator extends Controller {
         $app_secret = $conf->FacebookAppSecret;
         $my_url     = SocialHelper::php_self();
 
-        $_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
+        $_SESSION['state'] = bin2hex(random_bytes(32)); //CSRF protection
         $dialog_url =   'http://www.facebook.com/dialog/oauth?'.
                         'client_id='.$app_id.'&'.
                         'redirect_uri='.urlencode($my_url).'&'.
@@ -140,7 +140,7 @@ class FBAuthenticator extends Controller {
         // purge
         static::purge_auth_tokens();
 
-        die('Auth tokens purged.<br><br><a href="/FBAuthenticator">Click here to authorise</a>');
+        return 'Auth tokens purged.<br><br><a href="/FBAuthenticator">Click here to authorise</a>';
 
     }
 
@@ -156,7 +156,7 @@ class FBAuthenticator extends Controller {
 
         // the auth process authorises both a user and a page
         // it might pay to make this a seperate step in future if we decide to add user feeds as well as page feeds
-        if (empty($this->conf->FacebookPageId)) die('Facebook Page ID not supplied');
+        if (empty($this->conf->FacebookPageId)) return $this->httpError(400, 'Facebook Page ID not supplied');
 
         // if there's a code in the request grab it
         $code = empty($_REQUEST['code']) ? null : $_REQUEST['code'] ;
@@ -184,7 +184,7 @@ class FBAuthenticator extends Controller {
             parse_str($response, $params);
 
             // die if we didn't get the required info
-            if (empty($params['access_token'])) die('couldn\'t get user access token - are you logged in to the correct facebook account?');
+            if (empty($params['access_token'])) return $this->httpError(400, 'couldn\'t get user access token - are you logged in to the correct facebook account?');
 
             // save the user access token
             $this->conf->FacebookUserAccessToken = $params['access_token'];
@@ -195,7 +195,7 @@ class FBAuthenticator extends Controller {
             $user = (object) static::get_facebook()->sendRequest('get', '/me')->getDecodedBody();
 
             // die if we couldn't get an id
-            if (empty($user->id)) die('couldn\'t access user info');
+            if (empty($user->id)) return $this->httpError(400, 'couldn\'t access user info');
 
             // save the user ID
             $this->conf->FacebookUserId = $user->id;
@@ -205,7 +205,7 @@ class FBAuthenticator extends Controller {
             $page_info = $facebook->sendRequest('get', '/' . $this->conf->FacebookPageId . "?fields=access_token" )->getDecodedBody();
 
             // die if we didn't get the required info
-            if (empty($page_info['access_token'])) die('couldn\'t get page access token - are you logged in to the correct facebook account and an admin of page ' . $this->conf->FacebookPageId . '?');
+            if (empty($page_info['access_token'])) return $this->httpError(400, 'couldn\'t get page access token - are you logged in to the correct facebook account and an admin of page ' . $this->conf->FacebookPageId . '?');
 
             // save the page access token
             $this->conf->FacebookPageAccessToken = $page_info['access_token'];
@@ -221,7 +221,7 @@ class FBAuthenticator extends Controller {
 
         }else{
 
-            die('crsf error');
+            return $this->httpError(403, 'CSRF validation error');
 
         }
 

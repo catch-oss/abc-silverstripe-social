@@ -84,7 +84,7 @@ class SocialMediaConfig extends Extension {
         $fields->addFieldToTab('Root.Images', $tweetImageField);
 
         // Image
-        $instagramImageField = new UploadField('DefaultInstagramImage', 'Default Instagram Image');
+        $instagramImageField = new UploadField('DefaultInstagramUpdateImage', 'Default Instagram Image');
         $instagramImageField->getValidator()->setAllowedExtensions(array('jpg','jpeg','gif','png'));
         $fields->addFieldToTab('Root.Images', $instagramImageField);
 

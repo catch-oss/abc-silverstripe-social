@@ -235,7 +235,7 @@ class SyncInstagram extends PolyCommand implements CronTask
                                 echo 'Successfully created' . $update->Title . "<br />\n";
                             }
                         } else {
-                            die('Failed to Publish ' . $update->Title);
+                            throw new \RuntimeException('Failed to Publish ' . $update->Title);
                         }
                     }
 

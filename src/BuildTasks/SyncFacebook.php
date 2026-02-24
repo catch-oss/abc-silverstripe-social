@@ -277,7 +277,7 @@ class SyncFacebook extends PolyCommand implements CronTask
                                 echo 'Successfully created' . $update->Title . $eol . $eol;
                             }
                         } else {
-                            die('Failed to Publish ' . $update->Title);
+                            throw new \RuntimeException('Failed to Publish ' . $update->Title);
                         }
                     }
 

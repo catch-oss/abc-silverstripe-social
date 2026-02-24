@@ -101,6 +101,8 @@ class SocialHelper {
      */
     public static function link(?string $id, string $service, string $type = 'user'): ?string
     {
+        if (empty($id)) return null;
+
         switch ($service) {
             case 'facebook':
                 if ($type == 'user') return 'https://www.facebook.com/' . $id;
