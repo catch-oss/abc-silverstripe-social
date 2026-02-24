@@ -176,7 +176,10 @@ class FBAuthenticator extends Controller {
                          '&code='.          $code;
 
             // fetch and parse the response
-            $response = file_get_contents($token_url);
+            $response = @file_get_contents($token_url);
+            if ($response === false) {
+                return $this->httpError(502, 'Failed to fetch access token from Facebook');
+            }
             $params = null;
             parse_str($response, $params);
 

@@ -262,4 +262,112 @@ class SocialHelperTest extends SapphireTest
         // THEN it should default to localhost
         $this->assertStringContainsString('localhost', $result);
     }
+
+    public function testIsValidImageDataAcceptsJpeg(): void
+    {
+        // GIVEN binary data starting with JPEG magic bytes
+        $data = "\xFF\xD8\xFF\xE0" . str_repeat("\x00", 100);
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be valid
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidImageDataAcceptsPng(): void
+    {
+        // GIVEN binary data starting with PNG magic bytes
+        $data = "\x89PNG\r\n\x1a\n" . str_repeat("\x00", 100);
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be valid
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidImageDataAcceptsGif87a(): void
+    {
+        // GIVEN binary data starting with GIF87a magic bytes
+        $data = "GIF87a" . str_repeat("\x00", 100);
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be valid
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidImageDataAcceptsGif89a(): void
+    {
+        // GIVEN binary data starting with GIF89a magic bytes
+        $data = "GIF89a" . str_repeat("\x00", 100);
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be valid
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidImageDataAcceptsWebp(): void
+    {
+        // GIVEN binary data starting with RIFF (WebP) magic bytes
+        $data = "RIFF" . str_repeat("\x00", 100);
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be valid
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidImageDataRejectsHtml(): void
+    {
+        // GIVEN binary data that is actually HTML
+        $data = "<html><body>Not an image</body></html>";
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be invalid
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidImageDataRejectsRandomBytes(): void
+    {
+        // GIVEN random binary data that doesn't match any signature
+        $data = "\x00\x01\x02\x03\x04\x05";
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be invalid
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidImageDataRejectsEmptyString(): void
+    {
+        // GIVEN an empty string
+        $data = "";
+
+        // WHEN we validate it
+        $result = SocialHelper::isValidImageData($data);
+
+        // THEN it should be invalid
+        $this->assertFalse($result);
+    }
+
+    public function testDownloadImageReturnsFalseForInvalidUrl(): void
+    {
+        // GIVEN a URL that will fail to fetch
+        $url = 'http://localhost:1/nonexistent-image.jpg';
+
+        // WHEN we attempt to download it
+        $result = SocialHelper::downloadImage($url);
+
+        // THEN it should return false
+        $this->assertFalse($result);
+    }
 }

@@ -93,6 +93,59 @@ class SocialHelper {
     }
 
     /**
+     * Maximum allowed size for downloaded images (10MB)
+     */
+    private static int $max_image_size = 10 * 1024 * 1024;
+
+    /**
+     * Valid image magic byte signatures
+     */
+    private static array $image_signatures = [
+        "\xFF\xD8\xFF"       => 'image/jpeg',
+        "\x89PNG\r\n\x1a\n"  => 'image/png',
+        "GIF87a"             => 'image/gif',
+        "GIF89a"             => 'image/gif',
+        "RIFF"               => 'image/webp',
+    ];
+
+    /**
+     * Validates that binary data starts with a known image file signature.
+     */
+    public static function isValidImageData(string $data): bool
+    {
+        foreach (static::$image_signatures as $signature => $type) {
+            if (str_starts_with($data, $signature)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Downloads an image from a URL with size limit and content validation.
+     * Returns the image data on success, or false on failure.
+     */
+    public static function downloadImage(string $url): string|false
+    {
+        $context = stream_context_create(['http' => ['timeout' => 30]]);
+        $data = @file_get_contents($url, false, $context);
+
+        if ($data === false) {
+            return false;
+        }
+
+        if (strlen($data) > static::$max_image_size) {
+            return false;
+        }
+
+        if (!static::isValidImageData($data)) {
+            return false;
+        }
+
+        return $data;
+    }
+
+    /**
      * generates page links for various services
      * @param  string $id      [description]
      * @param  string $service [description]

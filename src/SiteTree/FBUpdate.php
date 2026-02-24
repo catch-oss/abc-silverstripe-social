@@ -14,7 +14,9 @@ use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Assets\Filesystem;
 use SilverStripe\Forms\LiteralField;
+use Azt3k\SS\Social\Objects\SocialHelper;
 
 /**
  * @author AzT3k
@@ -147,20 +149,25 @@ class FBUpdate extends Page {
             // get url
             $img = $picUrl;
 
-            // sanity check
-            if (!is_dir(ASSETS_PATH . '/social-updates/')) mkdir(ASSETS_PATH . '/social-updates/');
+            // ensure directory exists
+            $dir = ASSETS_PATH . '/social-updates/';
+            Filesystem::makeFolder($dir);
 
             // prep img data - sanitize basename to prevent path traversal
             $noq = explode('?', $img);
             $basename = basename(pathinfo($noq[0], PATHINFO_BASENAME));
-            $absPath = ASSETS_PATH . '/social-updates/' . $basename;
+            $absPath = $dir . $basename;
             $relPath = ASSETS_DIR . '/social-updates/' . $basename;
 
-            // pull down image
+            // pull down image with size limit and content validation
             if (!file_exists($absPath)) {
-                $imgData = file_get_contents($img);
+                $imgData = SocialHelper::downloadImage($img);
                 if ($imgData !== false) {
                     file_put_contents($absPath, $imgData);
+                } else {
+                    Injector::inst()->get(LoggerInterface::class)->warning(
+                        'FBUpdate: Skipped image download — failed, invalid or oversized: ' . $img
+                    );
                 }
             }
 
