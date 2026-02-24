@@ -1,0 +1,22 @@
+---
+Name: abc-silverstripe-social-extensions
+---
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    social-media-config: Azt3k\SS\Social\Extensions\SocialMediaConfig
+
+Page:
+  extensions:
+    social-media-page: Azt3k\SS\Social\Extensions\SocialMediaPageExtension
+
+Azt3k\SS\Social\SiteTree\FBUpdate:
+  extensions:
+    social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension
+
+Azt3k\SS\Social\SiteTree\Tweet:
+  extensions:
+    social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension
+
+Azt3k\SS\Social\SiteTree\InstagramUpdate:
+  extensions:
+    social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension

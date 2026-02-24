@@ -1,0 +1,11 @@
+---
+Name: abc-silverstripe-social-logging
+After:
+  - '#loggingconfig'
+---
+SilverStripe\Core\Injector\Injector:
+  Psr\Log\LoggerInterface.abc-social:
+    type: singleton
+    factory: SilverStripe\Logging\MonologFactory
+    constructor:
+      channel: 'Azt3k.SS.Social'

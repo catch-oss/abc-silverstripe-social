@@ -3,22 +3,22 @@
 namespace Azt3k\SS\Social\Controllers;
 
 use SilverStripe\Control\Controller;
+use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
-use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\Security\Member;
 use Azt3k\SS\Social\DataObjects\OEmbedCacheItem;
 
 class SocialAdmin extends Controller {
 
-	private static $allowed_actions = array(
+	private static $allowed_actions = [
 		'index',
-		'htmlfragment'
-	);
+		'htmlfragment',
+	];
 
 	public function ModuleDir(): string
 	{
-		return ABC_SOCIAL_DIR;
+		$module = ModuleLoader::inst()->getManifest()->getModule('azt3k/abc-silverstripe-social');
+		return $module ? $module->getRelativePath() : '';
 	}
 
 	public function init(): void
