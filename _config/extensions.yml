@@ -1,0 +1,15 @@
+---
+Name: abc-silverstripe-social-extensions
+---
+# Internal module extensions - applied to this module's own classes
+Azt3k\SS\Social\SiteTree\FBUpdate:
+  extensions:
+    social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension
+
+Azt3k\SS\Social\SiteTree\Tweet:
+  extensions:
+    social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension
+
+Azt3k\SS\Social\SiteTree\InstagramUpdate:
+  extensions:
+    social-update: Azt3k\SS\Social\Extensions\SocialUpdatePageExtension

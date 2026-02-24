@@ -1,0 +1,208 @@
+<?php
+
+namespace Azt3k\SS\Social\Controllers;
+
+use SilverStripe\Control\Controller;
+use Azt3k\SS\Social\Objects\SocialHelper;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\Security\Member;
+use RuntimeException;
+use themattharris\tmhOAuth;
+
+class TwitterAuthenticator extends Controller
+{
+
+	private static $allowed_actions = ['index'];
+
+	protected static $conf_instance;
+	protected static $tmh_oauth_instance;
+	protected $conf;
+	protected $tmhOAuth;
+	protected $errors = array();
+	protected $messages = array();
+
+	public function __construct()
+	{
+
+		$this->conf		= static::get_conf();
+		$this->tmhOAuth = static::get_tmh_oauth();
+
+		parent::__construct();
+	}
+
+	public static function get_conf(): mixed
+	{
+		if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
+		return static::$conf_instance;
+	}
+
+	public static function get_tmh_oauth(): tmhOAuth
+	{
+
+		$conf = static::get_conf();
+
+		if (!static::$tmh_oauth_instance) {
+			static::$tmh_oauth_instance = new tmhOAuth(array(
+				'consumer_key'		=> $conf->TwitterConsumerKey,
+				'consumer_secret'	=> $conf->TwitterConsumerSecret,
+			));
+		}
+
+		return static::$tmh_oauth_instance;
+	}
+
+	public static function validate_current_conf(): bool
+	{
+
+		$conf		= static::get_conf();
+		$tmhOAuth	= static::get_tmh_oauth();
+
+		$tmhOAuth->config['user_token']		= $conf->TwitterOAuthToken;
+		$tmhOAuth->config['user_secret']	= $conf->TwitterOAuthSecret;
+
+		$code = $tmhOAuth->request(
+			'GET',
+			$tmhOAuth->url('1.1/account/verify_credentials')
+		);
+
+		if ($code == 200) {
+			return true;
+		} else {
+			throw new RuntimeException('There was an error: ' . $tmhOAuth->response['response']);
+		}
+	}
+
+	protected function addError(): void
+	{
+		$this->errors[] = 'There was an error: ' . $this->tmhOAuth->response['response'];
+	}
+
+	protected function addMsg(string $msg): void
+	{
+		$this->messages[] = $msg;
+	}
+
+	protected function wipe(): void
+	{
+		$this->conf->TwitterOAuthToken = null;
+		$this->conf->TwitterOAuthSecret = null;
+		$this->conf->write();
+		unset($_SESSION['oauth']);
+	}
+
+	// Step 1: Request a temporary token, returns authorize URL on success
+	protected function request_token(): ?string
+	{
+		$code = $this->tmhOAuth->request(
+			'POST',
+			$this->tmhOAuth->url('oauth/request_token', ''),
+			array(
+				'oauth_callback' => SocialHelper::php_self()
+			)
+		);
+
+		if ($code == 200) {
+			$_SESSION['oauth'] = $this->tmhOAuth->extract_params($this->tmhOAuth->response['response']);
+			return $this->getAuthorizeUrl();
+		} else {
+			$this->addError();
+			return null;
+		}
+	}
+
+	// Step 2: Build the authorize URL for the user
+	protected function getAuthorizeUrl(): string
+	{
+		return $this->tmhOAuth->url("oauth/authorize", '') . "?oauth_token={$_SESSION['oauth']['oauth_token']}";
+	}
+
+	// Step 3: Exchange the temporary token for a permanent access token
+	protected function access_token(): bool
+	{
+
+		$this->tmhOAuth->config['user_token'] = $_SESSION['oauth']['oauth_token'];
+		$this->tmhOAuth->config['user_secret'] = $_SESSION['oauth']['oauth_token_secret'];
+
+		$code = $this->tmhOAuth->request(
+			'POST',
+			$this->tmhOAuth->url('oauth/access_token', ''),
+			array(
+				'oauth_verifier' => $_REQUEST['oauth_verifier']
+			)
+		);
+
+		if ($code == 200) {
+			$token = $this->tmhOAuth->extract_params($this->tmhOAuth->response['response']);
+			$this->conf->TwitterOAuthToken = $token['oauth_token'];
+			$this->conf->TwitterOAuthSecret = $token['oauth_token_secret'];
+			$this->conf->TwitterUsername = $token['screen_name'];
+			$this->conf->write();
+			unset($_SESSION['oauth']);
+			return true;
+		} else {
+			$this->addError();
+			return false;
+		}
+	}
+
+	// Step 4: Now the user has authenticated, do something with the permanent token and secret we received
+	protected function verify_credentials(): void
+	{
+
+		$this->tmhOAuth->config['user_token']	= $this->conf->TwitterOAuthToken;
+		$this->tmhOAuth->config['user_secret']	= $this->conf->TwitterOAuthSecret;
+
+		$code = $this->tmhOAuth->request(
+			'GET',
+			$this->tmhOAuth->url('1.1/account/verify_credentials')
+		);
+
+		// print_r($this->tmhOAuth->response);
+
+		if ($code == 200) {
+			$resp = json_decode($this->tmhOAuth->response['response']);
+			$this->addMsg(
+				'<p>Authourised as ' . $resp->screen_name . '</p>' .
+					'<p>The access level of this token is: ' . $this->tmhOAuth->response['headers']['x-access-level'] . '</p>'
+			);
+		} else {
+			$this->addError();
+		}
+	}
+
+	public function index(): mixed
+	{
+
+		// authorise
+		$user = Security::getCurrentUser();
+		if (!Permission::checkMember($user, 'ADMIN')) return $this->httpError(401, 'You do not have access to the requested content');
+
+		// trigger various modes
+		if (isset($_REQUEST['start'])) {
+			$redirectUrl = $this->request_token();
+			if ($redirectUrl) return $this->redirect($redirectUrl);
+		} elseif (isset($_REQUEST['oauth_verifier'])) {
+			if ($this->access_token()) return $this->redirect(SocialHelper::php_self());
+		} elseif (isset($_REQUEST['verify'])) {
+			$this->verify_credentials();
+		} elseif (isset($_REQUEST['wipe'])) {
+			$this->wipe();
+			return $this->redirect(SocialHelper::php_self());
+		}
+
+		// verify credentials if available
+		if ($this->conf->TwitterOAuthToken && $this->conf->TwitterOAuthSecret && !isset($_REQUEST['verify'])) $this->verify_credentials();
+
+		// display output
+		$errMsg = count($this->errors) ? "<p>" . implode("<br />", $this->errors) . "</p>" : '';
+		$msgMsg = count($this->messages) ? "<p>" . implode("<br />", $this->messages) . "</p>" : '';
+
+		return '<p>' . $msgMsg . $errMsg . (
+			$this->conf->TwitterOAuthToken && $this->conf->TwitterOAuthSecret
+			? 'Do you want to: <ul><li><a href="?verify=1">reverify the credentials?</a></li><li><a href="?wipe=1">wipe them and start again</a></li></ul>'
+			: '<a href="?start=1">Click to authorize</a>.'
+		) . '</p>';
+	}
+}

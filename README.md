@@ -1,6 +1,7 @@
 # abc-silverstripe-social
 
 <!-- PROJECT SHIELDS -->
+
 [![SonarCloud](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/sonar.yml/badge.svg)](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/sonar.yml)
 [![Test](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/test.yml/badge.svg)](https://github.com/catch-oss/abc-silverstripe-social/actions/workflows/test.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=catch-design_catch-oss-abc-silverstripe-social&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=catch-design_catch-oss-abc-silverstripe-social)
@@ -17,37 +18,181 @@
 
 Library that adds some social media functionality to Silverstripe:
 
-- Downloads your facebook, instagram or twitter feed and puts it somewhere of your choosing in your site tree
-- Shares the current page to facebook or twitter when you save it (WIP).
-- Improves the Page meta data with twitter, open graph and micro data
-- Provides a number of new tokens to the page template for generating things like share urls
+## Compatibility
 
+| Version   | Silverstripe | PHP  |
+| --------- | ------------ | ---- |
+| release/6 | ^6.0         | ^8.5 |
+| release/5 | ^5.1         | ~8.4 |
 
-## meta data
+## Features
 
-Include the `Meta` partial in your page template e.g.:
+- Downloads your Facebook, Instagram or Twitter feed and puts it somewhere of your choosing in your site tree
+- Shares the current page to Facebook or Twitter when you publish it (WIP)
+- Improves Page meta data with Twitter Cards, Open Graph and micro data
+- Provides template helpers for generating share URLs
 
-````html
+## Setup
+
+This module does not automatically apply extensions to `SiteConfig` or `Page`. You must opt in by adding the extensions you need in your project's YAML config.
+
+### SocialMediaConfig (on SiteConfig)
+
+Adds Facebook, Twitter and Instagram API credentials, OAuth tokens, default images and push/pull toggles to the CMS Settings screen under a **Social Media** tab.
+
+```yaml
+# app/_config/social.yml
+---
+Name: project-social-extensions
+---
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    social-media-config: Azt3k\SS\Social\Extensions\SocialMediaConfig
+```
+
+**What it adds to SiteConfig:**
+
+- Facebook: App ID/Secret, User/Page access tokens, Page ID, feed type, push/pull toggles
+- Twitter: Consumer Key/Secret, OAuth token/secret, username, push/pull toggles
+- Instagram: API Key/Secret, OAuth token, username/user ID, push/pull toggles
+- Default fallback images for each social network
+
+### SocialMediaPageExtension (on Page)
+
+Adds social media meta data, share URLs, publication tracking and auto-posting to every page.
+
+```yaml
+# app/_config/social.yml (append to same file)
+Page:
+  extensions:
+    social-media-page: Azt3k\SS\Social\Extensions\SocialMediaPageExtension
+```
+
+**What it adds to Page:**
+
+- `MetaTitle`, `MetaKeywords` fields and a **Meta** tab in the CMS
+- `PrimaryImage` upload for social sharing image (with fallback to SiteConfig default)
+- `ForceUpdateMode` (Default/Block/Force) to control auto-posting behaviour
+- Publication tracking (`PublicationTweets`, `PublicationFBUpdates`, `PublicationInstagramUpdates`)
+- `$Meta('Title')`, `$Meta('Description')`, `$Meta('Image')` etc. template helpers
+- `$ShareUrl('facebook')`, `$ShareUrl('twitter')`, `$ShareUrl('linked_in')` template helpers
+- Auto-post to Facebook/Twitter on publish (when push is enabled in SiteConfig)
+
+### Both extensions together
+
+For full functionality, enable both:
+
+```yaml
+# app/_config/social.yml
+---
+Name: project-social-extensions
+---
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    social-media-config: Azt3k\SS\Social\Extensions\SocialMediaConfig
+
+Page:
+  extensions:
+    social-media-page: Azt3k\SS\Social\Extensions\SocialMediaPageExtension
+```
+
+Then run `dev/build` to apply the database changes.
+
+## Meta data
+
+Include the `Meta` partial in your page template:
+
+```html
 <head>
+  <% base_tag %>
+  <title>$Meta('Title')</title>
+  <%-- meta data --%> <% include Meta %>
+</head>
+```
 
-	<% base_tag %>
-	<title>$Meta('Title')</title>
+Available meta keys: `Title`, `Description`, `Keywords`, `SiteName`, `Link`, `Image`, `TwitterCreator`, `TwitterPublisher`, `TimeModified`, `TimeCreated`
 
-	<%-- meta data --%>
-	<% include Meta %>
-````
+## Share URLs
 
+In your template:
 
-## todo
+```html
+<a href="$ShareUrl('facebook')">Share on Facebook</a>
+<a href="$ShareUrl('twitter')">Share on Twitter</a>
+<a href="$ShareUrl('linked_in')">Share on LinkedIn</a>
+```
 
-- DOCS!!!
-- Cleanup the unnecessary manual management of twitter username and fb page url - these should be generated from the oauth data / page / user ids
-- Need clear setup instructions for each social network
-- Instagram push
-- Common update behaviour should go into an extension
-- Code Cleanup
-- config.yml
+## Social Embed Shortcodes
 
+This module registers a `[social_embed]` shortcode that lets you embed social media posts directly in page content. When the page renders, the shortcode is replaced with the oEmbed HTML from the social network.
+
+### Basic usage
+
+Add the shortcode to any HTMLText content field (e.g. `Content`) via the CMS HTML editor:
+
+```
+[social_embed,url="https://twitter.com/nytimes/status/701590150434967553"]
+```
+
+The shortcode accepts a `url` parameter pointing to any supported social media post. The module will fetch the oEmbed representation and cache it in the `OEmbedCacheItem` database table.
+
+### Supported platforms
+
+**Twitter/X:**
+
+```
+[social_embed,url="https://twitter.com/nytimes/status/701590150434967553"]
+[social_embed,url="https://x.com/nytimes/status/701590150434967553"]
+```
+
+**Facebook posts:**
+
+```
+[social_embed,url="https://www.facebook.com/telesurenglish/photos/a.492297374247003.1073741828.479681268841947/791129364363801/"]
+[social_embed,url="https://www.facebook.com/username/posts/123456789"]
+```
+
+**Instagram:**
+
+```
+[social_embed,url="https://www.instagram.com/p/BCEoPpwDw-t/"]
+[social_embed,url="https://instagr.am/p/BCEoPpwDw-t/"]
+```
+
+### Specifying the service type
+
+The module auto-detects the service from the URL. You can also specify it explicitly:
+
+```
+[social_embed,service="twitter",url="https://twitter.com/nytimes/status/701590150434967553"]
+[social_embed,service="facebook",url="https://www.facebook.com/username/posts/123456789"]
+[social_embed,service="instagram",url="https://www.instagram.com/p/BCEoPpwDw-t/"]
+```
+
+For Facebook, you can also specify the embed type (`post` or `video`):
+
+```
+[social_embed,service="facebook",type="video",url="https://www.facebook.com/username/videos/123456789"]
+[social_embed,service="facebook",type="post",url="https://www.facebook.com/username/posts/123456789"]
+```
+
+### Caching
+
+Embed responses are cached in the `OEmbedCacheItem` table to avoid repeated API calls. To refresh a cached embed, delete the corresponding row from the table and the next page render will re-fetch it.
+
+### Disabling the shortcode
+
+If you don't need the shortcode handler, disable it via YAML:
+
+```yaml
+# app/_config/social.yml
+Azt3k\SS\Social\Objects\SocialGlobalConf:
+  disable_shortcode_embed: true
+```
+
+### Future enhancements
+
+The SS5 version of this module included a TinyMCE editor plugin that provided a toolbar button and visual preview for inserting social embeds. Silverstripe 6 no longer bundles TinyMCE by default (it is available as an optional package via [`silverstripe/htmleditor-tinymce`](https://docs.silverstripe.org/en/6/optional_features/htmleditor-tinymce/)), and the old plugin used TinyMCE 3/4 APIs that are incompatible with the TinyMCE 6 version in the optional package. A rewritten TinyMCE 6 or TipTap editor extension could be developed as a future enhancement if there is demand for a visual embed insertion workflow.
 
 ## License
 
