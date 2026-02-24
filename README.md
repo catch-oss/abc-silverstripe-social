@@ -17,6 +17,15 @@
 
 Library that adds some social media functionality to Silverstripe:
 
+## Compatibility
+
+| Version | Silverstripe | PHP |
+|---------|-------------|-----|
+| release/6 | ^6.0 | ^8.5 |
+| release/5 | ^5.1 | ~8.4 |
+
+## What can this thing do
+
 - Downloads your facebook, instagram or twitter feed and puts it somewhere of your choosing in your site tree
 - Shares the current page to facebook or twitter when you save it (WIP).
 - Improves the Page meta data with twitter, open graph and micro data
