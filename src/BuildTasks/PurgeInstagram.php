@@ -8,13 +8,13 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
-use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyCommand;
 
 
 /**
  * @author AzT3k
  */
-class PurgeInstagram extends BuildTask
+class PurgeInstagram extends PolyCommand
 {
 
 

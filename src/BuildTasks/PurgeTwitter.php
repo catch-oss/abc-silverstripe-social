@@ -7,12 +7,12 @@ use Azt3k\SS\Social\SiteTree\Tweet;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
-use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyCommand;
 
 /**
  * @author AzT3k
  */
-class PurgeTwitter extends BuildTask
+class PurgeTwitter extends PolyCommand
 {
 
     public function init()

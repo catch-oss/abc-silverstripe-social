@@ -9,7 +9,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use Azt3k\SS\Social\SiteTree\TweetHolder;
 use SilverStripe\Forms\LiteralField;

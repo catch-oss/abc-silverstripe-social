@@ -2,7 +2,7 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
-use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyCommand;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
 use SilverStripe\Control\Controller;
 use SilverStripe\Versioned\Versioned;
@@ -14,7 +14,7 @@ use SilverStripe\Control\Director;
 /**
  * @author AzT3k
  */
-class PurgeFBUpdate extends BuildTask
+class PurgeFBUpdate extends PolyCommand
 {
 
 

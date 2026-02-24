@@ -5,10 +5,10 @@ namespace Azt3k\SS\Social\Extensions;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
-use SilverStripe\ORM\DataExtension;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\Core\Extension;
+use SilverStripe\SiteConfig\SiteConfig;
 
-class SocialUpdatePageExtension extends DataExtension {
+class SocialUpdatePageExtension extends Extension {
 
     public function UpdateType() {
         switch ($this->owner->ClassName) {

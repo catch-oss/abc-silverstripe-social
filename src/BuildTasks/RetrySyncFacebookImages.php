@@ -10,14 +10,14 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Director;
-use SilverStripe\Dev\BuildTask;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\SiteConfig\SiteConfig;
 
 
 /**
  * Facebook images are not always instantly available so this is a rety job that should look for any
  */
-class RetrySyncFacebookImages extends BuildTask implements CronTask
+class RetrySyncFacebookImages extends PolyCommand implements CronTask
 {
 
     protected static $conf_instance;

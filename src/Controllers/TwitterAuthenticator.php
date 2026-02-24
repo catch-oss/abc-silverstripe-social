@@ -6,7 +6,7 @@ use SilverStripe\Control\Controller;
 use Azt3k\SS\Social\Objects\SocialHelper;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
 use \Exception;
 use themattharris\tmhOAuth;

@@ -2,21 +2,21 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
-use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyCommand;
 use Azt3k\SS\Social\SiteTree\Tweet;
 use Azt3k\SS\Social\DataObjects\PublicationTweet;
 use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Director;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use themattharris\tmhOAuth;
 
 /**
  * @todo need reconcile removals in both directions
  */
-class SyncTwitter extends BuildTask implements CronTask
+class SyncTwitter extends PolyCommand implements CronTask
 {
 
     protected static $conf_instance;

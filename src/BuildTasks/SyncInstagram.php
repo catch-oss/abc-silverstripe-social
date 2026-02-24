@@ -10,8 +10,8 @@ use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Director;
-use SilverStripe\Dev\BuildTask;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 
 
@@ -19,7 +19,7 @@ use SilverStripe\ORM\DataObject;
 // https://developers.facebook.com/docs/instagram-basic-display-api - get posts
 // https://developers.facebook.com/docs/instagram-api - make posts
 
-class SyncInstagram extends BuildTask implements CronTask
+class SyncInstagram extends PolyCommand implements CronTask
 {
 
     protected static $conf_instance;

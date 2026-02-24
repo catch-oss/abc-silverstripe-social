@@ -12,15 +12,15 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Director;
-use SilverStripe\Dev\BuildTask;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\PolyExecution\PolyCommand;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\CMS\Model\SiteTree;
 
 /**
  * @todo need reconcile removals in both directions
  */
-class SyncFacebook extends BuildTask implements CronTask
+class SyncFacebook extends PolyCommand implements CronTask
 {
 
     protected static $conf_instance;

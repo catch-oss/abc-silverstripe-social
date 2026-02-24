@@ -6,7 +6,7 @@ use JanuSoftware\Facebook\Facebook;
 use Azt3k\SS\Social\Objects\SocialHelper;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Security;
 use Exception;
 

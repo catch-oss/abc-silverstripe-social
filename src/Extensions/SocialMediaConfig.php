@@ -6,7 +6,7 @@ use Azt3k\SS\Social\Objects\SocialHelper;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
 use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
@@ -17,7 +17,7 @@ use SilverStripe\Forms\CheckboxField;
 use \Exception;
 
 
-class SocialMediaConfig extends DataExtension {
+class SocialMediaConfig extends Extension {
 
     private static $db = array(
 

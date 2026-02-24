@@ -3,15 +3,14 @@
 namespace Azt3k\SS\Social\SiteTree;
 
 use Page;
-use Guzzle\Http\Client as GuzzleClient;
+use GuzzleHttp\Client as GuzzleClient;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Assets\Image;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\ORM\DataObject;
-use Guzzle\Plugin\History\HistoryPlugin;
 use \Exception;
 use SilverStripe\Forms\LiteralField;
 

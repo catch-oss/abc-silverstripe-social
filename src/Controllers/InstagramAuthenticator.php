@@ -7,7 +7,7 @@ use Azt3k\SS\Social\Objects\SocialHelper;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
 use SilverStripe\Control\Controller;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use Exception;
 
 class InstagramAuthenticator extends Controller {

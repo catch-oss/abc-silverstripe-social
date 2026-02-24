@@ -7,7 +7,7 @@ use Azt3k\SS\Social\Extensions\SocialMediaConfig;
 use Azt3k\SS\Social\Extensions\SocialUpdatePageExtension;
 use Azt3k\SS\Social\Extensions\SocialMediaPageExtension;
 use SilverStripe\Core\Config\Config;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
 

@@ -4,7 +4,7 @@ namespace Azt3k\SS\Social\Controllers;
 
 use SilverStripe\Control\Controller;
 use JanuSoftware\Facebook\Facebook;
-use Silverstripe\SiteConfig\SiteConfig;
+use SilverStripe\SiteConfig\SiteConfig;
 use Azt3k\SS\Social\Controllers\TwitterAuthenticator;
 use Azt3k\SS\Social\Controllers\FBAuthenticator;
 use Exception;
