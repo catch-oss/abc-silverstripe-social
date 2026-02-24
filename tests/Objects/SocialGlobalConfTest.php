@@ -42,17 +42,26 @@ class SocialGlobalConfTest extends SapphireTest
         $this->assertContains(Configurable::class, $traits);
     }
 
-    public function testDisableWysiwygEmbedConfigExists(): void
+    public function testDisableShortcodeEmbedConfigExists(): void
     {
         // GIVEN the SocialGlobalConf class
-        // WHEN we check for the disable_wysiwyg_embed config
-        $config = SocialGlobalConf::config()->get('disable_wysiwyg_embed');
+        // WHEN we check for the disable_shortcode_embed config
+        $ref = new \ReflectionClass(SocialGlobalConf::class);
+        $prop = $ref->getProperty('disable_shortcode_embed');
 
-        // THEN the config key should exist (value may be null by default)
-        // Verify the property exists by checking the class has it declared
+        // THEN the config key should exist as a private static property
+        $this->assertTrue($prop->isPrivate());
+        $this->assertTrue($prop->isStatic());
+    }
+
+    public function testLegacyDisableWysiwygEmbedConfigExists(): void
+    {
+        // GIVEN the SocialGlobalConf class
+        // WHEN we check for the legacy disable_wysiwyg_embed config
         $ref = new \ReflectionClass(SocialGlobalConf::class);
         $prop = $ref->getProperty('disable_wysiwyg_embed');
 
+        // THEN the legacy config key should still exist for backwards compatibility
         $this->assertTrue($prop->isPrivate());
         $this->assertTrue($prop->isStatic());
     }

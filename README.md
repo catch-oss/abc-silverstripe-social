@@ -120,6 +120,74 @@ In your template:
 <a href="$ShareUrl('linked_in')">Share on LinkedIn</a>
 ```
 
+## Social Embed Shortcodes
+
+This module registers a `[social_embed]` shortcode that lets you embed social media posts directly in page content. When the page renders, the shortcode is replaced with the oEmbed HTML from the social network.
+
+### Basic usage
+
+Add the shortcode to any HTMLText content field (e.g. `Content`) via the CMS HTML editor:
+
+```
+[social_embed,url="https://twitter.com/nytimes/status/701590150434967553"]
+```
+
+The shortcode accepts a `url` parameter pointing to any supported social media post. The module will fetch the oEmbed representation and cache it in the `OEmbedCacheItem` database table.
+
+### Supported platforms
+
+**Twitter/X:**
+```
+[social_embed,url="https://twitter.com/nytimes/status/701590150434967553"]
+[social_embed,url="https://x.com/nytimes/status/701590150434967553"]
+```
+
+**Facebook posts:**
+```
+[social_embed,url="https://www.facebook.com/telesurenglish/photos/a.492297374247003.1073741828.479681268841947/791129364363801/"]
+[social_embed,url="https://www.facebook.com/username/posts/123456789"]
+```
+
+**Instagram:**
+```
+[social_embed,url="https://www.instagram.com/p/BCEoPpwDw-t/"]
+[social_embed,url="https://instagr.am/p/BCEoPpwDw-t/"]
+```
+
+### Specifying the service type
+
+The module auto-detects the service from the URL. You can also specify it explicitly:
+
+```
+[social_embed,service="twitter",url="https://twitter.com/nytimes/status/701590150434967553"]
+[social_embed,service="facebook",url="https://www.facebook.com/username/posts/123456789"]
+[social_embed,service="instagram",url="https://www.instagram.com/p/BCEoPpwDw-t/"]
+```
+
+For Facebook, you can also specify the embed type (`post` or `video`):
+
+```
+[social_embed,service="facebook",type="video",url="https://www.facebook.com/username/videos/123456789"]
+[social_embed,service="facebook",type="post",url="https://www.facebook.com/username/posts/123456789"]
+```
+
+### Caching
+
+Embed responses are cached in the `OEmbedCacheItem` table to avoid repeated API calls. To refresh a cached embed, delete the corresponding row from the table and the next page render will re-fetch it.
+
+### Disabling the shortcode
+
+If you don't need the shortcode handler, disable it via YAML:
+
+```yaml
+# app/_config/social.yml
+Azt3k\SS\Social\Objects\SocialGlobalConf:
+  disable_shortcode_embed: true
+```
+
+### Future enhancements
+
+The SS5 version of this module included a TinyMCE editor plugin that provided a toolbar button and visual preview for inserting social embeds. TinyMCE was removed in Silverstripe 6, so this editor integration is no longer available. A TipTap-based editor extension for the SS6 CMS could be developed as a future enhancement if there is demand for a visual embed insertion workflow.
 
 ## License
 
