@@ -24,9 +24,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `disable_wysiwyg_embed` config renamed to `disable_shortcode_embed` (legacy key still honoured)
 
 ### Removed
-- **TinyMCE editor plugin and all associated frontend assets** — Silverstripe 6 removed TinyMCE
-  entirely (replaced with TipTap/textarea). The following files have been deleted as they depended
-  on TinyMCE APIs (`tinymce.create()`, `tinymce.PluginManager`, `tinyMCEPopup`) that no longer exist:
+- **TinyMCE editor plugin and all associated frontend assets** — Silverstripe 6 no longer bundles
+  TinyMCE by default (it is available as an optional package via `silverstripe/htmleditor-tinymce`).
+  The old plugin code used TinyMCE 3/4 APIs (`tinymce.create()`, `tinymce.PluginManager`,
+  `tinyMCEPopup`, `ed.addButton()`) that are incompatible with the TinyMCE 6 version shipped by
+  the optional package. The following files have been deleted:
   - `js/editor-plugin.js` — TinyMCE plugin that added a "Social Embed" toolbar button, opened a
     popup dialog for URL entry, and handled shortcode-to-HTML conversion in the editor via
     `ed.on('SetContent')` / `ed.on('SaveContent')` hooks
@@ -41,7 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The **`[social_embed]` shortcode handler is preserved** and continues to work. Existing content
   containing `[social_embed,url="..."]` shortcodes will render correctly. Authors can add new
   shortcodes by typing them directly in the HTML editor. See README for usage examples.
-- A TipTap-based editor extension for SS6 could be developed as a future enhancement if there is
+- A TinyMCE 6 or TipTap editor extension could be developed as a future enhancement if there is
   demand for a visual embed insertion workflow.
 
 ### Added

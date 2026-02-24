@@ -192,7 +192,7 @@ Azt3k\SS\Social\Objects\SocialGlobalConf:
 
 ### Future enhancements
 
-The SS5 version of this module included a TinyMCE editor plugin that provided a toolbar button and visual preview for inserting social embeds. TinyMCE was removed in Silverstripe 6, so this editor integration is no longer available. A TipTap-based editor extension for the SS6 CMS could be developed as a future enhancement if there is demand for a visual embed insertion workflow.
+The SS5 version of this module included a TinyMCE editor plugin that provided a toolbar button and visual preview for inserting social embeds. Silverstripe 6 no longer bundles TinyMCE by default (it is available as an optional package via [`silverstripe/htmleditor-tinymce`](https://docs.silverstripe.org/en/6/optional_features/htmleditor-tinymce/)), and the old plugin used TinyMCE 3/4 APIs that are incompatible with the TinyMCE 6 version in the optional package. A rewritten TinyMCE 6 or TipTap editor extension could be developed as a future enhancement if there is demand for a visual embed insertion workflow.
 
 ## License
 
