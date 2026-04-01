@@ -45,19 +45,20 @@ class SyncInstagram extends PolyCommand implements CronTask
         return static::config()->get('schedule');
     }
 
-    public static function get_conf(): mixed
+    public function getConf(): mixed
     {
         if (!static::$conf_instance) static::$conf_instance = SiteConfig::current_site_config();
         return static::$conf_instance;
     }
 
-    public static function get_instagram(): InstagramBasicDisplayClient
+    public function getInstagram(): InstagramBasicDisplayClient
     {
+        if (!$this->conf) $this->conf = $this->getConf();
+
         if (!static::$instagram_instance) {
-            $conf = static::get_conf();
             static::$instagram_instance = new InstagramBasicDisplayClient(
-                (string) $conf->InstagramApiKey,
-                (string) $conf->InstagramApiSecret,
+                (string) $this->conf->InstagramApiKey,
+                (string) $this->conf->InstagramApiSecret,
                 SocialHelper::php_self()
             );
         }
@@ -74,7 +75,7 @@ class SyncInstagram extends PolyCommand implements CronTask
             return;
         }
 
-        $this->conf = static::get_conf();
+        $this->conf = $this->getConf();
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
@@ -92,7 +93,7 @@ class SyncInstagram extends PolyCommand implements CronTask
             return;
         }
 
-        $this->instagram = static::get_instagram();
+        $this->instagram = $this->getInstagram();
         $this->refreshAccessTokenIfNeeded();
         $this->doSync(null);
     }
@@ -105,7 +106,7 @@ class SyncInstagram extends PolyCommand implements CronTask
             return Command::SUCCESS;
         }
 
-        $this->conf = static::get_conf();
+        $this->conf = $this->getConf();
 
         $output->writeln('');
         $output->writeln('Syncing...');
@@ -121,7 +122,7 @@ class SyncInstagram extends PolyCommand implements CronTask
             return Command::SUCCESS;
         }
 
-        $this->instagram = static::get_instagram();
+        $this->instagram = $this->getInstagram();
         $this->refreshAccessTokenIfNeeded();
         $this->doSync($output);
 
