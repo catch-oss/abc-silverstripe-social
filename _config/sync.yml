@@ -1,0 +1,11 @@
+---
+Name: abc-silverstripe-social-sync
+---
+Azt3k\SS\Social\BuildTasks\SyncFacebook:
+  schedule: '*/5 * * * *'
+Azt3k\SS\Social\BuildTasks\RetrySyncFacebookImages:
+  schedule: '*/15 * * * *'
+Azt3k\SS\Social\BuildTasks\SyncTwitter:
+  schedule: '*/5 * * * *'
+Azt3k\SS\Social\BuildTasks\SyncInstagram:
+  schedule: '*/5 * * * *'

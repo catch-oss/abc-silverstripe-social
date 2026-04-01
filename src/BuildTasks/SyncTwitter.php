@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Social\BuildTasks;
 
+use SilverStripe\Core\Environment;
 use SilverStripe\PolyExecution\PolyCommand;
 use SilverStripe\PolyExecution\PolyOutput;
 use Symfony\Component\Console\Command\Command;
@@ -22,6 +23,8 @@ class SyncTwitter extends PolyCommand implements CronTask
     protected static string $commandName = 'social:sync-twitter';
     protected static string $description = 'Syncs Twitter updates from a configured account';
 
+    private static string $schedule = '*/5 * * * *';
+
     protected static $conf_instance;
     protected static $tmh_oauth_instance;
     protected $conf;
@@ -34,18 +37,9 @@ class SyncTwitter extends PolyCommand implements CronTask
         return 'Sync Twitter';
     }
 
-    public function __construct()
-    {
-
-        $this->conf        = $this->getConf();
-        $this->tmhOAuth = $this->getTmhOauth();
-
-        parent::__construct();
-    }
-
     public function getSchedule(): string
     {
-        return "*/5 * * * *";
+        return static::config()->get('schedule');
     }
 
     public function getConf(): mixed
@@ -76,7 +70,11 @@ class SyncTwitter extends PolyCommand implements CronTask
      */
     public function process(): void
     {
-        if (!$this->conf || !$this->tmhOAuth) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            return;
+        }
+
+        $this->conf = $this->getConf();
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
@@ -89,13 +87,19 @@ class SyncTwitter extends PolyCommand implements CronTask
             return;
         }
 
+        $this->tmhOAuth = $this->getTmhOauth();
         $this->doSync(null);
     }
 
     public function run(InputInterface $input, PolyOutput $output): int
     {
 
-        if (!$this->conf || !$this->tmhOAuth) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            $output->writeln('Social sync disabled (SS_SOCIAL_SYNC_ENABLED is not set)');
+            return Command::SUCCESS;
+        }
+
+        $this->conf = $this->getConf();
 
         $output->writeln('');
         $output->writeln('Syncing...');
@@ -106,6 +110,7 @@ class SyncTwitter extends PolyCommand implements CronTask
             return Command::SUCCESS;
         }
 
+        $this->tmhOAuth = $this->getTmhOauth();
         $this->doSync($output);
 
         return Command::SUCCESS;

@@ -7,6 +7,7 @@ use Azt3k\SS\Social\Objects\SocialHelper;
 use Azt3k\SS\Classes\DataObjectHelper;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
 use Azt3k\SS\Social\DataObjects\PublicationFBUpdate;
+use SilverStripe\Core\Environment;
 use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\PolyExecution\PolyCommand;
 use SilverStripe\PolyExecution\PolyOutput;
@@ -25,6 +26,8 @@ class SyncFacebook extends PolyCommand implements CronTask
     protected static string $commandName = 'social:sync-facebook';
     protected static string $description = 'Syncs Facebook updates from a configured page';
 
+    private static string $schedule = '*/5 * * * *';
+
     protected static $conf_instance;
     protected static $facebook_instance;
     protected $conf;
@@ -37,18 +40,9 @@ class SyncFacebook extends PolyCommand implements CronTask
         return 'Sync Facebook';
     }
 
-    public function __construct()
-    {
-
-        $this->conf     = $this->getConf();
-        $this->facebook = $this->getFacebook();
-
-        parent::__construct();
-    }
-
     public function getSchedule(): string
     {
-        return "*/5 * * * *";
+        return static::config()->get('schedule');
     }
 
     public function getConf(): mixed
@@ -87,7 +81,11 @@ class SyncFacebook extends PolyCommand implements CronTask
      */
     public function process(): void
     {
-        if (!$this->conf || !$this->facebook) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            return;
+        }
+
+        $this->conf = $this->getConf();
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
@@ -100,13 +98,19 @@ class SyncFacebook extends PolyCommand implements CronTask
             return;
         }
 
+        $this->facebook = $this->getFacebook();
         $this->doSync(null);
     }
 
     public function run(InputInterface $input, PolyOutput $output): int
     {
 
-        if (!$this->conf || !$this->facebook) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            $output->writeln('Social sync disabled (SS_SOCIAL_SYNC_ENABLED is not set)');
+            return Command::SUCCESS;
+        }
+
+        $this->conf = $this->getConf();
 
         $output->writeln('');
         $output->writeln('Syncing...');
@@ -117,6 +121,7 @@ class SyncFacebook extends PolyCommand implements CronTask
             return Command::SUCCESS;
         }
 
+        $this->facebook = $this->getFacebook();
         $this->doSync($output);
 
         return Command::SUCCESS;

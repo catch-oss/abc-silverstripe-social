@@ -98,6 +98,73 @@ Page:
 
 Then run `dev/build` to apply the database changes.
 
+## Sync Tasks
+
+The module ships 4 cron tasks that pull social media feeds into your site tree. All sync tasks are **disabled by default** and require explicit opt-in at the environment level.
+
+### Available tasks
+
+| Command | Description |
+|---------|-------------|
+| `social:sync-facebook` | Pulls posts from a configured Facebook page |
+| `social:retry-sync-facebook-images` | Retries downloading images for recent Facebook posts that had no image on first sync |
+| `social:sync-twitter` | Pulls tweets from a configured Twitter account |
+| `social:sync-instagram` | Pulls posts from a configured Instagram account |
+
+### Enabling sync
+
+**1. Set the environment variable** (required — without this, all tasks exit immediately):
+
+```
+SS_SOCIAL_SYNC_ENABLED=1
+```
+
+Add this to your `.env` file or set it in your hosting environment.
+
+**2. Enable per-network in the CMS** (Settings > Social Media):
+
+- **Facebook:** Toggle `FacebookPullUpdates`
+- **Twitter:** Toggle `TwitterPullUpdates`
+- **Instagram:** Toggle `InstagramPullUpdates`
+
+Both the env var and the CMS toggle must be enabled for a given network's sync to run.
+
+### Running tasks
+
+**Via cron (recommended):** Set up an external cron job to run the Silverstripe cron task runner:
+
+```bash
+* * * * * cd /path/to/project && vendor/bin/sake cron-task
+```
+
+Each task has a schedule (e.g. every 5 minutes) that the cron runner respects.
+
+**Manually via CLI:**
+
+```bash
+vendor/bin/sake social:sync-facebook
+vendor/bin/sake social:sync-twitter
+vendor/bin/sake social:sync-instagram
+vendor/bin/sake social:retry-sync-facebook-images
+```
+
+### Overriding schedules
+
+The default schedules can be overridden via YAML config in your project:
+
+```yaml
+# app/_config/social-sync.yml
+---
+Name: project-social-sync
+After:
+  - '#abc-silverstripe-social-sync'
+---
+Azt3k\SS\Social\BuildTasks\SyncFacebook:
+  schedule: '*/10 * * * *'
+Azt3k\SS\Social\BuildTasks\SyncInstagram:
+  schedule: '0 * * * *'
+```
+
 ## Meta data
 
 Include the `Meta` partial in your page template:
