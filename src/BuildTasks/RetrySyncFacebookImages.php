@@ -5,6 +5,7 @@ namespace Azt3k\SS\Social\BuildTasks;
 use JanuSoftware\Facebook\Facebook;
 use Azt3k\SS\Classes\DataObjectHelper;
 use Azt3k\SS\Social\SiteTree\FBUpdate;
+use SilverStripe\Core\Environment;
 use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\PolyExecution\PolyCommand;
 use SilverStripe\PolyExecution\PolyOutput;
@@ -22,6 +23,8 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
     protected static string $commandName = 'social:retry-sync-facebook-images';
     protected static string $description = 'Retries syncing Facebook images that were not immediately available';
 
+    private static string $schedule = '*/15 * * * *';
+
     protected static $conf_instance;
     protected $conf;
 
@@ -30,15 +33,9 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
         return 'Retry Sync Facebook Images';
     }
 
-    public function __construct()
-    {
-        $this->conf = $this->getConf();
-        parent::__construct();
-    }
-
     public function getSchedule(): string
     {
-        return "*/15 * * * *";
+        return static::config()->get('schedule');
     }
 
     public function getConf(): mixed
@@ -52,7 +49,11 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
      */
     public function process(): void
     {
-        if (!$this->conf) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            return;
+        }
+
+        $this->conf = $this->getConf();
         echo "\n\nSyncing\n\n";
 
         if (!$this->conf->FacebookPullUpdates) {
@@ -80,7 +81,12 @@ class RetrySyncFacebookImages extends PolyCommand implements CronTask
     public function run(InputInterface $input, PolyOutput $output): int
     {
 
-        if (!$this->conf) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            $output->writeln('Social sync disabled (SS_SOCIAL_SYNC_ENABLED is not set)');
+            return Command::SUCCESS;
+        }
+
+        $this->conf = $this->getConf();
 
         $output->writeln('');
         $output->writeln('Syncing');

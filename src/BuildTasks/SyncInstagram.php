@@ -6,6 +6,7 @@ use Azt3k\SS\Social\Clients\InstagramBasicDisplayClient;
 use Azt3k\SS\Social\SiteTree\InstagramUpdate;
 use Azt3k\SS\Social\DataObjects\PublicationInstagramUpdate;
 use Azt3k\SS\Social\Objects\SocialHelper;
+use SilverStripe\Core\Environment;
 use SilverStripe\CronTask\Interfaces\CronTask;
 use SilverStripe\PolyExecution\PolyCommand;
 use SilverStripe\PolyExecution\PolyOutput;
@@ -25,6 +26,8 @@ class SyncInstagram extends PolyCommand implements CronTask
     protected static string $commandName = 'social:sync-instagram';
     protected static string $description = 'Syncs Instagram updates from a configured account';
 
+    private static string $schedule = '*/5 * * * *';
+
     protected static $conf_instance;
     protected static $instagram_instance;
     protected $conf;
@@ -37,18 +40,9 @@ class SyncInstagram extends PolyCommand implements CronTask
         return 'Sync Instagram';
     }
 
-    public function __construct()
-    {
-
-        $this->conf = static::get_conf();
-        $this->instagram = static::get_instagram();
-
-        parent::__construct();
-    }
-
     public function getSchedule(): string
     {
-        return "*/5 * * * *";
+        return static::config()->get('schedule');
     }
 
     public static function get_conf(): mixed
@@ -76,7 +70,11 @@ class SyncInstagram extends PolyCommand implements CronTask
      */
     public function process(): void
     {
-        if (!$this->conf || !$this->instagram) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            return;
+        }
+
+        $this->conf = static::get_conf();
 
         $eol = php_sapi_name() === 'cli' ? "\n" : '<br>';
 
@@ -94,6 +92,7 @@ class SyncInstagram extends PolyCommand implements CronTask
             return;
         }
 
+        $this->instagram = static::get_instagram();
         $this->refreshAccessTokenIfNeeded();
         $this->doSync(null);
     }
@@ -101,7 +100,12 @@ class SyncInstagram extends PolyCommand implements CronTask
     public function run(InputInterface $input, PolyOutput $output): int
     {
 
-        if (!$this->conf || !$this->instagram) $this->__construct();
+        if (!Environment::getEnv('SS_SOCIAL_SYNC_ENABLED')) {
+            $output->writeln('Social sync disabled (SS_SOCIAL_SYNC_ENABLED is not set)');
+            return Command::SUCCESS;
+        }
+
+        $this->conf = static::get_conf();
 
         $output->writeln('');
         $output->writeln('Syncing...');
@@ -117,6 +121,7 @@ class SyncInstagram extends PolyCommand implements CronTask
             return Command::SUCCESS;
         }
 
+        $this->instagram = static::get_instagram();
         $this->refreshAccessTokenIfNeeded();
         $this->doSync($output);
 
