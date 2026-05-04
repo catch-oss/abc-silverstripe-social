@@ -114,8 +114,9 @@ class SocialMediaPageExtension extends Extension {
     // Other Methods
     // ------------------------------------------------------------------------------------------------
 
-    public function parseContent(string $content, ?int $words = null, ?string $allowedTags = '<br>'): string
+    public function parseContent(?string $content, ?int $words = null, ?string $allowedTags = '<br>'): string
     {
+        $content = $content ?? '';
         $br2nl = false;
         if (!$allowedTags || stripos('<br>',$allowedTags) === false) {
             $allowedTags.= '<br>';
