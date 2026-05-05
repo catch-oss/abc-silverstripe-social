@@ -114,8 +114,9 @@ class SocialMediaPageExtension extends Extension {
     // Other Methods
     // ------------------------------------------------------------------------------------------------
 
-    public function parseContent(string $content, ?int $words = null, ?string $allowedTags = '<br>'): string
+    public function parseContent(?string $content, ?int $words = null, ?string $allowedTags = '<br>'): string
     {
+        $content = $content ?? '';
         $br2nl = false;
         if (!$allowedTags || stripos('<br>',$allowedTags) === false) {
             $allowedTags.= '<br>';
@@ -161,6 +162,17 @@ class SocialMediaPageExtension extends Extension {
         $fields->removeByName('MetaDescription');
         $fields->removeByName('ExtraMeta');
         $fields->removeByName('Metadata');
+
+        // Always remove auto-scaffolded copies of internal tracking fields.
+        // They have no editor UI on the Main tab — LastPostedToSocialMedia and
+        // ForceUpdateMode are conditionally re-added to Root.SocialMedia below
+        // when push is enabled; the publication ID fields stay hidden.
+        $fields->removeByName([
+            'LastPostedToSocialMedia',
+            'PublicationFBUpdateID',
+            'PublicationTweetID',
+            'ForceUpdateMode',
+        ]);
 
         // Push updates stuff
         $conf = SiteConfig::current_site_config();
