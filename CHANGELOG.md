@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - All `die()` calls replaced with exceptions (BuildTasks) and `httpError()` (Controllers)
 - CSRF token generation upgraded to `bin2hex(random_bytes(32))`
 - `disable_wysiwyg_embed` config renamed to `disable_shortcode_embed` (legacy key still honoured)
+- CI tests against MySQL 8.4; requires SilverStripe ^6.2 (release/6.2 branch)
 
 ### Removed
 - **TinyMCE editor plugin and all associated frontend assets** — Silverstripe 6 no longer bundles
