@@ -36,8 +36,8 @@
     "silverstripe/crontask": "^4.0",
     "silverstripe/vendor-plugin": "^3.0",
     "composer/installers": "^2.2",
-    "azt3k/abc-silverstripe": "dev-release/6",
-    "azt3k/abc-silverstripe-taggable": "dev-release/6",
+    "azt3k/abc-silverstripe": "dev-release/6.2",
+    "azt3k/abc-silverstripe-taggable": "dev-release/6.2",
     "themattharris/tmhoauth": "dev-release/6",
     "janu-software/facebook-php-sdk": "dev-release/6",
     "guzzlehttp/guzzle": "^7.4.5"
