@@ -28,6 +28,7 @@
     }
   ],
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": "^8.5",
     "silverstripe/framework": "^6.2",
