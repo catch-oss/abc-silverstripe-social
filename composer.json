@@ -28,22 +28,23 @@
     }
   ],
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": "^8.5",
-    "silverstripe/framework": "^6.0",
-    "silverstripe/cms": "^6.0",
+    "silverstripe/framework": "^6.2",
+    "silverstripe/cms": "^6.2",
     "silverstripe/crontask": "^4.0",
     "silverstripe/vendor-plugin": "^3.0",
     "composer/installers": "^2.2",
-    "azt3k/abc-silverstripe": "dev-release/6",
-    "azt3k/abc-silverstripe-taggable": "dev-release/6",
+    "azt3k/abc-silverstripe": "dev-release/6.2",
+    "azt3k/abc-silverstripe-taggable": "dev-release/6.2",
     "themattharris/tmhoauth": "dev-release/6",
     "janu-software/facebook-php-sdk": "dev-release/6",
     "guzzlehttp/guzzle": "^7.4.5"
   },
   "require-dev": {
     "phpunit/phpunit": "^11.0",
-    "silverstripe/recipe-cms": "^6.0"
+    "silverstripe/recipe-cms": "^6.2"
   },
   "autoload": {
     "psr-4": {
